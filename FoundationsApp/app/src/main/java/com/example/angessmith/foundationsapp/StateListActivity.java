@@ -9,13 +9,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-im//port android.widget.AdapterView;
+//import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-im//port android.widget.AutoCompleteTextView;
+//import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-im//port android.widget.Toast;
+//import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -39,6 +39,8 @@ public class StateListActivity extends Activity {
         //final ListView statesList = (ListView) findViewById(R.id.statesVisitedList);
         final ListView statesList = (ListView) findViewById(android.R.id.list);
 
+        // Get the textview for the average number of characters in the states
+        final TextView averageCharactersText = (TextView) findViewById(R.id.average_number_characters_in_states);
 
 
         // Practice playing with autocomplete
@@ -55,7 +57,7 @@ public class StateListActivity extends Activity {
         final ArrayList<String> stateList = new ArrayList<String>();
 
         // Create the Array Adapter to hold the states
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stateList);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stateList);
         // Set the array to the arapter for the listview
         statesList.setAdapter(arrayAdapter);
 
@@ -83,11 +85,39 @@ public class StateListActivity extends Activity {
                     stateList.add(stateText);
                     // Update the number of items in the array
                     setNumberOfStates();
+                    // Refresh the list view because we have a new item
+                    arrayAdapter.notifyDataSetChanged();
+
+                    // Calculate the average text length for each string
+                    setAverageText();
+
 
                 }
                 // empty out the text field
                 enteredStateText.setText("");
 
+            }
+
+            private void setAverageText() {
+                int textLength = 0;
+                String intVal;
+                for (String state : stateList)
+                {
+                    textLength += state.length();
+                    intVal = String.valueOf(textLength);
+                    Log.d("The number of total characters equals = ", intVal);
+                }
+                // Take the new total and divide it by the number of items in the list
+                textLength = textLength/stateList.size();
+                intVal = String.valueOf(textLength);
+                Log.d("The average number of characters equals = ", intVal);
+                if (stateList.size() == 1) {
+                    averageCharactersText.setText("That state has " + intVal + " characters");
+                }
+                else if (stateList.size() > 1) {
+                    averageCharactersText.setText("Those states average " + intVal + " characters");
+
+                }
             }
 
             private void setNumberOfStates() {

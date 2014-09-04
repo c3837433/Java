@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/enteredStateText"
         android:inputType="textCapWords|textAutoCorrect"
+        android:imeOptions="actionDone"
         android:layout_toStartOf="@+id/addStateButton"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
@@ -51,11 +52,11 @@
         android:phoneNumber="false"
         android:layout_below="@+id/enteredStateText"
         android:paddingTop="10dp"
-        android:layout_alignRight="@+id/addStateButton"
-        android:layout_alignEnd="@+id/addStateButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -65,5 +66,18 @@
         android:layout_below="@+id/enteredStateText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/average_number_characters_in_states"
+        android:gravity="center"
+        android:layout_below="@+id/number_of_states_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
 
 </RelativeLayout>
