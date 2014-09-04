@@ -9,9 +9,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+im//port android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+im//port android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+im//port android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,8 +33,32 @@ public class StateListActivity extends Activity {
         // Get the text field
         final TextView enteredStateText = (TextView) findViewById(R.id.enteredStateText);
 
+        // Get the view to hold the number of states visited
+        final TextView numberOfStatesVisited = (TextView) findViewById(R.id.number_of_states_view);
+        // Get the listview that will hold all the states the user has visited
+        //final ListView statesList = (ListView) findViewById(R.id.statesVisitedList);
+        final ListView statesList = (ListView) findViewById(android.R.id.list);
+
+
+
+        // Practice playing with autocomplete
+        // Get the autocomplete textview
+        //AutoCompleteTextView autoEnteredText = (AutoCompleteTextView) findViewById(R.id.autocomplete_state);
+        // Get the list of states in the string array
+        //String[] statesAvailable = getResources().getStringArray(R.array.states_array);
+        // Tell the textview to use the strings in the array to autocomplete when the user begins to enter text
+        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statesAvailable);
+        // Add the array adapter to the textview
+        //autoEnteredText.setAdapter(arrayAdapter);
+
         // Declare the array
         final ArrayList<String> stateList = new ArrayList<String>();
+
+        // Create the Array Adapter to hold the states
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stateList);
+        // Set the array to the arapter for the listview
+        statesList.setAdapter(arrayAdapter);
+
         // Create the on click listener
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -53,12 +81,25 @@ public class StateListActivity extends Activity {
                     Log.d("Yea", newStateString);
                     // Add the state to the array
                     stateList.add(stateText);
+                    // Update the number of items in the array
+                    setNumberOfStates();
+
                 }
                 // empty out the text field
                 enteredStateText.setText("");
 
             }
+
+            private void setNumberOfStates() {
+                int numberOfStates = stateList.size();
+                // set that number to the number field
+                if (numberOfStates == 1)
+                    numberOfStatesVisited.setText("You have visited " + numberOfStates + " state!");
+                else
+                    numberOfStatesVisited.setText("You have visited " + numberOfStates + " states!");
+            }
         };
+
         // Set the on click listener to the add state button
         stateButton.setOnClickListener(listener);
 

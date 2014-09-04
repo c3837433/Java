@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="50dp"
-    android:paddingRight="50dp"
-    android:paddingTop="50dp"
-    android:paddingBottom="50dp"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp"
     tools:context=".MyActivity">
 
     <TextView
@@ -13,27 +13,57 @@
         android:layout_height="wrap_content"
         android:text="@string/state_question"
         android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:textSize="24sp"
+        android:textSize="21sp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingBottom="20dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_state_button"
         android:id="@+id/addStateButton"
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/textView" />
+        android:layout_alignBottom="@+id/enteredStateText"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:paddingTop="10dp"
+        android:textSize="16sp" />
+
+
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/enteredStateText"
+        android:inputType="textCapWords|textAutoCorrect"
+        android:layout_toStartOf="@+id/addStateButton"
         android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/addStateButton"
+        android:paddingTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/number_of_states_view"
+        android:inputType="none"
+        android:phoneNumber="false"
+        android:layout_below="@+id/enteredStateText"
+        android:paddingTop="10dp"
+        android:layout_alignRight="@+id/addStateButton"
+        android:layout_alignEnd="@+id/addStateButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@android:id/list"
+        android:layout_marginTop="59dp"
+        android:layout_below="@+id/enteredStateText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
