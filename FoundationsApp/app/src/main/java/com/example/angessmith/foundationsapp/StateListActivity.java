@@ -4,12 +4,15 @@ package com.example.angessmith.foundationsapp;
 // September 3, 2014
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 //import android.widget.AdapterView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 //import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 
 public class StateListActivity extends Activity {
 
+    final String TAG = "Foundation State App";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +39,15 @@ public class StateListActivity extends Activity {
 
         // Get the view to hold the number of states visited
         final TextView numberOfStatesVisited = (TextView) findViewById(R.id.number_of_states_view);
-        // Get the listview that will hold all the states the user has visited
+        // Get the list view that will hold all the states the user has visited
         //final ListView statesList = (ListView) findViewById(R.id.statesVisitedList);
         final ListView statesList = (ListView) findViewById(android.R.id.list);
 
-        // Get the textview for the average number of characters in the states
+        // Get the text view for the average number of characters in the states
         final TextView averageCharactersText = (TextView) findViewById(R.id.average_number_characters_in_states);
 
+        // Build the alert
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         // Practice playing with autocomplete
         // Get the autocomplete textview
@@ -58,29 +64,29 @@ public class StateListActivity extends Activity {
 
         // Create the Array Adapter to hold the states
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stateList);
-        // Set the array to the arapter for the listview
+        // Set the array to the adapter for the listview
         statesList.setAdapter(arrayAdapter);
 
-        // Create the on click listener
+        // Create the on click listener for the button
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view){
                 // Get the string in the text field
                 String stateText = String.valueOf(enteredStateText.getText());
                 // Check the state entered
-                Log.d("The entered state is: ", stateText);
+                Log.i(TAG, "The entered state is: "+ stateText);
                 if (stateList.contains(stateText))
                 {
                     // Then toast user this is a duplicate
                     String duplicateString = "This state has already been entered.";
                     //Toast duplicateToast = Toast.makeText(this,duplicateString,Toast.LENGTH_LONG).show();
-                    Log.d("Bummer", duplicateString);
+                    Log.i(TAG, "Bummer" + duplicateString);
                 }
                 else
                 {
                     String newStateString = "\"The State is New";
                     // toast user this is a good state
-                    Log.d("Yea", newStateString);
+                    Log.i(TAG, "Yea"+ newStateString);
                     // Add the state to the array
                     stateList.add(stateText);
                     // Update the number of items in the array
@@ -105,12 +111,12 @@ public class StateListActivity extends Activity {
                 {
                     textLength += state.length();
                     intVal = String.valueOf(textLength);
-                    Log.d("The number of total characters equals = ", intVal);
+                    Log.i(TAG, "The number of total characters equals = "+ intVal);
                 }
                 // Take the new total and divide it by the number of items in the list
                 textLength = textLength/stateList.size();
                 intVal = String.valueOf(textLength);
-                Log.d("The average number of characters equals = ", intVal);
+                Log.i(TAG, "The average number of characters equals = "+ intVal);
                 if (stateList.size() == 1) {
                     averageCharactersText.setText("That state has " + intVal + " characters");
                 }
@@ -132,6 +138,32 @@ public class StateListActivity extends Activity {
 
         // Set the on click listener to the add state button
         stateButton.setOnClickListener(listener);
+
+        // Set the on click listener for the list view
+        statesList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                // Get the selected view
+                TextView chosenStateView = (TextView) view;
+                // Get the text from that view
+                String chosenStateString = (String) chosenStateView.getText();
+                Log.i(TAG, "The state  of " + chosenStateString + " was selected");
+                // Create the alert
+                builder.setMessage("You selected "+ chosenStateString + ".");
+                builder.setTitle("State was Selected");
+                // Add a confirmation button
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // The user confirmed the entry
+                }
+            });
+                // Create the alert dialog
+                AlertDialog messageDialog = builder.create();
+                // Show the message to the user
+                messageDialog.show();
+            }
+        });
 
     }
 
