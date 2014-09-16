@@ -1,9 +1,13 @@
 package com.example.angessmith.advancedviewsproject;
+// Created by AngeSSmith on 9/14/14 for Java 1 Week 3 Term 1409.
 
-/**
- * Created by AngeSSmith on 9/14/14.
- */
-public class Creature {
+public class Creature  {
+
+    // Create the variables
+    private String mScientificName;
+    private String mCommonName;
+    private int mImageId;
+
 
     // Create the instance of a new creature
     public static Creature newInstance(String _scientific, String _common, int _image) {
@@ -16,10 +20,6 @@ public class Creature {
         return creature;
     }
 
-    // Create the variables
-    private String mScientificName;
-    private String mCommonName;
-    private int mImageId;
 
     public Creature() {
         mScientificName = mCommonName = "";

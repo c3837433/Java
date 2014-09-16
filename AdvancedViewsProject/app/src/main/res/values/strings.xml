@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AdvancedViewsProject</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_detail">Creature Detail</string>
+    <string name="title_text">Select a Creature</string>
+    <string name="common_name">Common Name</string>
+    <string name="scientific_name">Scientific Name</string>
+    <string name="item_icon_description">Creature icon image</string>
+    <string name="item_image_description">Creature image</string>
+
+</resources>

@@ -1,18 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="Select a Creature"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:weightSum="1">
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="244dp">
-    </ListView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/title_text"
+            android:id="@+id/textView2"
+            android:textSize="24sp"
+            android:gravity="center" />
 
-</LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="296dp"
+            android:baselineAligned="false">
+
+            <ListView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/listView"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="182dp"
+                android:layout_height="match_parent"
+                android:weightSum="1"
+                android:layout_marginLeft="15dp">
+
+                <TextView
+                    android:layout_width="182dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scientific_name"
+                    android:id="@+id/textView6"
+                    android:layout_gravity="end"
+                    android:textAlignment="gravity"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/scientific_name_textView"
+                    android:layout_weight="0.22" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/common_name"
+                    android:id="@+id/textView7"
+                    android:textAlignment="gravity"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:id="@+id/common_name_textView" />
+
+                <ImageView
+                    android:layout_width="162dp"
+                    android:layout_height="108dp"
+                    android:id="@+id/creature_image_view"
+                    android:layout_gravity="center_horizontal"
+                    android:minHeight="40dp"
+                    android:minWidth="40dp"
+                    android:layout_weight="0.58"
+                    android:paddingBottom="40dp"
+                    android:paddingRight="20dp"
+                    android:contentDescription="@string/item_image_description" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
