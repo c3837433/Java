@@ -1,6 +1,7 @@
 package com.example.angessmith.advancedviewsproject;
 
-// Created by Angela Smith September 13, 2014
+// Created by AngeSSmith on 9/14/14 for Java 1 Week 3 Term 1409.
+
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -25,6 +26,9 @@ public class MainActivity extends Activity {
     final String TAG = "CreatureApp";
     private ArrayList<Creature> mCreatures;
     Spinner mCreatureSpinner;
+    static final String NAME = "creaturename";
+    static final String SCIENTIFIC = "scientificname";
+    static final String IMAGE = "image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +37,25 @@ public class MainActivity extends Activity {
 
         // Create the creatures with their commom and scientific names, and image ids
         mCreatures = new ArrayList<Creature>();
-        mCreatures.add(Creature.newInstance("Sympetrum Vicinum", "Autumn Meadowhawk", R.drawable.dragonfly)); // Insecta
+        mCreatures.add(Creature.newInstance("Sympetrum Vicinum", "Autumn Meadowhawk", R.drawable.dragonfly));
         mCreatures.add(Creature.newInstance("Hyles Euphorbiaw", "Spurge Hawk-moth", R.drawable.hawkmoth));
         mCreatures.add(Creature.newInstance("Agapostemon", "Metallic Green Bee", R.drawable.greenbee));
         mCreatures.add(Creature.newInstance("Graphocephala Coccinea", "Candy Striped Leafhopper", R.drawable.leafhopper));
         mCreatures.add(Creature.newInstance("Conocephalus Dorsalis", "Katydid", R.drawable.katydid));
-        mCreatures.add(Creature.newInstance("Lithobates Pipiens", "Northern Tree Frog", R.drawable.frog)); // Amphibia
+        mCreatures.add(Creature.newInstance("Lithobates Pipiens", "Northern Tree Frog", R.drawable.frog));
 
+
+        // Create the arraylist to hold the hashmap
+        ArrayList<HashMap<String, Object>> creatureList = new ArrayList<HashMap<String, Object>>();
+        // Loop through all the creatures
+        for (Creature creature : mCreatures) {
+            // Create a hash map and add the properties to it
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            hashMap.put(NAME, creature.getCommonName());
+            hashMap.put(SCIENTIFIC, creature.getScientificName());
+            hashMap.put(IMAGE, creature.getImageId());
+            creatureList.add(hashMap);
+        }
 
         SimpleAdapter adapter = creatureAdapter();
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -48,7 +64,9 @@ public class MainActivity extends Activity {
             // Get the spinner for portrait mode
             mCreatureSpinner = (Spinner)findViewById(R.id.listspinner);
             // set the adapter to it
-            mCreatureSpinner.setAdapter(adapter);
+            //mCreatureSpinner.setAdapter(adapter);
+            mCreatureSpinner.setAdapter(new CreatureAdapter(this,creatureList));
+            //mCreatureSpinner.setAdapter(new CreatureAdapter(this, android.R.layout.simple_spinner_dropdown_item, mCreatures));
 
             // ADD SPINNER EVENT LISTENER
             mCreatureSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -69,11 +87,12 @@ public class MainActivity extends Activity {
             // Set up for list view
             //Toast.makeText(this, "The view is in Landscape mode", Toast.LENGTH_LONG).show();
             // get the listview in landscape mode
-            ListView creatureList = (ListView)findViewById(R.id.listView);
+            ListView listView = (ListView)findViewById(R.id.listView);
             // set the adapter to it
-            creatureList.setAdapter(adapter);
+            listView.setAdapter(adapter);
+
             // LISTEN FOR USER TO CLICK ON LIST AND DISPLAY ITEM DATA
-            creatureList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
@@ -112,7 +131,9 @@ public class MainActivity extends Activity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    // Create a simple adapter to set the creture's common name in both the spinner and listview
+    // Create an instance of the creature adapter
+
+    // Create a simple adapter to set the creature's common name in both the spinner and list view
     private SimpleAdapter creatureAdapter() {
 
         SimpleAdapter adapter;
