@@ -30,7 +30,6 @@ public class CreatureAdapter extends BaseAdapter {
     public CreatureAdapter(Context _context, int _resource, ArrayList<Creature> _creatures) {
         mContext = _context;
         mCreatures = _creatures;
-        mResource = _resource;
     }
     */
 

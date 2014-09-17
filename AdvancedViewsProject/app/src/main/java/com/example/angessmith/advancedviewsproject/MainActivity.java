@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -57,7 +56,7 @@ public class MainActivity extends Activity {
             creatureList.add(hashMap);
         }
 
-        SimpleAdapter adapter = creatureAdapter();
+        //SimpleAdapter adapter = creatureAdapter();
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             // Then add the stuff for the spinner
             //Toast.makeText(this, "The view is in portrait mode", Toast.LENGTH_LONG).show();
@@ -66,7 +65,6 @@ public class MainActivity extends Activity {
             // set the adapter to it
             //mCreatureSpinner.setAdapter(adapter);
             mCreatureSpinner.setAdapter(new CreatureAdapter(this,creatureList));
-            //mCreatureSpinner.setAdapter(new CreatureAdapter(this, android.R.layout.simple_spinner_dropdown_item, mCreatures));
 
             // ADD SPINNER EVENT LISTENER
             mCreatureSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -89,7 +87,8 @@ public class MainActivity extends Activity {
             // get the listview in landscape mode
             ListView listView = (ListView)findViewById(R.id.listView);
             // set the adapter to it
-            listView.setAdapter(adapter);
+            //listView.setAdapter(adapter);
+            listView.setAdapter(new CreatureAdapter(this,creatureList));
 
             // LISTEN FOR USER TO CLICK ON LIST AND DISPLAY ITEM DATA
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -131,8 +130,7 @@ public class MainActivity extends Activity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    // Create an instance of the creature adapter
-
+    /*
     // Create a simple adapter to set the creature's common name in both the spinner and list view
     private SimpleAdapter creatureAdapter() {
 
@@ -169,4 +167,5 @@ public class MainActivity extends Activity {
         // Return the adapter
        return adapter;
     }
+    */
 }
