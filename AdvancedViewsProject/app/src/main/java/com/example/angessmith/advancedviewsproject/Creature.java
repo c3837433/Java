@@ -9,14 +9,15 @@ public class Creature  {
     private int mImageId;
 
 
-    // Create the instance of a new creature
+    // Use a factory to create the instance of a new creature
     public static Creature newInstance(String _scientific, String _common, int _image) {
-
-        // Set the parameters to the creature
+        //Create the creature object
         Creature creature = new Creature();
+        // Set the parameters to the creature
         creature.setScientificName(_scientific);
         creature.setCommonName(_common);
         creature.setImageId(_image);
+        // Return the new creature object
         return creature;
     }
 
@@ -26,7 +27,7 @@ public class Creature  {
         mImageId = 0;
     }
 
-    // Create the getters and Setters for each field
+    // Create the getters and Setters for the scientific name
     public String getScientificName() {
         return mScientificName;
     }
@@ -34,7 +35,7 @@ public class Creature  {
     public void setScientificName(String mScientificName) {
         this.mScientificName = mScientificName;
     }
-
+    // Create the getters and Setters for the common name
     public String getCommonName() {
         return mCommonName;
     }
@@ -42,7 +43,7 @@ public class Creature  {
     public void setCommonName(String mCommonName) {
         this.mCommonName = mCommonName;
     }
-
+    // Create the getters and Setters for the image id
     public int getImageId() {
         return mImageId;
     }

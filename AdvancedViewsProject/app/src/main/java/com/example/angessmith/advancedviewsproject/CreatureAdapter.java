@@ -19,11 +19,10 @@ public class CreatureAdapter extends BaseAdapter {
     private Context mContext;
     // And an array to hold the names
     //private ArrayList<Creature> mCreatures;
-
+    // Create a new Arraylist to hold the hashmap objects
     private ArrayList<HashMap<String, Object>> mCreatureList = new ArrayList<HashMap<String, Object>>();
-
+    // Create a new hashmap object
     public static HashMap<String, Object> mCreature;
-
 
     // Define the adapter to display the data
     /*
@@ -32,48 +31,47 @@ public class CreatureAdapter extends BaseAdapter {
         mCreatures = _creatures;
     }
     */
-
-    public CreatureAdapter(Context _context,  ArrayList<HashMap<String, Object>> _data) {
+    // Create the
+    public CreatureAdapter(Context _context,  ArrayList<HashMap<String, Object>> _creatureListData) {
         mContext = _context;
-        mCreatureList  = _data;
+        mCreatureList  = _creatureListData;
     }
     //Get the number of objects in the data collection
     public int getCount() {
         return mCreatureList.size();
     }
-
+    // Get the item at the passed in position
     public Object getItem(int _position) {
         return mCreatureList.get(_position);
     }
-
+    // Get the id of the item in the passed in position
     public long getItemId(int _position) {
         return _position;
     }
-
-
-
+    // Create the custom view for the Spinner or ListView
     @Override
     public View getView(int _position, View _convertView, ViewGroup _parent) {
 
-        //do your view stuff here
-        // If there is no view available
+        // If there is no view available to recycle
         if(_convertView == null) {
             // create one in the list view
             _convertView = LayoutInflater.from(mContext).inflate(R.layout.list_name, _parent, false);
         }
 
-        // Create the textfield and imageview
+        // Create the textfield
         TextView textView = (TextView)_convertView.findViewById(R.id.creature_name);
-        // And a thumbnail preview of the image
+        // And an imageview for the thumbnail preview of the image
         ImageView imageView = (ImageView)_convertView.findViewById(R.id.creature_image);
 
+        // Set this creature to a hew hashmap object
         mCreature = new HashMap<String, Object>();
+        // At the position of the list of objects
         mCreature = mCreatureList.get(_position);
 
-        // set the values in the fields
+        // Use the activity keys to set the values in the fields
         textView.setText((String)mCreature.get(MainActivity.NAME));
         imageView.setImageResource((Integer) mCreature.get(MainActivity.IMAGE));
-
+        // return the view
         return _convertView;
     }
     /*

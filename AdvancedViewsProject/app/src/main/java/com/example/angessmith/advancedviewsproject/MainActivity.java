@@ -1,7 +1,31 @@
 package com.example.angessmith.advancedviewsproject;
 
 // Created by AngeSSmith on 9/14/14 for Java 1 Week 3 Term 1409.
+/*
+    Assignment Requirements
+    MINIMUM:
+        1. Your project must compile with a minimum SDK of API 14 and a target SDK of API 19 and run on an Android 4.0+ emulator or device.
+        2. You must turn in a Fundamentals Walkthrough video.
+        3. You must have your code pushed to a private Git repo and your instructor must have access."
+        4. Comments must be used to place the student name at the top of all .java files.
+    STANDARD:
+        1. Application must support both portrait and landscape orientations.
+        2. Master view should be a Spinner in portrait and a ListView in landscape. Detail view can be any non-AdapterView UI control used to display information.
+        3. AdapterViews are populated using a collection of HashMap objects that are used to store related data.
+        4. Application uses built-in Android views (android.R.layout) for AdapterView item layouts.
+        5. Detail view must be populated from the correct data as determined by the position in the corresponding AdapterView.
+    MASTERY:
+        1. AdapterViews are populated using a collection of custom objects containing multiple points of data.
+        2. Application uses custom layouts for AdapterView item layouts.
+        3. Detail view is populated from a shared UI population method that is shared across all AdapterViews.
 
+    RUBRIC:
+        Structure/Efficiency: The application is structured efficiently and with proper methods and constructs.
+        Data Source: AdapterView data source is a collection of custom class objects. Custom class contains multiple (at least three) data points as class members.
+        User Interface: Application displays the proper UI components in landscape and portrait orientations.  At least one AdapterView uses custom item layouts that show multiple points of data.
+        Events: All AdapterView item clicks/selections properly load data into the detail view using a shared UI population method.
+        Logic: Detail view is populated with data from a custom class object that contains multiple (at least three) points of data and corresponds to the selected position in the associated AdapterView.
+ */
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -23,8 +47,9 @@ public class MainActivity extends Activity {
 
     // Set the simple name as the tag for debugging
     final String TAG = "CreatureApp";
+    // Create an arraylist to hold all the custom creature objects
     private ArrayList<Creature> mCreatures;
-    Spinner mCreatureSpinner;
+    // Create the static string keys that will be used in the hashmap and custom adapter
     static final String NAME = "creaturename";
     static final String SCIENTIFIC = "scientificname";
     static final String IMAGE = "image";
@@ -60,8 +85,8 @@ public class MainActivity extends Activity {
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             // Then add the stuff for the spinner
             //Toast.makeText(this, "The view is in portrait mode", Toast.LENGTH_LONG).show();
-            // Get the spinner for portrait mode
-            mCreatureSpinner = (Spinner)findViewById(R.id.listspinner);
+            // Create the spinner for portrait mode
+            Spinner mCreatureSpinner = (Spinner)findViewById(R.id.listspinner);
             // set the adapter to it
             //mCreatureSpinner.setAdapter(adapter);
             mCreatureSpinner.setAdapter(new CreatureAdapter(this,creatureList));
@@ -77,6 +102,7 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
+                    // Do nothing
                     Log.i(TAG, "Nothing Selected");
                 }
             });
@@ -103,12 +129,16 @@ public class MainActivity extends Activity {
     }
 
     private void setItemDataInView(AdapterView<?> parent, int position) {
+        // Get the current creature object at the position of the listview/spinner
         Object creature = parent.getItemAtPosition(position);
         Log.i(TAG, "Creature = " + creature);
+        // Get the common name textview and pass in this objects value
         TextView commonTextView = (TextView)findViewById(R.id.common_name_textView);
         commonTextView.setText(mCreatures.get(position).getCommonName());
+        // Get the scientific name textview and pass in that value
         TextView scientificTextView = (TextView)findViewById(R.id.scientific_name_textView);
         scientificTextView.setText(mCreatures.get(position).getScientificName());
+        // Finally get and set the image into the imageview
         ImageView creatureImageView = (ImageView) findViewById(R.id.creature_image_view);
         creatureImageView.setImageResource(mCreatures.get(position).getImageId());
     }
