@@ -1,7 +1,6 @@
 package com.example.angessmith.booklist;
 // Created by: Angela Smith 9/19/2014 for Java 1 term 1409
 import android.app.Activity;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,14 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import org.apache.http.HttpConnection;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
 /*
 
     Minimum Requirements:
@@ -60,12 +57,13 @@ import java.sql.Connection;
 
  */
 
-public class Main extends Activity {
+public class MainActivity extends Activity {
 
     // Create the tag for debugging
-    public static final String TAG = Main.class.getSimpleName();
+    public static final String TAG = MainActivity.class.getSimpleName();
     // Create a connectivity variable
     static private Connectivity mConnection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +79,7 @@ public class Main extends Activity {
             Toast.makeText(this,"We do not have internet connection", Toast.LENGTH_LONG).show();
         }
         // Call the asyncTask
-        GetBookListsTask task = new GetBookListsTask();
+        //GetBookListsTask task = new GetBookListsTask();
 
     }
 
@@ -113,6 +111,7 @@ public class Main extends Activity {
                 if (responseCode == HttpURLConnection.HTTP_OK)
                 {
                     // We received data
+                    Log.d(TAG, "We have received Data");
                 }
             }
             // Catch exception for URL
@@ -149,9 +148,6 @@ public class Main extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 }
