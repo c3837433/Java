@@ -13,9 +13,9 @@
        android:layout_height="wrap_content"
        android:text="@string/find_book_lists"
        android:id="@+id/list_search_button"
-       android:layout_alignParentLeft="true"
-       android:layout_alignParentStart="true"
-       android:layout_marginTop="84dp" />
+       android:layout_below="@+id/textView"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +23,8 @@
         android:text="@string/best_seller_label"
         android:id="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:paddingBottom="20dp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -31,5 +32,13 @@
         android:id="@+id/progressBar"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_spinner"
+        android:layout_below="@+id/list_search_button"
+        android:layout_alignRight="@+id/list_search_button"
+        android:layout_alignEnd="@+id/list_search_button" />
 
 </RelativeLayout>

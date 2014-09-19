@@ -1,18 +1,20 @@
 package com.example.angessmith.booklist;
 // Created by: Angela Smith 9/19/2014 for Java 1 term 1409
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,7 +23,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayList;
 /*
 
     Minimum Requirements:
@@ -73,13 +75,14 @@ public class MainActivity extends Activity {
     static private Connectivity mConnection;
     // Get the progress bar
     ProgressBar progressBar;
+    private ArrayList<BookList> mBooklist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Get the reference to the progress bar
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         // Make it invisible at the start
         progressBar.setVisibility(View.INVISIBLE);
         // Get the button
@@ -89,11 +92,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // Send the context to the connectivity class
-                mConnection = new Connectivity(MainActivity.this) {};
+                mConnection = new Connectivity(MainActivity.this) {
+                };
                 // Check if device has internet connection
                 boolean connected = mConnection.isInternetAvailable();
                 if (connected) {
-                    Toast.makeText(MainActivity.this,"We have internet connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "We have internet connection", Toast.LENGTH_LONG).show();
                     // Run the Async Task to get the list
                     // Set the book list api
                     String apiString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
@@ -102,15 +106,16 @@ public class MainActivity extends Activity {
                     task.execute(apiString);
 
                 } else {
-                    Toast.makeText(MainActivity.this,"Searching requires an internet connection.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Searching requires an internet connection.", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
     }
 
+    // FIRST ASYNC TASK THAT GETS THE LIST OF BOOK LISTS THAT CAN BE SEARCHED
     // <Params: What is passed in, Progress: progress report (int, long, void), Result: what is returned>
-    private class GetBookListsTask extends AsyncTask<String, Integer, JSONObject> {
+    private class GetBookListsTask extends AsyncTask<String, Integer, ArrayList<BookList>> {
 
 
         // onPreExecute has access to the class
@@ -121,10 +126,9 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected JSONObject doInBackground(String... params) {
+        protected ArrayList<BookList> doInBackground(String... params) {
 
-            // set the responseCode to empty
-            int responseCode = -1;
+
             JSONObject jsonObject = null;
             String listData = "";
             // Prepare for an exception in case the url is invalid
@@ -143,7 +147,7 @@ public class MainActivity extends Activity {
                 connection.connect();
 
                 // Check the response code returned
-                responseCode = connection.getResponseCode();
+                int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK)
                 {
                     // We received data
@@ -183,16 +187,48 @@ public class MainActivity extends Activity {
                 jsonObject = null;
                 Log.e(TAG, "Unable to convert to JSON");
             }
-            return null;
+
+            // get the array of list items
+            try {
+                // As long as the result is not empty, create an array of result objects,
+                if (jsonObject != null) {
+                    JSONArray listArray = jsonObject.getJSONArray("results");
+                     mBooklist = new ArrayList<BookList>();
+                    // Loop through the array and create new posts
+                    for (int i = 0; i < listArray.length(); i++) {
+                        // Get the array object
+                        JSONObject list = listArray.getJSONObject(i);
+                        // get the names
+                        String displayName = list.getString("display_name");
+                        String encodedName = list.getString("list_name_encoded");
+                        mBooklist.add(BookList.newInstance(displayName, encodedName));
+                    }
+                    return mBooklist;
+                }
+                else {
+                    //otherwise return nothing
+                    jsonObject = null;
+                }
+            }
+            catch (Exception e) {
+                Log.e(TAG, "Unable to get array from object");
+            }
+            return mBooklist;
         }
 
 
         // When we are done
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            super.onPostExecute(jsonObject);
+        protected void onPostExecute(ArrayList<BookList> bookList) {
+            super.onPostExecute(bookList);
             // turn off the activity indicator
             progressBar.setVisibility(View.INVISIBLE);
+            // get the spinner
+            Spinner mSpinner = (Spinner) findViewById(R.id.list_spinner);
+            // Create an array adapter to set the items in the spinner
+            ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(MainActivity.this, android.R.layout.simple_spinner_item, (bookList));
+            // Set the adapter to the spinner
+            mSpinner.setAdapter(myAdapter);
         }
     }
     @Override
