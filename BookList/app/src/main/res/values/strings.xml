@@ -4,4 +4,5 @@
     <string name="app_name">BookList</string>
     <string name="action_settings">Settings</string>
     <string name="find_book_lists">Find Book Lists</string>
+    <string name="best_seller_label">Best Sellers Lists</string>
 </resources>

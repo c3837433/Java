@@ -1,19 +1,27 @@
 package com.example.angessmith.booklist;
 // Created by: Angela Smith 9/19/2014 for Java 1 term 1409
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 /*
 
     Minimum Requirements:
@@ -63,46 +71,74 @@ public class MainActivity extends Activity {
     public static final String TAG = MainActivity.class.getSimpleName();
     // Create a connectivity variable
     static private Connectivity mConnection;
+    // Get the progress bar
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Get the reference to the progress bar
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        // Make it invisible at the start
+        progressBar.setVisibility(View.INVISIBLE);
+        // Get the button
+        final Button getListsButton = (Button) findViewById(R.id.list_search_button);
+        // Listen for the click
+        getListsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send the context to the connectivity class
+                mConnection = new Connectivity(MainActivity.this) {};
+                // Check if device has internet connection
+                boolean connected = mConnection.isInternetAvailable();
+                if (connected) {
+                    Toast.makeText(MainActivity.this,"We have internet connection", Toast.LENGTH_LONG).show();
+                    // Run the Async Task to get the list
+                    // Set the book list api
+                    String apiString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
+                    GetBookListsTask task = new GetBookListsTask();
+                    // Execute the task sending in the url string
+                    task.execute(apiString);
 
-        // Send the context to the connectivity class
-        mConnection = new Connectivity(this) {};
-        // Check if device has internet connection
-        boolean connected = mConnection.isInternetAvailable();
-        if (connected) {
-            Toast.makeText(this,"We have internet connection", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this,"We do not have internet connection", Toast.LENGTH_LONG).show();
-        }
-        // Call the asyncTask
-        //GetBookListsTask task = new GetBookListsTask();
+                } else {
+                    Toast.makeText(MainActivity.this,"Searching requires an internet connection.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
     }
 
     // <Params: What is passed in, Progress: progress report (int, long, void), Result: what is returned>
     private class GetBookListsTask extends AsyncTask<String, Integer, JSONObject> {
 
+
         // onPreExecute has access to the class
         @Override
         protected void onPreExecute() {
-            // TODO: Add activity indicator
+            // turn on the activity indicator
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected JSONObject doInBackground(String... params) {
+
             // set the responseCode to empty
             int responseCode = -1;
             JSONObject jsonObject = null;
+            String listData = "";
             // Prepare for an exception in case the url is invalid
             try {
                 // Set in the url to the passed in string
                 URL bookListsUrl = new URL(params[0]);
-                // Open a connection
+                // Open a connection for the HTTP resource
                 HttpURLConnection connection = (HttpURLConnection)bookListsUrl.openConnection();
+                // Set the properties
+                connection.setRequestMethod("GET");
+                // Set the connect and read timeouts to 12 seconds each
+                connection.setConnectTimeout(12000);
+                connection.setReadTimeout(12000);
+
                 // Make the connection
                 connection.connect();
 
@@ -112,6 +148,18 @@ public class MainActivity extends Activity {
                 {
                     // We received data
                     Log.d(TAG, "We have received Data");
+                    // Create the input stream
+                    InputStream inputStream = connection.getInputStream();
+                    // Use the apache library to read the data
+                    listData = IOUtils.toString(inputStream);
+                    // close the stream
+                    inputStream.close();
+                    // close the connection
+                    connection.disconnect();
+                }
+                else {
+                    // Alert the user we cannot get data right now.
+                    Toast.makeText(MainActivity.this, "We are unable to get the information right now.", Toast.LENGTH_LONG).show();
                 }
             }
             // Catch exception for URL
@@ -124,6 +172,17 @@ public class MainActivity extends Activity {
                 // Unable to open connection
                 Log.e(TAG, "Connection Exception: ", exception);
             }
+
+            // Convert the data to JSON Object
+            try {
+                jsonObject = new JSONObject(listData);
+                Log.d(TAG, jsonObject.toString());
+            }
+            catch (JSONException e) {
+                // There was an error, empty out the object
+                jsonObject = null;
+                Log.e(TAG, "Unable to convert to JSON");
+            }
             return null;
         }
 
@@ -132,7 +191,8 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            // Set the list in the spinner, listview
+            // turn off the activity indicator
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
     @Override
