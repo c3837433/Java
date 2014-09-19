@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BookList</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="lists_URL_string">"http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529"</string>
+    <string name="books_URL_string_prefix">http://api.nytimes.com/svc/books/v2/lists.json?list-name=</string>
+    <string name="books_URL_string_end">&amp;api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529</string>
+    <string name="find_book_lists">Find Book Lists</string>
+</resources>
