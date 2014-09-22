@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -103,7 +104,7 @@ public class MainActivity extends Activity {
                     String apiString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
                     GetBookListsTask task = new GetBookListsTask();
                     // Execute the task sending in the url string
-                    task.execute(apiString);
+                    task.execute(apiString, "one");
 
                 } else {
                     Toast.makeText(MainActivity.this, "Searching requires an internet connection.", Toast.LENGTH_LONG).show();
@@ -111,7 +112,11 @@ public class MainActivity extends Activity {
             }
         });
 
+
+
     }
+
+
 
     // FIRST ASYNC TASK THAT GETS THE LIST OF BOOK LISTS THAT CAN BE SEARCHED
     // <Params: What is passed in, Progress: progress report (int, long, void), Result: what is returned>
@@ -193,17 +198,24 @@ public class MainActivity extends Activity {
                 // As long as the result is not empty, create an array of result objects,
                 if (jsonObject != null) {
                     JSONArray listArray = jsonObject.getJSONArray("results");
-                     mBooklist = new ArrayList<BookList>();
-                    // Loop through the array and create new posts
-                    for (int i = 0; i < listArray.length(); i++) {
-                        // Get the array object
-                        JSONObject list = listArray.getJSONObject(i);
-                        // get the names
-                        String displayName = list.getString("display_name");
-                        String encodedName = list.getString("list_name_encoded");
-                        mBooklist.add(BookList.newInstance(displayName, encodedName));
+                    // See which url was passed over
+                    if (params[1] == "one") {
+                        mBooklist = new ArrayList<BookList>();
+                        // Loop through the array and create new posts
+                        for (int i = 0; i < listArray.length(); i++) {
+                            // Get the array object
+                            JSONObject list = listArray.getJSONObject(i);
+                            // get the names
+                            String displayName = list.getString("display_name");
+                            String encodedName = list.getString("list_name_encoded");
+                            mBooklist.add(BookList.newInstance(displayName, encodedName));
+                        }
+                        return mBooklist;
+
+                    } else {
+
                     }
-                    return mBooklist;
+
                 }
                 else {
                     //otherwise return nothing
@@ -217,20 +229,47 @@ public class MainActivity extends Activity {
         }
 
 
-        // When we are done
+        // When we are done getting the data
         @Override
         protected void onPostExecute(ArrayList<BookList> bookList) {
             super.onPostExecute(bookList);
             // turn off the activity indicator
             progressBar.setVisibility(View.INVISIBLE);
-            // get the spinner
-            Spinner mSpinner = (Spinner) findViewById(R.id.list_spinner);
-            // Create an array adapter to set the items in the spinner
-            ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(MainActivity.this, android.R.layout.simple_spinner_item, (bookList));
-            // Set the adapter to the spinner
-            mSpinner.setAdapter(myAdapter);
+            // Return to the main activity and set the booklist in the spinner
+            setSpinnerAdapter(bookList);
+
         }
     }
+
+    private void setSpinnerAdapter(ArrayList<BookList> bookList) {
+        // get the spinner
+        Spinner mSpinner = (Spinner) findViewById(R.id.list_spinner);
+        // Create an array adapter to set the items in the spinner
+        ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(this, android.R.layout.simple_spinner_item, (bookList));
+        // Set the adapter to the spinner
+        mSpinner.setAdapter(myAdapter);
+        // Set on click listener for spinner
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object bookList = parent.getItemAtPosition(position);
+                Log.i(TAG, "List = " + bookList);
+                // Get the search name for this list
+                String searchId = (mBooklist.get(position).getEncodedName());
+                // Toast to view the selected string
+                Toast.makeText(MainActivity.this, searchId, Toast.LENGTH_LONG).show();
+                // Create a url string
+                String urlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + searchId + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

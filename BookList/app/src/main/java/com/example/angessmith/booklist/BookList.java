@@ -23,11 +23,18 @@ public class BookList {
         mEncodedName = mDisplayName = "";
     }
 
+    // Create the getters for the encoded name
+    public String getEncodedName() {
+        return mEncodedName;
+    }
+
 
     @Override
     public String toString() {
         return mDisplayName;
     }
+
+
 }
 
 
