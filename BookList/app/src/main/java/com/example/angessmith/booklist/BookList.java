@@ -15,7 +15,7 @@ public class BookList {
         // set the passed in parameters
         bookList.mDisplayName = __displayName;
         bookList.mEncodedName = _encodedName;
-        // return the booklist
+        // return the book list
         return bookList;
     }
 
@@ -33,6 +33,7 @@ public class BookList {
     public String toString() {
         return mDisplayName;
     }
+
 
 
 }

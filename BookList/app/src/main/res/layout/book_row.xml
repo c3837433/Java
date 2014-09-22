@@ -10,7 +10,8 @@
         android:orientation="vertical"
         android:layout_gravity="left|top">
 
-        <TextView android:id="@+id/book_title"
+        <TextView
+            android:id="@+id/book_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Book Title"
@@ -18,11 +19,13 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/book_author"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Book Author"/>/>
 
         <TextView
+            android:id="@+id/book_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Book Description"/>/>
@@ -30,6 +33,7 @@
 
     </LinearLayout>
     <TextView
+        android:id="@+id/book_rank"
         android:layout_width="60dp"
         android:layout_height="47dp"
         android:layout_gravity="right"

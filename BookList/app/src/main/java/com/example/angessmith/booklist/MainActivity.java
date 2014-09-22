@@ -1,5 +1,7 @@
 package com.example.angessmith.booklist;
+
 // Created by: Angela Smith 9/19/2014 for Java 1 term 1409
+
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 /*
 
     Minimum Requirements:
@@ -72,11 +76,18 @@ public class MainActivity extends Activity {
 
     // Create the tag for debugging
     public static final String TAG = MainActivity.class.getSimpleName();
+    // And the string keys for the listview
+    static final String RANK = "rank";
+    static final String TITLE = "title";
+    static final String AUTHOR = "author";
+    static final String DESCRIPTION = "description";
     // Create a connectivity variable
     static private Connectivity mConnection;
     // Get the progress bar
     ProgressBar progressBar;
     private ArrayList<BookList> mBooklist;
+    private ArrayList<BestSellersList> mBestSellersList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +115,7 @@ public class MainActivity extends Activity {
                     String apiString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
                     GetBookListsTask task = new GetBookListsTask();
                     // Execute the task sending in the url string
-                    task.execute(apiString, "one");
+                    task.execute(apiString);
 
                 } else {
                     Toast.makeText(MainActivity.this, "Searching requires an internet connection.", Toast.LENGTH_LONG).show();
@@ -199,23 +210,17 @@ public class MainActivity extends Activity {
                 if (jsonObject != null) {
                     JSONArray listArray = jsonObject.getJSONArray("results");
                     // See which url was passed over
-                    if (params[1] == "one") {
-                        mBooklist = new ArrayList<BookList>();
-                        // Loop through the array and create new posts
-                        for (int i = 0; i < listArray.length(); i++) {
-                            // Get the array object
-                            JSONObject list = listArray.getJSONObject(i);
-                            // get the names
-                            String displayName = list.getString("display_name");
-                            String encodedName = list.getString("list_name_encoded");
-                            mBooklist.add(BookList.newInstance(displayName, encodedName));
-                        }
-                        return mBooklist;
-
-                    } else {
-
+                    mBooklist = new ArrayList<BookList>();
+                    // Loop through the array and create new posts
+                    for (int i = 0; i < listArray.length(); i++) {
+                        // Get the array object
+                        JSONObject list = listArray.getJSONObject(i);
+                        // get the names
+                        String displayName = list.getString("display_name");
+                        String encodedName = list.getString("list_name_encoded");
+                        mBooklist.add(BookList.newInstance(displayName, encodedName));
                     }
-
+                    return mBooklist;
                 }
                 else {
                     //otherwise return nothing
@@ -237,9 +242,144 @@ public class MainActivity extends Activity {
             progressBar.setVisibility(View.INVISIBLE);
             // Return to the main activity and set the booklist in the spinner
             setSpinnerAdapter(bookList);
-
         }
     }
+
+
+    // SECOND ASYNC TASK TO GET BOOK LIST
+    private class GetBestSellersList extends AsyncTask<String, Integer, ArrayList<BestSellersList>> {
+
+        @Override
+        protected void onPreExecute() {
+            // turn on the activity indicator again
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected ArrayList<BestSellersList> doInBackground(String... params) {
+            JSONObject jsonObject = null;
+            String listData = "";
+            // Prepare for an exception in case the url is invalid
+            try {
+                // Set in the url to the passed in string
+                URL bookListsUrl = new URL(params[0]);
+                // Open a connection for the HTTP resource
+                HttpURLConnection connection = (HttpURLConnection)bookListsUrl.openConnection();
+                // Set the properties
+                connection.setRequestMethod("GET");
+                // Set the connect and read timeouts to 12 seconds each
+                connection.setConnectTimeout(12000);
+                connection.setReadTimeout(12000);
+
+                // Make the connection
+                connection.connect();
+
+                // Check the response code returned
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK)
+                {
+                    // We received data
+                    Log.d(TAG, "We have received Data");
+                    // Create the input stream
+                    InputStream inputStream = connection.getInputStream();
+                    // Use the apache library to read the data
+                    listData = IOUtils.toString(inputStream);
+                    // close the stream
+                    inputStream.close();
+                    // close the connection
+                    connection.disconnect();
+                }
+                else {
+                    // Alert the user we cannot get data right now.
+                    Toast.makeText(MainActivity.this, "We are unable to get the information right now.", Toast.LENGTH_LONG).show();
+                }
+            }
+            // Catch exception for URL
+            catch (MalformedURLException exception){
+                // if the url is bad
+                Log.e(TAG, "URL Exception: ", exception);
+            }
+            // Catch exception for HttpConnection
+            catch (IOException exception) {
+                // Unable to open connection
+                Log.e(TAG, "Connection Exception: ", exception);
+            }
+
+            // Convert the data to JSON Object
+            try {
+                jsonObject = new JSONObject(listData);
+                Log.d(TAG, jsonObject.toString());
+            }
+            catch (JSONException e) {
+                // There was an error, empty out the object
+                jsonObject = null;
+                Log.e(TAG, "Unable to convert to JSON");
+            }
+
+            // get the array of list items
+            try {
+                // As long as the result is not empty, create an array of result objects,
+                if (jsonObject != null) {
+                    JSONArray listArray = jsonObject.getJSONArray("results");
+
+                    //mBestSellersList =  new ArrayList<HashMap<String, Object>>();
+                    // private ArrayList<HashMap<String, Object>> mBestSellersList;
+                    mBestSellersList = new ArrayList<BestSellersList>();
+                    for (int i = 0; i < listArray.length(); i++) {
+                        // Get the array object
+                        JSONObject list = listArray.getJSONObject(i);
+                        // get the properties
+                        Number rank  = list.getInt("rank");
+                        JSONArray detailsArray = list.getJSONArray("book_details");
+                        JSONObject book = detailsArray.getJSONObject(0);
+                        String title = book.getString("title");
+                        String author = book.getString("author");
+                        String description = book.getString("description");
+                        // and create the list item
+                        mBestSellersList.add(BestSellersList.newInstance(rank, author, title, description));
+                    }
+                    return mBestSellersList;
+                }
+                else {
+                    //otherwise return nothing
+                    jsonObject = null;
+                }
+            }
+            catch (Exception e) {
+                Log.e(TAG, "Unable to get array from object");
+            }
+            return mBestSellersList;
+        }
+
+
+        // When we are done getting the data
+        @Override
+        protected void onPostExecute(ArrayList<BestSellersList> bookList) {
+            super.onPostExecute(bookList);
+            // turn off the activity indicator
+            progressBar.setVisibility(View.INVISIBLE);
+            // Create a hashmap of the best sellers
+            ArrayList<HashMap<String, Object>> bestSellersMapList = new ArrayList<HashMap<String, Object>>();
+            // Loop through each of the objects
+            for (BestSellersList bestSeller : bookList)
+            {
+                // Create a new hashmap object to be used in the list
+                HashMap<String, Object> hashMap = new HashMap<String, Object>();
+                // Add each of the keys and values
+                hashMap.put(RANK, bestSeller.getRank());
+                hashMap.put(TITLE, bestSeller.getTitle());
+                hashMap.put(AUTHOR, bestSeller.getAuthorName());
+                hashMap.put(DESCRIPTION, bestSeller.getDescription());
+                // Add to the list
+                bestSellersMapList.add(hashMap);
+            }
+            ListView listView = (ListView) findViewById(R.id.best_sellers_listview);
+            // Create an instance of the BestSellersList adapter and set it to the listview
+            listView.setAdapter(new BestSellersAdapter(MainActivity.this, bestSellersMapList));
+        }
+    }
+
+
 
     private void setSpinnerAdapter(ArrayList<BookList> bookList) {
         // get the spinner
@@ -260,7 +400,10 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, searchId, Toast.LENGTH_LONG).show();
                 // Create a url string
                 String urlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + searchId + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
-
+                // Get an instance of the second async task
+                GetBestSellersList task = new GetBestSellersList();
+                // Execute and send in the new string
+                task.execute(urlString);
             }
 
             @Override

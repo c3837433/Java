@@ -44,4 +44,6 @@ public class BestSellersList {
     public String  getDescription() {
         return mDescription;
     }
+
+
 }
