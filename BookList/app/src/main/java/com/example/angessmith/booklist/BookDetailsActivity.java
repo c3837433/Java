@@ -2,6 +2,7 @@ package com.example.angessmith.booklist;
 // Created by: Angela Smith 9/21/2014 for Java 1 term 1409
 // Google API to search a book by isbn: https://www.googleapis.com/books/v1/volumes?q=isbn:[isbn]
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,16 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.loopj.android.image.SmartImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class BookDetails extends Activity {
+public class BookDetailsActivity extends Activity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    // Create an instance of the progress bar
     ProgressBar progressBar;
+    Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +42,26 @@ public class BookDetails extends Activity {
             String list = extras.getString("List");
             // If we have an isbn, try to get the image for this book
             if ((isbn != "") || (isbn != null) ) {
-                // search google api for an image of the book
-                String apiString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
-                Log.d(TAG, apiString);
-                // Create an instance the ASYNC Task
-                GetBookImage task = new GetBookImage();
-                // Start the task
-                task.execute(apiString);
+                // Create a connectivity variable
+                ConnectivityHelper mConnection = new ConnectivityHelper(BookDetailsActivity.this) {
+                };
+                // Check if device has internet connection
+                boolean connected = mConnection.isInternetAvailable();
+                if (connected) {
+                    // search google api for an image of the book
+                    String apiString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
+                    Log.d(TAG, apiString);
+                    // Create an instance the ASYNC Task
+                    GetBookImage task = new GetBookImage();
+                    // Start the task
+                    task.execute(apiString);
+
+                } else {
+                    // Inform the user we need internet to make the request
+                    Toast.makeText(BookDetailsActivity.this, getString(R.string.no_image_internet), Toast.LENGTH_LONG).show();
+                    // Hide the progress bar
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
             }
             // Set the items on the view
             SetBookDetailsInView(title, author, description, rank, list);
@@ -80,16 +96,16 @@ public class BookDetails extends Activity {
         @Override
         protected String doInBackground(String... params) {
             // Use the HTTP Manager class to get the api data
-            JSONObject jsonObject = HTTPManager.getApiData(params[0]);
-            String bookData = "";
+            JSONObject jsonObject = HTTPHelper.getApiData(mContext, params[0]);
+            // Create a url string to pass back
             String urlString = "";
-
             try {
-                // As long as the result is not empty, create an array of result objects,
+                // As long as the result is not empty, create an array of result items,
                 if (jsonObject != null) {
                     JSONArray itemArray = jsonObject.getJSONArray("items");
-                    //.getJSONObject("volumeInfo").getJSONObject("imageLinks").get("thumbnail");
+                    // Get the first (only) object
                     JSONObject volumeObject = itemArray.getJSONObject(0);
+                    // Get the thumbnail image
                     urlString = volumeObject.getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
                 }
                 else {
@@ -100,6 +116,7 @@ public class BookDetails extends Activity {
             catch (Exception e) {
                 Log.e(TAG, "Unable to get array from object");
             }
+            // Return the url string
             return urlString;
         }
 
@@ -125,15 +142,13 @@ public class BookDetails extends Activity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
+
+
 }

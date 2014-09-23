@@ -6,11 +6,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class Connectivity {
+public class ConnectivityHelper {
     Context mContext;
 
     // Pass the context from the activity class
-    public Connectivity(Context _context) {
+    public ConnectivityHelper(Context _context) {
         this.mContext = _context;
     }
 

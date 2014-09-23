@@ -6,6 +6,7 @@
     <string name="find_book_lists">Find Book Lists</string>
     <string name="best_seller_label">Best Sellers Lists</string>
     <string name="missing_internet">Internet access is required.</string>
+    <string name="no_image_internet">Unable to get image without internet.</string>
     <string name="spinner_prompt">Select a Best Seller List</string>
     <string name="title_activity_book_details">BookDetails</string>
     <string name="hello_world">Hello world!</string>

@@ -3,6 +3,7 @@ package com.example.angessmith.booklist;
 // Created by: Angela Smith 9/19/2014 for Java 1 term 1409
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -77,7 +78,7 @@ public class MainActivity extends Activity {
     static final String DESCRIPTION = "description";
     static final String ISBN = "isbn";
     // Create a connectivity variable
-    static private Connectivity mConnection;
+    static private ConnectivityHelper mConnection;
     // Get the progress bar
     ProgressBar progressBar;
     Spinner mSpinner;
@@ -85,6 +86,7 @@ public class MainActivity extends Activity {
     private ArrayList<BookList> mBooklist;
     private ArrayList<BestSellersList> mBestSellersList;
     String displayName;
+    Context mContext = this;
 
 
     @Override
@@ -115,7 +117,7 @@ public class MainActivity extends Activity {
 
     private void getBestSellerLists() {
         // Send the context to the connectivity class
-        mConnection = new Connectivity(MainActivity.this) {
+        mConnection = new ConnectivityHelper(MainActivity.this) {
         };
         // Check if device has internet connection
         boolean connected = mConnection.isInternetAvailable();
@@ -128,6 +130,7 @@ public class MainActivity extends Activity {
         } else {
             // Inform the user we need internet to make the request
             Toast.makeText(MainActivity.this, getString(R.string.missing_internet), Toast.LENGTH_LONG).show();
+
         }
     }
 
@@ -145,7 +148,7 @@ public class MainActivity extends Activity {
         @Override
         protected ArrayList<BookList> doInBackground(String... params) {
             // Use the HTTP Manager class to get the api data
-            JSONObject jsonObject = HTTPManager.getApiData(params[0]);
+            JSONObject jsonObject = HTTPHelper.getApiData(mContext, params[0]);
             if (jsonObject != null) {
                 try {
                     JSONArray listArray = jsonObject.getJSONArray("results");
@@ -194,7 +197,7 @@ public class MainActivity extends Activity {
         @Override
         protected ArrayList<BestSellersList> doInBackground(String... params) {
             // Use the HTTP Manager class to get the api data
-            JSONObject jsonObject = HTTPManager.getApiData(params[0]);
+            JSONObject jsonObject = HTTPHelper.getApiData(mContext, params[0]);
             // If the returned data is not empty
             if (jsonObject != null) {
                 try {
@@ -275,17 +278,14 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // View this item in the detail view
                 openBookDetailView(parent, position, bookList);
-
             }
         });
     }
 
     // When the user clicks on a list item, send the data to the detail view
     private void openBookDetailView(AdapterView<?> parent, int position, ArrayList<BestSellersList> bookList) {
-        // Get the current item
-        Object book = parent.getItemAtPosition(position);
         // Create an intent to open up the detail view
-        Intent intent = new Intent(getApplicationContext(), BookDetails.class);
+        Intent intent = new Intent(getApplicationContext(), BookDetailsActivity.class);
         // Set this item's properties in the detail view
         intent.putExtra(TITLE,  (bookList.get(position).getTitle()));
         intent.putExtra(AUTHOR,  (bookList.get(position).getAuthorName()));
@@ -304,7 +304,7 @@ public class MainActivity extends Activity {
         // And Remove the Button
         getListsButton.setVisibility(View.GONE);
         // Create an array adapter to set the items in the spinner
-        ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(this, android.R.layout.simple_spinner_item, (bookList));
+        ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
         // Set the adapter to the spinner
         mSpinner.setAdapter(myAdapter);
         // Set on click listener for spinner
@@ -313,7 +313,7 @@ public class MainActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Verify we still are connected to the internet
                 // Send the context to the connectivity class
-                mConnection = new Connectivity(MainActivity.this) {
+                mConnection = new ConnectivityHelper(MainActivity.this) {
                 };
                 // Check if device has internet connection
                 boolean connected = mConnection.isInternetAvailable();

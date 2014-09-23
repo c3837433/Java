@@ -1,0 +1,67 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:weightSum="1"
+    android:parentActivityName="com.example.test.MainActivity"
+    android:background="#ff3079ab">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/book_detail_title"
+        android:layout_weight="0.05"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/book_detail_author"
+        android:layout_weight="0.05"
+        android:padding="10dp"
+        android:textStyle="italic"
+        android:textSize="16sp"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/book_detail_rank"
+        android:layout_weight="0.05"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/book_detail_description"
+        android:layout_weight="0.05"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="#95ffffff" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.05" />
+
+    <com.loopj.android.image.SmartImageView
+        android:id="@+id/book_image"
+        android:layout_width="match_parent"
+        android:layout_height="241dp"
+        android:padding="30dp"/>
+
+</LinearLayout>

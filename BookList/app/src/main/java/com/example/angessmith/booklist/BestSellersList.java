@@ -1,6 +1,6 @@
 package com.example.angessmith.booklist;
 
-// Created by AngeSSmith on 9/22/14.
+// Created by Angela Smith on 9/22/14.
 
 public class BestSellersList  {
 

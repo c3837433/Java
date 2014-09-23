@@ -2,6 +2,7 @@ package com.example.angessmith.booklist;
 
 // Created by: Angela Smith 9/23/2014 for Java 1 term 1409
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,15 +16,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class HTTPManager {
+public class HTTPHelper {
     public static final String TAG = "HTTP Manager";
 
-    public static JSONObject getApiData(String url) {
+    public static JSONObject getApiData(Context context, String param) {
         JSONObject jsonObject;
         String listData = "";
         try {
             // Set in the url to the passed in string
-            URL bookListsUrl = new URL(url);
+            URL bookListsUrl = new URL(param);
             // Open a connection for the HTTP resource
             HttpURLConnection connection = (HttpURLConnection)bookListsUrl.openConnection();
             // Set the properties
@@ -50,7 +51,7 @@ public class HTTPManager {
             }
             else {
                 // Alert the user we cannot get data right now.
-               // Toast.makeText(MainActivity.this, "We are unable to get the information right now.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "We are unable to get the information right now.", Toast.LENGTH_LONG).show();
             }
         }
         // Catch exception for URL
