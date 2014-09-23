@@ -3,6 +3,7 @@ package com.example.angessmith.booklist;
 // Created by: Angela Smith 9/19/2014 for Java 1 term 1409
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,24 +82,30 @@ public class MainActivity extends Activity {
     static final String TITLE = "title";
     static final String AUTHOR = "author";
     static final String DESCRIPTION = "description";
+    static final String ISBN = "isbn";
     // Create a connectivity variable
     static private Connectivity mConnection;
     // Get the progress bar
     ProgressBar progressBar;
+    Spinner mSpinner;
+    Button getListsButton;
     private ArrayList<BookList> mBooklist;
     private ArrayList<BestSellersList> mBestSellersList;
+    String displayName;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Get the reference to the progress bar
+        // Get the reference to the progress bar and spinner
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        // Make it invisible at the start
+        mSpinner = (Spinner) findViewById(R.id.list_spinner);
+        // Make them invisible at the start
         progressBar.setVisibility(View.INVISIBLE);
+        mSpinner.setVisibility(View.INVISIBLE);
         // Get the button
-        final Button getListsButton = (Button) findViewById(R.id.list_search_button);
+        getListsButton = (Button) findViewById(R.id.list_search_button);
         // Listen for the click
         getListsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +125,7 @@ public class MainActivity extends Activity {
                     task.execute(apiString);
 
                 } else {
-                    Toast.makeText(MainActivity.this, "Searching requires an internet connection.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.missing_internet), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -145,7 +152,7 @@ public class MainActivity extends Activity {
         protected ArrayList<BookList> doInBackground(String... params) {
 
 
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             String listData = "";
             // Prepare for an exception in case the url is invalid
             try {
@@ -216,7 +223,7 @@ public class MainActivity extends Activity {
                         // Get the array object
                         JSONObject list = listArray.getJSONObject(i);
                         // get the names
-                        String displayName = list.getString("display_name");
+                        displayName = list.getString("display_name");
                         String encodedName = list.getString("list_name_encoded");
                         mBooklist.add(BookList.newInstance(displayName, encodedName));
                     }
@@ -257,7 +264,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected ArrayList<BestSellersList> doInBackground(String... params) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             String listData = "";
             // Prepare for an exception in case the url is invalid
             try {
@@ -335,8 +342,9 @@ public class MainActivity extends Activity {
                         String title = book.getString("title");
                         String author = book.getString("author");
                         String description = book.getString("description");
+                        String isbn = book.getString("primary_isbn13");
                         // and create the list item
-                        mBestSellersList.add(BestSellersList.newInstance(rank, author, title, description));
+                        mBestSellersList.add(BestSellersList.newInstance(rank, author, title, description, isbn));
                     }
                     return mBestSellersList;
                 }
@@ -354,7 +362,7 @@ public class MainActivity extends Activity {
 
         // When we are done getting the data
         @Override
-        protected void onPostExecute(ArrayList<BestSellersList> bookList) {
+        protected void onPostExecute(final ArrayList<BestSellersList> bookList) {
             super.onPostExecute(bookList);
             // turn off the activity indicator
             progressBar.setVisibility(View.INVISIBLE);
@@ -376,14 +384,32 @@ public class MainActivity extends Activity {
             ListView listView = (ListView) findViewById(R.id.best_sellers_listview);
             // Create an instance of the BestSellersList adapter and set it to the listview
             listView.setAdapter(new BestSellersAdapter(MainActivity.this, bestSellersMapList));
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Get the current item
+                    Object book = parent.getItemAtPosition(position);
+                    Intent intent = new Intent(getApplicationContext(), BookDetails.class);
+                    intent.putExtra(TITLE,  (bookList.get(position).getTitle()));
+                    intent.putExtra(AUTHOR,  (bookList.get(position).getAuthorName()));
+                    intent.putExtra(DESCRIPTION,  (bookList.get(position).getDescription()));
+                    intent.putExtra(RANK,  (bookList.get(position).getRank()));
+                    intent.putExtra(ISBN, (bookList.get(position).getISBN()));
+                    intent.putExtra("List", displayName);
+                    startActivity(intent);
+                }
+            });
         }
     }
 
 
 
     private void setSpinnerAdapter(ArrayList<BookList> bookList) {
-        // get the spinner
-        Spinner mSpinner = (Spinner) findViewById(R.id.list_spinner);
+        // Show the spinner
+        mSpinner.setVisibility(View.VISIBLE);
+        // And Remove the Button
+        getListsButton.setVisibility(View.GONE);
         // Create an array adapter to set the items in the spinner
         ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(this, android.R.layout.simple_spinner_item, (bookList));
         // Set the adapter to the spinner
@@ -392,18 +418,28 @@ public class MainActivity extends Activity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Object bookList = parent.getItemAtPosition(position);
-                Log.i(TAG, "List = " + bookList);
-                // Get the search name for this list
-                String searchId = (mBooklist.get(position).getEncodedName());
-                // Toast to view the selected string
-                Toast.makeText(MainActivity.this, searchId, Toast.LENGTH_LONG).show();
-                // Create a url string
-                String urlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + searchId + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
-                // Get an instance of the second async task
-                GetBestSellersList task = new GetBestSellersList();
-                // Execute and send in the new string
-                task.execute(urlString);
+                // Verify we still are connected to the internet
+                // Send the context to the connectivity class
+                mConnection = new Connectivity(MainActivity.this) {
+                };
+                // Check if device has internet connection
+                boolean connected = mConnection.isInternetAvailable();
+                if (connected) {
+                    Object bookList = parent.getItemAtPosition(position);
+                    Log.i(TAG, "List = " + bookList);
+                    // Get the search name for this list
+                    String searchId = (mBooklist.get(position).getEncodedName());
+                    // Create a url string
+                    String urlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + searchId + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
+                    // Get an instance of the second async task
+                    GetBestSellersList task = new GetBestSellersList();
+                    // Execute and send in the new string
+                    task.execute(urlString);
+                }
+                else {
+                    // Inform the user we need internet access to search
+                    Toast.makeText(MainActivity.this, getString(R.string.missing_internet), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
