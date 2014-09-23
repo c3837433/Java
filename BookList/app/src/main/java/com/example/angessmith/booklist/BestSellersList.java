@@ -10,9 +10,10 @@ public class BestSellersList  {
     private String mTitle;
     private String mDescription;
     private String mISBN;
+    private String mListName;
 
 
-    public static BestSellersList newInstance(Number _rank, String _authorName, String _title, String _description, String _isbn) {
+    public static BestSellersList newInstance(Number _rank, String _authorName, String _title, String _description, String _isbn, String _listName) {
         // Create the new object
         BestSellersList bestSellersList = new BestSellersList();
         // set the passed in parameters
@@ -21,12 +22,13 @@ public class BestSellersList  {
         bestSellersList.mDescription = _description;
         bestSellersList.mRank = _rank;
         bestSellersList.mISBN = _isbn;
+        bestSellersList.mListName = _listName;
         // return the bestSellersList
         return bestSellersList;
     }
 
     public BestSellersList() {
-        mDescription = mAuthorName = mTitle = mISBN = "";
+        mDescription = mAuthorName = mTitle = mISBN = mListName = "";
         mRank = 0;
     }
 
@@ -49,6 +51,10 @@ public class BestSellersList  {
 
     public String getISBN() {
         return mISBN;
+    }
+
+    public String getListName() {
+        return mListName;
     }
 
 }
