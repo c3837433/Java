@@ -28,7 +28,7 @@ public class BookList {
         return mEncodedName;
     }
 
-
+    // Set the display name within the spinner views
     @Override
     public String toString() {
         return mDisplayName;

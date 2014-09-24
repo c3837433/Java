@@ -75,8 +75,8 @@ public class HTTPHelper {
             jsonObject = null;
             Log.e(TAG, "Unable to convert to JSON");
         }
+    // Return the JSON object
     return jsonObject;
-
     }
 
 }

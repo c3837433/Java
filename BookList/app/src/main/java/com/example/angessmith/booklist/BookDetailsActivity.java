@@ -1,6 +1,7 @@
 package com.example.angessmith.booklist;
+
 // Created by: Angela Smith 9/21/2014 for Java 1 term 1409
-// Google API to search a book by isbn: https://www.googleapis.com/books/v1/volumes?q=isbn:[isbn]
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ public class BookDetailsActivity extends Activity {
     public static final String TAG = MainActivity.class.getSimpleName();
     // Create an instance of the progress bar
     ProgressBar progressBar;
+    // And Context to pass into HTTPHelper
     Context mContext = this;
 
     @Override
@@ -131,6 +133,7 @@ public class BookDetailsActivity extends Activity {
             SmartImageView bookImage = (SmartImageView) findViewById(R.id.book_image);
             // Load the image from the url
             bookImage.setImageUrl(urlString);
+
         }
     }
 

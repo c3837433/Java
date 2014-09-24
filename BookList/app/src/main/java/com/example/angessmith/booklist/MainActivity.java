@@ -64,6 +64,7 @@ import java.util.HashMap;
 
         1. Lists API: http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
         2. Books API with list string: http://api.nytimes.com/svc/books/v2/lists.json?list-name=animals&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
+        3. Google API to search a book by isbn: https://www.googleapis.com/books/v1/volumes?q=isbn:[isbn]
 
  */
 
@@ -110,11 +111,9 @@ public class MainActivity extends Activity {
                 getBestSellerLists();
             }
         });
-
-
-
     }
 
+    // Check for Connection and start List Data Task
     private void getBestSellerLists() {
         // Send the context to the connectivity class
         mConnection = new ConnectivityHelper(MainActivity.this) {
@@ -184,6 +183,49 @@ public class MainActivity extends Activity {
         }
     }
 
+    // Take the passed in list and display in array adapter
+    private void setSpinnerAdapter(ArrayList<BookList> bookList) {
+        // Show the spinner
+        mSpinner.setVisibility(View.VISIBLE);
+        // And Remove the Button
+        getListsButton.setVisibility(View.GONE);
+        // Create an array adapter to set the items in the spinner
+        ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
+        // Set the adapter to the spinner
+        mSpinner.setAdapter(myAdapter);
+        // Set on click listener for spinner
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Verify we still are connected to the internet
+                // Send the context to the connectivity class
+                mConnection = new ConnectivityHelper(MainActivity.this) {
+                };
+                // Check if device has internet connection
+                boolean connected = mConnection.isInternetAvailable();
+                if (connected) {
+                    Object bookList = parent.getItemAtPosition(position);
+                    Log.i(TAG, "List = " + bookList);
+                    // Get the search name for this list
+                    String searchId = (mBooklist.get(position).getEncodedName());
+                    // Create a url string
+                    String urlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + searchId + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
+                    // Get an instance of the second async task
+                    GetBestSellersList task = new GetBestSellersList();
+                    // Execute and send in the new string
+                    task.execute(urlString);
+                } else {
+                    // Inform the user we need internet access to search
+                    Toast.makeText(MainActivity.this, getString(R.string.missing_internet), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
 
     // SECOND ASYNC TASK TO GET BOOK LIST
     private class GetBestSellersList extends AsyncTask<String, Integer, ArrayList<BestSellersList>> {
@@ -248,6 +290,7 @@ public class MainActivity extends Activity {
     }
 
 
+
     // Method that takes in the list and sets the items within a hashmap
     private ArrayList<HashMap<String, Object>> putListInHashmap(ArrayList<BestSellersList> bookList) {
         ArrayList<HashMap<String, Object>> bestSellersMapList = new ArrayList<HashMap<String, Object>>();
@@ -298,48 +341,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private void setSpinnerAdapter(ArrayList<BookList> bookList) {
-        // Show the spinner
-        mSpinner.setVisibility(View.VISIBLE);
-        // And Remove the Button
-        getListsButton.setVisibility(View.GONE);
-        // Create an array adapter to set the items in the spinner
-        ArrayAdapter<BookList> myAdapter = new ArrayAdapter<BookList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
-        // Set the adapter to the spinner
-        mSpinner.setAdapter(myAdapter);
-        // Set on click listener for spinner
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Verify we still are connected to the internet
-                // Send the context to the connectivity class
-                mConnection = new ConnectivityHelper(MainActivity.this) {
-                };
-                // Check if device has internet connection
-                boolean connected = mConnection.isInternetAvailable();
-                if (connected) {
-                    Object bookList = parent.getItemAtPosition(position);
-                    Log.i(TAG, "List = " + bookList);
-                    // Get the search name for this list
-                    String searchId = (mBooklist.get(position).getEncodedName());
-                    // Create a url string
-                    String urlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + searchId + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
-                    // Get an instance of the second async task
-                    GetBestSellersList task = new GetBestSellersList();
-                    // Execute and send in the new string
-                    task.execute(urlString);
-                } else {
-                    // Inform the user we need internet access to search
-                    Toast.makeText(MainActivity.this, getString(R.string.missing_internet), Toast.LENGTH_LONG).show();
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

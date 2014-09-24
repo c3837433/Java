@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".Main"
+    android:background="#ff3079ab">
+
+   <Button
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/find_book_lists"
+       android:id="@+id/list_search_button"
+       android:layout_below="@+id/book_detail_author"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentEnd="true"
+       android:background="#ffffffff"
+       android:textColor="#3079ab" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/best_seller_label"
+        android:id="@+id/book_detail_author"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:paddingBottom="20dp"
+        android:textColor="#ffffffff" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_spinner"
+        android:layout_below="@+id/list_search_button"
+        android:layout_alignRight="@+id/list_search_button"
+        android:layout_alignEnd="@+id/list_search_button"
+        android:prompt="@string/spinner_prompt"
+        android:background="#ffffff"
+        android:dropDownSelector="@color/app_blue_color"
+        android:spinnerMode="dropdown" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/best_sellers_listview"
+        android:layout_below="@+id/list_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#3079ab" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
