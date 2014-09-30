@@ -6,7 +6,7 @@ import android.widget.ListView;
 
 
 //Created by AngeSSmith on 9/30/14 for Java 2 Term 1410.
-
+// Book (Animal) best seller api http://api.nytimes.com/svc/books/v2/lists.json?list-name=animals&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
 
 
 public class BookListFragment extends android.app.ListFragment {
@@ -27,6 +27,7 @@ public class BookListFragment extends android.app.ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         // TODO: GET THE LIST OF BOOK OBJECTS, CREATE ARRAY OF NAMES
+
 
         // TODO: PUT ITEMS IN ARRAY ADAPTER
     }
