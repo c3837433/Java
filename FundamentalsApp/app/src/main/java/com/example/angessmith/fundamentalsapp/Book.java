@@ -45,4 +45,10 @@ public class Book implements Serializable {
     public String getDescription () {
         return mDescription;
     }
+
+    // Set the title in the listview
+    @Override
+    public String toString() {
+        return mTitle;
+    }
 }
