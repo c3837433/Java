@@ -4,10 +4,13 @@ package com.example.angessmith.fundamentalsapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.angessmith.fundamentalsapp.Fragment.BookListFragment;
+
+import java.io.File;
 
 
 public class Main extends Activity   {
@@ -18,13 +21,13 @@ public class Main extends Activity   {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
+            Log.d(TAG, "Getting Fragment");
             // Create the fragment
             BookListFragment bookListFragment = BookListFragment.newInstance();
             // get the fragment and commit it so we can access it with the spinner
             getFragmentManager().beginTransaction().replace(R.id.book_list_container, bookListFragment, BookListFragment.TAG).commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
