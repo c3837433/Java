@@ -7,13 +7,22 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.angessmith.fundamentalsapp.Fragment.BookListFragment;
 
-public class Main extends Activity {
 
+public class Main extends Activity   {
+    final String TAG = "FundamentalsApp";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            // Create the fragment
+            BookListFragment bookListFragment = BookListFragment.newInstance();
+            // get the fragment and commit it so we can access it with the spinner
+            getFragmentManager().beginTransaction().replace(R.id.book_list_container, bookListFragment, BookListFragment.TAG).commit();
+        }
     }
 
 

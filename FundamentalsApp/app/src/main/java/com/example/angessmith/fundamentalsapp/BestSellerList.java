@@ -7,6 +7,9 @@ import java.io.Serializable;
 
 public class BestSellerList implements Serializable {
 
+    // Add id for serialization
+    private static final long serialVersionUID =  484763662987253462L;
+
     // Define the variables
     private String mDisplayName;
     private String mEncodedName;
