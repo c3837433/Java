@@ -13,7 +13,7 @@ import com.example.angessmith.fundamentalsapp.Fragment.BookListFragment;
 import java.io.File;
 
 
-public class Main extends Activity   {
+public class Main extends Activity implements BookListFragment.OnListItemClickListener  {
     final String TAG = "FundamentalsApp";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,5 +43,13 @@ public class Main extends Activity   {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setBookDetails(String title, String author, String description, int rank) {
+        // Get the passed over data
+        Log.i(TAG, "Retrieved title: " + title + " author: " + author + " rank: " + rank + " description: " + description);
+        // TODO: pass the selected data to the Details fragment
+
     }
 }

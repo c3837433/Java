@@ -29,7 +29,7 @@ public class HTTPHelper {
             URL url = new URL(param);
             // Open a URL connection
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            // Set up the connction properties
+            // Set up the connection properties
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
@@ -37,6 +37,7 @@ public class HTTPHelper {
             connection.connect();
             // Check the response
             int responseCode = connection.getResponseCode();
+            Log.d(TAG, "response code = " + responseCode);
             // If it is good get the data
             if (responseCode == HttpURLConnection.HTTP_OK)
             {

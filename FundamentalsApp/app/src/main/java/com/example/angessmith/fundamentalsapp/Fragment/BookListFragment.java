@@ -1,5 +1,6 @@
 package com.example.angessmith.fundamentalsapp.Fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -19,7 +20,6 @@ import com.example.angessmith.fundamentalsapp.BestSellerList;
 import com.example.angessmith.fundamentalsapp.Book;
 import com.example.angessmith.fundamentalsapp.ConnectionChecker;
 import com.example.angessmith.fundamentalsapp.HTTPHelper;
-import com.example.angessmith.fundamentalsapp.Main;
 import com.example.angessmith.fundamentalsapp.R;
 
 import org.json.JSONArray;
@@ -34,21 +34,23 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
 
 //Created by AngeSSmith on 9/30/14 for Java 2 Term 1410.
-// Book (Animal) best seller api http://api.nytimes.com/svc/books/v2/lists.json?list-name=animals&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
+// Book (Animal) best seller api http://api.nytimes.com/svc/mBooks/v2/lists.json?list-name=animals&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
 
 
-public class BookListFragment extends Fragment {
+public class BookListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     // Create the TAG
     public static final String TAG = "BookListFragment.TAG";
+    private OnListItemClickListener mListener;
     Spinner mSpinner;
     ListView mListview;
-    private ArrayList<Book> mBook;
+    ArrayList<Book> mBooks;
 
     // Create a factory instance of the fragment
     public static BookListFragment newInstance() {
@@ -56,6 +58,37 @@ public class BookListFragment extends Fragment {
         BookListFragment fragment = new BookListFragment();
         // and return it
         return fragment;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        // get the passed in object
+        String title = mBooks.get(position).getTitle();
+        String author = mBooks.get(position).getAuthor();
+        String description = mBooks.get(position).getDescription();
+        int rank = mBooks.get(position).getRank();
+        // and send it to the main view
+        mListener.setBookDetails(title, author, description, rank);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Make sure the activity attaching this has the OnListItemClickListener
+        if (activity instanceof OnListItemClickListener) {
+            // set the listener
+            mListener = (OnListItemClickListener) activity;
+        } else {
+            // if it does not implement this, throw an exception
+            throw new IllegalArgumentException("You must implement the OnListItemClickListener");
+        }
+
+    }
+    // Define the on item listener interface
+    public interface OnListItemClickListener {
+
+        public void setBookDetails(String title, String author, String description, int rank);
     }
 
     // Get access to the activity layout
@@ -74,6 +107,8 @@ public class BookListFragment extends Fragment {
         assert view != null;
         mSpinner = (Spinner) view.findViewById(R.id.spinner);
         mListview = (ListView) view.findViewById(R.id.bookslist);
+        // set the on click listener to the listview
+        mListview.setOnItemClickListener(this);
         // Access the button
         final Button getBestSellerButton = (Button) view.findViewById(R.id.get_list_button);
         getBestSellerButton.setOnClickListener(new View.OnClickListener() {
@@ -266,8 +301,8 @@ public class BookListFragment extends Fragment {
         protected ArrayList<Book> doInBackground(String... params) {
             // Use the helper to get the data from the passed in url string
             String dataString = HTTPHelper.getData(getActivity(), params[0]);
-            // create an arraylist for the books
-            ArrayList<Book> books = new ArrayList<Book>();
+            // create an arraylist for the mBooks
+            mBooks = new ArrayList<Book>();
             try {
                 // Create json objects from the returned data
                 JSONObject jsonObject = new JSONObject(dataString);
@@ -277,7 +312,7 @@ public class BookListFragment extends Fragment {
                 for (int i = 0; i < resultsArray.length(); i++) {
                     // Get the array object
                     JSONObject list = resultsArray.getJSONObject(i);
-                    // get each books properties
+                    // get each mBooks properties
                     int rank  = list.getInt("rank");
                     JSONArray bookDetailsArray = list.getJSONArray("book_details");
                     JSONObject book = bookDetailsArray.getJSONObject(0);
@@ -285,23 +320,23 @@ public class BookListFragment extends Fragment {
                     String author = book.getString("author");
                     String description = book.getString("description");
                     // Add the items to the list (rank, title, author, description
-                    books.add(Book.newInstance(rank, title, author, description ));
+                    mBooks.add(Book.newInstance(rank, title, author, description));
                 }
                 //  write the object to storage
-                cacheDataForOfflineUse(dataString, "bookList.txt", books);
+                cacheDataForOfflineUse(dataString, "mBooks.txt", mBooks);
                 // return the list
-                return books;
+                return mBooks;
             }
             catch (JSONException exception) {
                 Log.e(TAG, "JSON exception" + exception);
             }
             // Return the list to the array
-            return books;
+            return mBooks;
         }
 
         @Override
         protected void onPostExecute(ArrayList<Book> arrayList) {
-            // Create a simple array adapter for the list items
+            // Create a simple array adapter for the listview items
             ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<Book>(getActivity(), android.R.layout.simple_list_item_1, (arrayList));
             // set the adapter to the listview
             mListview.setAdapter(arrayAdapter);
