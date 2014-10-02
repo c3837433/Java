@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.angessmith.fundamentalsapp.Fragment.BookListFragment;
+import com.example.angessmith.fundamentalsapp.Fragment.DetailFragment;
 
 import java.io.File;
 
@@ -46,10 +47,22 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     }
 
     @Override
-    public void setBookDetails(String title, String author, String description, int rank) {
+    public void setBookDetails(String title, String author, String description, int rank, String listType) {
         // Get the passed over data
         Log.i(TAG, "Retrieved title: " + title + " author: " + author + " rank: " + rank + " description: " + description);
         // TODO: pass the selected data to the Details fragment
+        // Get the detail fragment
+        DetailFragment detailFragment = (DetailFragment) getFragmentManager().findFragmentByTag(DetailFragment.TAG);
+        // check if it was created
+        if (detailFragment == null) {
+            // Then create it
+            detailFragment = DetailFragment.newInstance(title, author, description, rank, listType);
+            // Set the fragment within the container
+            getFragmentManager().beginTransaction().replace(R.id.book_detail_container, detailFragment, DetailFragment.TAG).commit();
+        } else {
+            // pass the data to the current fragment
+            detailFragment.setBookData(title, author, description, rank, listType);
+        }
 
     }
 }

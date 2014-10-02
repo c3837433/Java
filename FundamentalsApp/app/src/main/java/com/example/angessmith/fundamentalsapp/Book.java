@@ -13,9 +13,10 @@ public class Book implements Serializable {
     private String mTitle;
     private String mAuthor;
     private String mDescription;
+    private String mList;
 
     // Create a new instance factory method
-    public static Book newInstance(int _rank, String _title, String _author, String _description) {
+    public static Book newInstance(int _rank, String _title, String _author, String _description, String _list) {
         // Create the new object
         Book book = new Book();
         // and set the variables
@@ -23,12 +24,13 @@ public class Book implements Serializable {
         book.mTitle = _title;
         book.mAuthor = _author;
         book.mDescription = _description;
+        book.mList = _list;
         // return the book
         return book;
     }
 
     public Book() {
-        mAuthor = mDescription = mTitle = "";
+        mAuthor = mDescription = mTitle = mList = "";
         mRank = 0;
     }
 
@@ -44,6 +46,9 @@ public class Book implements Serializable {
     }
     public String getDescription () {
         return mDescription;
+    }
+    public String getList () {
+        return mList;
     }
 
     // Set the title in the listview
