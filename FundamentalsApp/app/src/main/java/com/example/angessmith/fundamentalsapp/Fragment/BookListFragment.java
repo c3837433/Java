@@ -1,5 +1,8 @@
 package com.example.angessmith.fundamentalsapp.Fragment;
 
+//Created by AngeSSmith on 9/30/14 for Java 2 Term 1410.
+// Book (Animal) best seller api http://api.nytimes.com/svc/mBooks/v2/lists.json?list-name=animals&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -38,9 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//Created by AngeSSmith on 9/30/14 for Java 2 Term 1410.
-// Book (Animal) best seller api http://api.nytimes.com/svc/mBooks/v2/lists.json?list-name=animals&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529
-
 
 public class BookListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -62,8 +62,6 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
     // SET UP ON LIST ITEM CLICK TO GET DETAILS FOR THAT BOOK
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Check position for when item is empty
-        Log.d(TAG, "This item is at positon: " + getString(position));
         // get the passed in object
         String title = mBooks.get(position).getTitle();
         String author = mBooks.get(position).getAuthor();
@@ -137,74 +135,21 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
                     Toast.makeText(getActivity(),"No internet connection, checking cache.",Toast.LENGTH_SHORT).show();
                     // Get the data from the cache
                     ArrayList<BestSellerList> cachedList = (ArrayList<BestSellerList>) pullCachedBestSellerListsForOffline(getActivity(), "bestSellersList.txt");
-                    // send the arraylist to the spinner
-                    setSellerListsInSpinner(cachedList);
+                    if (cachedList == null)
+                    {
+                        Toast.makeText(getActivity(), "No cache available, connect to the internet and try again.", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        // send the arraylist to the spinner
+                        setSellerListsInSpinner(cachedList);
+                    }
                 }
             }
         });
 
     }
 
-    // CACHE BEST SELLER LISTS OR LIST BOOKS IN EXTERNAL STORAGE FOR OFFLINE USE
-    private void cacheDataForOfflineUse(String filename, Object object) {
-        File externalFilesDir = getActivity().getExternalFilesDir(null);
-        Log.d(TAG, "File directory = " + externalFilesDir);
-        File file = new File(externalFilesDir, filename);
-        //File file;
-        try {
-           // file = File.createTempFile(filename, null, getActivity().getCacheDir());
-            Log.d(TAG, "File directory = " + file);
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
-            // Write the data to the file
-            outputStream.writeObject(object);
-            // close the stream
-            outputStream.close();
-        }
-        catch(Exception exception) {
-            // There was an error writing the file
-            Log.e(TAG, "Output Stream Exception: ", exception);
-        }
-    }
 
-    // RETRIEVE SPINNER BEST SELLER LISTS FROM CACHE FOR OFFLINE USE
-    private Object pullCachedBestSellerListsForOffline(Context context, String filename) {
-        List<BestSellerList> storedDataList = null;
-        // Reaccess the external file directory
-        File external = context.getExternalFilesDir(null);
-        // And find the file with the passed in name
-        File file = new File(external, filename);
-        try {
-            // Create a new input stream with this file
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            // Get the list of objects from the file
-            storedDataList = (List<BestSellerList>)objectInputStream.readObject();
-
-            // Close the object input stream
-            objectInputStream.close();
-            // return the list
-            return storedDataList;
-        }
-        catch (FileNotFoundException exception) {
-            Log.e(TAG, "Input Stream Exception: ", exception);
-        }
-        catch (StreamCorruptedException exception) {
-            Log.e(TAG, "Stream Exception: ", exception);
-        }
-        catch (IOException exception) {
-            Log.e(TAG, "IO Exception: ", exception);
-        }
-        catch (ClassNotFoundException exception) {
-            Log.e(TAG, "Class Exception: ", exception);
-        }
-        if (storedDataList == null)
-        {
-            // Inform the user we have no data, we need internet
-            Toast.makeText(getActivity(),"Internet is required, no cached data to view.",Toast.LENGTH_SHORT).show();
-        }
-        return storedDataList;
-    }
 
     // FIRST TASK TO GET BEST SELLER LISTS FOR SPINNER
     private class GetBookListsTask extends AsyncTask<String, Integer, ArrayList<BestSellerList>> {
@@ -220,7 +165,6 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
             Log.d(TAG, urlstring);
             String dataString = HTTPHelper.getData(getActivity(), params[0]);
             ArrayList<BestSellerList> bestSellerList = new ArrayList<BestSellerList>();
-            //cacheDataForOfflineUse(dataString, "bookList.txt");
             // Convert the returned string to JSON Objects
             try {
                 // Create json objects from the data string
@@ -267,7 +211,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // get the books for the listview
+                // get the books for the list view
                 getBookListBooks(parent, position, arrayList);
             }
 
@@ -278,6 +222,75 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
         });
 
     }
+
+
+    // CACHE BEST SELLER LISTS OR LIST BOOKS IN EXTERNAL STORAGE FOR OFFLINE USE
+    private void cacheDataForOfflineUse(String filename, Object object) {
+        File externalFilesDir = getActivity().getExternalFilesDir(null);
+        Log.d(TAG, "File directory = " + externalFilesDir);
+        File file = new File(externalFilesDir, filename);
+        //File file;
+        try {
+            // file = File.createTempFile(filename, null, getActivity().getCacheDir());
+            Log.d(TAG, "File directory = " + file);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
+            // Write the data to the file
+            outputStream.writeObject(object);
+            // close the stream
+            outputStream.close();
+        }
+        catch(Exception exception) {
+            // There was an error writing the file
+            Log.e(TAG, "Output Stream Exception: ", exception);
+        }
+    }
+
+    // RETRIEVE SPINNER BEST SELLER LISTS FROM CACHE FOR OFFLINE USE
+    private Object pullCachedBestSellerListsForOffline(Context context, String filename) {
+        List<BestSellerList> storedDataList = null;
+        // Reaccess the external file directory
+        File external = context.getExternalFilesDir(null);
+        // And find the file with the passed in name
+        File file = new File(external, filename);
+        // Make sure this file exists or not
+        boolean fileExists = new File(external, filename).exists();
+        if (fileExists)
+        {
+            try {
+                // Create a new input stream with this file
+                FileInputStream fileInputStream = new FileInputStream(file);
+                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                // Get the list of objects from the file
+                storedDataList = (List<BestSellerList>)objectInputStream.readObject();
+
+                // Close the object input stream
+                objectInputStream.close();
+                // return the list
+                return storedDataList;
+            }
+            catch (FileNotFoundException exception) {
+                Log.e(TAG, "Input Stream Exception: ", exception);
+            }
+            catch (StreamCorruptedException exception) {
+                Log.e(TAG, "Stream Exception: ", exception);
+            }
+            catch (IOException exception) {
+                Log.e(TAG, "IO Exception: ", exception);
+            }
+            catch (ClassNotFoundException exception) {
+                Log.e(TAG, "Class Exception: ", exception);
+            }
+        }
+        else {
+            // Return nothing
+            storedDataList = null;
+        }
+
+        return storedDataList;
+    }
+
+
 
     private void getBookListBooks(AdapterView<?> parent, int position, ArrayList<BestSellerList> arrayList) {
         // Make sure we are still connected to the internet
