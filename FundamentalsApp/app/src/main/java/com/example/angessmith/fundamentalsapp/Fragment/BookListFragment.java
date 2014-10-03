@@ -225,7 +225,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
 
 
     // CACHE BEST SELLER LISTS OR LIST BOOKS IN EXTERNAL STORAGE FOR OFFLINE USE
-    private void cacheDataForOfflineUse(String filename, Object object) {
+    private void cacheDataForOfflineUse(String filename, java.util.RandomAccess object) {
         File externalFilesDir = getActivity().getExternalFilesDir(null);
         Log.d(TAG, "File directory = " + externalFilesDir);
         File file = new File(externalFilesDir, filename);
