@@ -314,15 +314,16 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
             Toast.makeText(getActivity(), "No internet connection, checking cache.", Toast.LENGTH_SHORT).show();
             //Get this list's encoded name
             String selectedListName = arrayList.get(position).getEncodedName();
-            ArrayList<Book> cachedBooks = (ArrayList<Book>) pullCachedBooksForList(getActivity(), selectedListName + ".txt");
-            if (cachedBooks == null)
+            mBooks = (ArrayList<Book>) pullCachedBooksForList(getActivity(), selectedListName + ".txt");
+            //ArrayList<Book> cachedBooks = (ArrayList<Book>) pullCachedBooksForList(getActivity(), selectedListName + ".txt");
+            if (mBooks == null)
             {
                 // Than this information has not been cached yet, alert the user
                 Toast.makeText(getActivity(), "This list has not been retrieved yet. Connect to the internet and try again.", Toast.LENGTH_SHORT).show();
             }
             else {
                 // Get the adapter
-                ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<Book>(getActivity(), android.R.layout.simple_list_item_1, (cachedBooks));
+                ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<Book>(getActivity(), android.R.layout.simple_list_item_1, (mBooks));
                 // set the books in the adapter
                 mListview.setAdapter(arrayAdapter);
             }
