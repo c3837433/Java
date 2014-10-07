@@ -12,8 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.angessmith.fundamentalsapp.Fragment.BookListFragment;
@@ -37,8 +35,6 @@ import java.util.List;
 
 public class Main extends Activity implements BookListFragment.OnListItemClickListener, BookListFragment.OnSpinnerListener, BookListFragment.OnButtonListener  {
     final String TAG = "FundamentalsApp";
-    //Spinner mSpinner;
-    //ListView mListview;
     ArrayList<Book> mBooks;
     View bookListFragmentView;
     ArrayList<BestSellerList> bestSellerList;
@@ -56,45 +52,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             // get the fragment and commit it so we can access it with the spinner
             getFragmentManager().beginTransaction().replace(R.id.book_list_container, bookListFragment, BookListFragment.TAG).commit();
 
-            /*
-            bookListFragmentView = bookListFragment.getView();
-            mSpinner = (Spinner) bookListFragmentView.findViewById(R.id.spinner);
 
-            final Button getBestSellerButton = (Button) bookListFragmentView.findViewById(R.id.get_list_button);
-            getBestSellerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "User clicked the button to get data");
-                    // Create an instance of the connection checker. After the fragment is commited, getActivity gets the context
-                    ConnectionChecker connectionChecker = new ConnectionChecker(Main.this);
-                    // check if connected
-                    boolean isConnected = connectionChecker.canConnectInternet();
-                    if (isConnected) {
-                        Toast.makeText(Main.this, "Getting Lists from Web", Toast.LENGTH_SHORT).show();
-                        // run the async task to get the list of array objects
-                        String bookListString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
-                        // Get an instance of the ASYNC TASK to get the data
-                        GetBookListsTask task = new GetBookListsTask();
-                        // execute the task
-                        task.execute(bookListString);
-                    }
-                    else {
-                        // User is not connected, pull data from cache
-                        Toast.makeText(bookListFragmentView.getContext(),"No internet connection, checking cache.",Toast.LENGTH_SHORT).show();
-                        // Get the data from the cache
-                        ArrayList<BestSellerList> cachedList = (ArrayList<BestSellerList>) pullCachedBestSellerListsForOffline(Main.this, "bestSellersList.txt");
-                        if (cachedList == null)
-                        {
-                            Toast.makeText(bookListFragmentView.getContext(), "No cache available, connect to the internet and try again.", Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            // send the arraylist to the spinner
-                            setSellerListsInSpinner(cachedList);
-                        }
-                    }
-                }
-            });
-            */
         }
     }
 
@@ -126,7 +84,6 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             }
             else {
                 // send the arraylist to the spinner
-                //setSellerListsInSpinner(cachedList);
                 ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(this, android.R.layout.simple_spinner_dropdown_item, (cachedList));
                 // Set the adapter to the spinner
                 BookListFragment.mSpinner.setAdapter(arrayAdapter);
@@ -134,7 +91,6 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         }
     }
 
-    // Spinner listener
     @Override
     public void GetBooksOnList(AdapterView<?> parent, View view, int position, long id) {
         getBookListBooks(parent, position, bestSellerList);
@@ -194,29 +150,6 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             //setSellerListsInSpinner(arrayList);
         }
     }
-
-    /*
-    // SET BEST SELLER LISTS IN SPINNER, ADD ON CLICK LISTENER TO GET THAT LIST BOOKS FROM WEB OR OFFLINE CACHE
-    private void setSellerListsInSpinner(final ArrayList<BestSellerList> arrayList) {
-        ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(bookListFragmentView.getContext(), android.R.layout.simple_spinner_dropdown_item, (arrayList));
-        // Set the adapter to the spinner
-        mSpinner.setAdapter(arrayAdapter);
-        */
-        /*
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // get the books for the list view
-                getBookListBooks(parent, position, arrayList);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        */
-    //}
 
     // CACHE BEST SELLER LISTS OR LIST BOOKS IN EXTERNAL STORAGE FOR OFFLINE USE
     private void cacheDataForOfflineUse(String filename, java.util.RandomAccess object) {
