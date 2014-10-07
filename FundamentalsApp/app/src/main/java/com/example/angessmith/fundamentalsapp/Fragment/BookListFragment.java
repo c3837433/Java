@@ -5,63 +5,70 @@ package com.example.angessmith.fundamentalsapp.Fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.angessmith.fundamentalsapp.BestSellerList;
 import com.example.angessmith.fundamentalsapp.Book;
-import com.example.angessmith.fundamentalsapp.ConnectionChecker;
-import com.example.angessmith.fundamentalsapp.HTTPHelper;
 import com.example.angessmith.fundamentalsapp.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.List;
+
+import static android.widget.AdapterView.OnItemClickListener;
 
 
-
-public class BookListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class BookListFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, OnItemClickListener {
 
     // Create the TAG
     public static final String TAG = "BookListFragment.TAG";
-    private OnListItemClickListener mListener;
-    Spinner mSpinner;
-    ListView mListview;
-    ArrayList<Book> mBooks;
+    private OnListItemClickListener mListListener;
+    private OnSpinnerListener mSpinnerListener;
+    private OnButtonListener mButtonListener;
+
+    public static Spinner mSpinner;
+    public static ListView mListview;
+    public static ArrayList<Book> mBooks;
+    ArrayList<BestSellerList> bestSellerList;
 
     // Create a factory instance of the fragment
     public static BookListFragment newInstance() {
-        // Create a new instance of the fragment
-        BookListFragment fragment = new BookListFragment();
-        // and return it
-        return fragment;
+        // Create a new instance of the fragment and return it
+        return new BookListFragment();
     }
 
-    // SET UP ON LIST ITEM CLICK TO GET DETAILS FOR THAT BOOK
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Make sure the activity attaches these listeners
+        if (activity instanceof OnListItemClickListener) {
+            // set the listener
+            mListListener = (OnListItemClickListener) activity;
+        }
+        if (activity instanceof OnSpinnerListener) {
+            mSpinnerListener = (OnSpinnerListener) activity;
+        }
+
+        if (activity instanceof OnButtonListener) {
+            mButtonListener = (OnButtonListener) activity;
+        }
+    }
+
+    // SET UP FOR WHEN THE USER CLICKS THE BUTTON TO GET THE LISTS
+    @Override
+    public void onClick(View v) {
+        mButtonListener.GetBookLists();
+    }
+
+    // SET UP LISTENER FOR LISTVIEW
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
         // get the passed in object
         String title = mBooks.get(position).getTitle();
         String author = mBooks.get(position).getAuthor();
@@ -69,27 +76,35 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
         int rank = mBooks.get(position).getRank();
         String listType = mBooks.get(position).getList();
         // and send it to the main view
-        mListener.setBookDetails(title, author, description, rank, listType);
+        mListListener.setBookDetails(title, author, description, rank, listType);
+
+    }
+    // SET UP LISTENER FOR SPINNER
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        mSpinnerListener.GetBooksOnList(parent, view, position, id);
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        // Make sure the activity attaching this has the OnListItemClickListener
-        if (activity instanceof OnListItemClickListener) {
-            // set the listener
-            mListener = (OnListItemClickListener) activity;
-        } else {
-            // if it does not implement this, throw an exception
-            throw new IllegalArgumentException("You must implement the OnListItemClickListener");
-        }
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
-    // DEFINE THE INTERFACE
+    // DEFINE THE INTERFACES
+    // Listview interface
     public interface OnListItemClickListener {
 
         public void setBookDetails(String title, String author, String description, int rank, String list);
+    }
+
+    // Define the spinner interface
+    public interface OnSpinnerListener {
+        public void GetBooksOnList(AdapterView<?> parent, View view, int position, long id);
+    }
+
+    // Define the button interface
+    public interface  OnButtonListener {
+        public void GetBookLists();
     }
 
     // SET THE FRAGMENT IN THE LAYOUT
@@ -108,9 +123,20 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
         // get the spinner and listview for when we have data
         assert view != null;
         mSpinner = (Spinner) view.findViewById(R.id.spinner);
+        mSpinner.setOnItemSelectedListener(this);
+
+        Button button = (Button) view.findViewById(R.id.get_list_button);
+        button.setOnClickListener(this);
+
         mListview = (ListView) view.findViewById(R.id.bookslist);
-        // set the on click listener to the listview
         mListview.setOnItemClickListener(this);
+
+
+
+        //mListview = (ListView) view.findViewById(R.id.bookslist);
+        // set the on click listener to the listview
+        //mListview.setOnItemClickListener(this);
+        /*
         // Access the button
         final Button getBestSellerButton = (Button) view.findViewById(R.id.get_list_button);
         getBestSellerButton.setOnClickListener(new View.OnClickListener() {
@@ -145,11 +171,13 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
                     }
                 }
             }
+
         });
+    */
 
     }
 
-
+    /*
 
     // FIRST TASK TO GET BEST SELLER LISTS FOR SPINNER
     private class GetBookListsTask extends AsyncTask<String, Integer, ArrayList<BestSellerList>> {
@@ -202,6 +230,8 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
         }
     }
 
+    */
+    /*
     // SET BEST SELLER LISTS IN SPINNER, ADD ON CLICK LISTENER TO GET THAT LIST BOOKS FROM WEB OR OFFLINE CACHE
     private void setSellerListsInSpinner(final ArrayList<BestSellerList> arrayList) {
         ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(getActivity(), android.R.layout.simple_spinner_dropdown_item, (arrayList));
@@ -222,8 +252,9 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
         });
 
     }
+    */
 
-
+    /*
     // CACHE BEST SELLER LISTS OR LIST BOOKS IN EXTERNAL STORAGE FOR OFFLINE USE
     private void cacheDataForOfflineUse(String filename, java.util.RandomAccess object) {
         File externalFilesDir = getActivity().getExternalFilesDir(null);
@@ -374,6 +405,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
             catch (JSONException exception) {
                 Log.e(TAG, "JSON exception" + exception);
             }
+
             // Return the list to the array
             return mBooks;
         }
@@ -427,5 +459,6 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemClic
 
         return storedListBooks;
     }
+    */
 
 }

@@ -20,7 +20,7 @@ import java.net.URL;
 public class HTTPHelper {
     public static final String TAG = "HTTPHelper";
 
-    public static String getData(Context context, String param) {
+    public static String getData(Main context, String param) {
 
         JSONObject jsonObject;
         String dataString = "";
