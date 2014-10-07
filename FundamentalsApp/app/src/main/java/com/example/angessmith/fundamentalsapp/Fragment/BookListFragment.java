@@ -6,19 +6,24 @@ package com.example.angessmith.fundamentalsapp.Fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.angessmith.fundamentalsapp.BestSellerList;
 import com.example.angessmith.fundamentalsapp.Book;
+import com.example.angessmith.fundamentalsapp.Main;
 import com.example.angessmith.fundamentalsapp.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import static android.widget.AdapterView.OnItemClickListener;
 
@@ -27,6 +32,9 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
 
     // Create the TAG
     public static final String TAG = "BookListFragment.TAG";
+    // And the bundle argument keys
+    public static final String ARG_BOOKLIST = "BookListFragment.ARG_BOOKLIST";
+    public static final String ARG_POSITION = "BookListFragment.ARG_POSITION";
     private OnListItemClickListener mListListener;
     private OnSpinnerListener mSpinnerListener;
     private OnButtonListener mButtonListener;
@@ -39,7 +47,14 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     // Create a factory instance of the fragment
     public static BookListFragment newInstance() {
         // Create a new instance of the fragment and return it
-        return new BookListFragment();
+        BookListFragment fragment = new BookListFragment();
+        // Create the bundle
+        Bundle bundleArguments = new Bundle();
+        bundleArguments.putInt(ARG_POSITION, 0);
+        bundleArguments.putSerializable(ARG_BOOKLIST, null);
+        // save the bundle arguments in the fragment
+        fragment.setArguments(bundleArguments);
+        return fragment;
     }
 
     @Override
@@ -62,7 +77,13 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     // SET UP FOR WHEN THE USER CLICKS THE BUTTON TO GET THE LISTS
     @Override
     public void onClick(View v) {
-        mButtonListener.GetBookLists();
+        try {
+            mButtonListener.GetBookLists();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // SET UP LISTENER FOR LISTVIEW
@@ -82,6 +103,11 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     // SET UP LISTENER FOR SPINNER
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // save this item in the bundle
+        getArguments().putInt(ARG_POSITION, position);
+        // get the list
+        bestSellerList = Main.bestSellerList;
+        getArguments().putSerializable(ARG_BOOKLIST, bestSellerList);
         mSpinnerListener.GetBooksOnList(parent, view, position, id);
     }
 
@@ -89,6 +115,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 
     // DEFINE THE INTERFACES
     // Listview interface
@@ -104,14 +131,13 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
 
     // Define the button interface
     public interface  OnButtonListener {
-        public void GetBookLists();
+        public void GetBookLists() throws ExecutionException, InterruptedException;
     }
 
     // SET THE FRAGMENT IN THE LAYOUT
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle _savedInstanceState) {
-        View view = inflater.inflate(R.layout.book_list_fragment, container, false);
-        return view;
+        return inflater.inflate(R.layout.book_list_fragment, container, false);
     }
 
     // SET UP BUTTON TO CHECK FOR INTERNET AND PULL BEST SELLER LISTS FROM WEB OR CACHE FOR SPINNER
@@ -120,10 +146,24 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
         super.onActivityCreated(savedInstanceState);
         // Access the fragment view
         View view = getView();
-        // get the spinner and listview for when we have data
+        // get the spinner and see if we have data yet
         assert view != null;
         mSpinner = (Spinner) view.findViewById(R.id.spinner);
         mSpinner.setOnItemSelectedListener(this);
+
+        Bundle bA = getArguments();
+        // make sure there is a list there
+        Serializable arrayList =  bA.getSerializable(ARG_BOOKLIST);
+        if (arrayList == null) {
+            // If not, don't do anything
+            Log.i(TAG, "The arraylist is empty");
+        }
+        else {
+            // if we have data set it in the arraylist
+            setBookListsInList((ArrayList<BestSellerList>) bA.getSerializable(ARG_BOOKLIST), bA.getInt(ARG_POSITION));
+            Log.i(TAG, "The arraylist has " + bA.getSerializable(ARG_BOOKLIST));
+        }
+
 
         Button button = (Button) view.findViewById(R.id.get_list_button);
         button.setOnClickListener(this);
@@ -131,6 +171,19 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
         mListview = (ListView) view.findViewById(R.id.bookslist);
         mListview.setOnItemClickListener(this);
 
+    }
+
+    // set the saved booklist into the spinner
+    public void setBookListsInList(ArrayList<BestSellerList> bestSellersList, int position) {
+        Log.i(TAG, "User selected item at position " + position + " in: " + bestSellersList);
+        // Update the arguments each time the device is rotated
+        getArguments().putSerializable(ARG_BOOKLIST, bestSellersList);
+        getArguments().putInt(ARG_POSITION, position);
+
+        ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(getActivity(), android.R.layout.simple_spinner_dropdown_item, (bestSellersList));
+        mSpinner.setAdapter(arrayAdapter);
+        // set the spinner position
+        mSpinner.setSelection(position);
     }
 
 }

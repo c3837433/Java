@@ -3,7 +3,14 @@
 
     <string name="app_name">FundamentalsApp</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Preferences</string>
     <string name="best_seller_button">Get Best Seller Lists</string>
+    <string name="settings_dialog">Preferences</string>
+
+    <string-array name="network_status_array">
+        <item>Use Network When Available</item>
+        <item>Use Cache When Available</item>
+        <item>Use Cache Only</item>
+    </string-array>
 
 </resources>

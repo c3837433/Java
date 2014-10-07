@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Network Preferences" >
+        <ListPreference
+            android:key="PREF_NETWORK_LIST"
+            android:summary="Select which network state you would prefer"
+            android:title="Retriving Book Information"
+            android:entries="@array/network_status_array"
+            android:entryValues="@array/list_array"
+            android:dialogTitle="@string/settings_dialog"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Cache Preferences" >
+
+    <Preference
+        android:key="PREF_CACHE"
+        android:summary="Delete all stored book information in cache."
+        android:title="Clear Cache" />
+    </PreferenceCategory>
+</PreferenceScreen>

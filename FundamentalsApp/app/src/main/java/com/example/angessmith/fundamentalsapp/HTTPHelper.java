@@ -3,13 +3,10 @@ package com.example.angessmith.fundamentalsapp;
 
 // Created by AngeSSmith on 9/30/14.
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +19,6 @@ public class HTTPHelper {
 
     public static String getData(Main context, String param) {
 
-        JSONObject jsonObject;
         String dataString = "";
         try {
             // set the passed in string as a url
@@ -31,8 +27,8 @@ public class HTTPHelper {
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             // Set up the connection properties
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(15000);
             // Begin the connection
             connection.connect();
             // Check the response

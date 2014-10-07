@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.angessmith.fundamentalsapp.Fragment.BookListFragment;
 import com.example.angessmith.fundamentalsapp.Fragment.DetailFragment;
+import com.example.angessmith.fundamentalsapp.Fragment.SettingsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,31 +32,53 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class Main extends Activity implements BookListFragment.OnListItemClickListener, BookListFragment.OnSpinnerListener, BookListFragment.OnButtonListener  {
     final String TAG = "FundamentalsApp";
+
     ArrayList<Book> mBooks;
     View bookListFragmentView;
-    ArrayList<BestSellerList> bestSellerList;
-
+    public static ArrayList<BestSellerList> bestSellerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Get the book lists in for the spinner
+        if (bestSellerList == null)
+        {
+            GetBookLists();
+        }
         if (savedInstanceState == null) {
             Log.d(TAG, "Getting Fragment");
             // Create the fragment
             BookListFragment bookListFragment = BookListFragment.newInstance();
             // get the fragment and commit it so we can access it with the spinner
             getFragmentManager().beginTransaction().replace(R.id.book_list_container, bookListFragment, BookListFragment.TAG).commit();
-
-
         }
-    }
+        /*
+        else {
 
+            int position = savedInstanceState.getInt("SpinnerPosition");
+            Log.i(TAG, "The selected index should be: " + savedInstanceState.getInt("SpinnerPosition"));
+            ArrayList<BestSellerList> books = (ArrayList<BestSellerList>) savedInstanceState.getSerializable("Books");
+            // Check to make sure it is not empty
+            if (books != null) {
+                setListInSpinner(books, position);
+            }
+        }
+        */
+    }
+    /*
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putInt("SpinnerPosition", BookListFragment.mSpinner.getSelectedItemPosition());
+        bundle.putSerializable("Books", bestSellerList);
+    }
+    */
     // Implementation for button listener
     @Override
     public void GetBookLists() {
@@ -84,11 +107,19 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             }
             else {
                 // send the arraylist to the spinner
-                ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(this, android.R.layout.simple_spinner_dropdown_item, (cachedList));
-                // Set the adapter to the spinner
-                BookListFragment.mSpinner.setAdapter(arrayAdapter);
+                setListInSpinner(cachedList, 0);
             }
         }
+    }
+
+    public void setListInSpinner(ArrayList<BestSellerList> bookList, int position) {
+        ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
+        // Set the adapter to the spinner
+        Log.d(TAG, "The Spinner should be at position " + position);
+        Log.i(TAG, "The saved list = "+  bookList);
+        BookListFragment.mSpinner.setSelection(position);
+        BookListFragment.mSpinner.setAdapter(arrayAdapter);
+        //BookListFragment.mSpinner.setSelection(position);
     }
 
     @Override
@@ -144,9 +175,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         @Override
         protected void onPostExecute(ArrayList<BestSellerList> arrayList) {
             // Get the spinner and create an array adapter for it
-            ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(Main.this, android.R.layout.simple_spinner_dropdown_item, (arrayList));
-            // Set the adapter to the spinner
-            BookListFragment.mSpinner.setAdapter(arrayAdapter);
+            setListInSpinner(arrayList, 0);
             //setSellerListsInSpinner(arrayList);
         }
     }
@@ -371,7 +400,13 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        // Load the preference fragment
+        // Display the fragment as the main content.
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment())
+                .commit();
         int id = item.getItemId();
+        Log.i(TAG, "The menu item id = " + id);
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
@@ -379,7 +414,6 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     public void setBookDetails(String title, String author, String description, int rank, String listType) {
         // Get the passed over data
         Log.i(TAG, "Retrieved title: " + title + " author: " + author + " rank: " + rank + " description: " + description);
-        // TODO: pass the selected data to the Details fragment
         // Get the detail fragment
         DetailFragment detailFragment = (DetailFragment) getFragmentManager().findFragmentByTag(DetailFragment.TAG);
         // check if it was created

@@ -4,5 +4,19 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".Main">
+    <LinearLayout
+        android:id="@+id/book_list_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_weight="0.5">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/book_detail_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+    </LinearLayout>
 
 </LinearLayout>
