@@ -6,10 +6,11 @@
         <ListPreference
             android:key="PREF_NETWORK_LIST"
             android:summary="Select which network state you would prefer"
-            android:title="Retriving Book Information"
+            android:title="Retrieving Book Information"
             android:entries="@array/network_status_array"
-            android:entryValues="@array/list_array"
-            android:dialogTitle="@string/settings_dialog"/>
+            android:entryValues="@array/network_value_array"
+            android:dialogTitle="@string/settings_dialog"
+            android:defaultValue="network"/>
 
     </PreferenceCategory>
 

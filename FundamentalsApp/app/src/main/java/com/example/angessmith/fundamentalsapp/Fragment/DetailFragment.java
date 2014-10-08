@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.angessmith.fundamentalsapp.R;
 
-public class DetailFragment extends Fragment{
+public class DetailFragment extends Fragment {
 
     // Create the tag for this fragment
     public static final String TAG = "DetailFragment.TAG";
@@ -43,8 +43,7 @@ public class DetailFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle _savedInstanceState) {
         // Inflate the second container with this view
-        View view = inflater.inflate(R.layout.book_details_fragment, container, false);
-        return view;
+        return inflater.inflate(R.layout.book_details_fragment, container, false);
     }
 
     @Override

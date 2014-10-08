@@ -4,6 +4,7 @@ package com.example.angessmith.fundamentalsapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,58 +33,54 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
-public class Main extends Activity implements BookListFragment.OnListItemClickListener, BookListFragment.OnSpinnerListener, BookListFragment.OnButtonListener  {
+public class Main extends Activity implements BookListFragment.OnListItemClickListener, BookListFragment.OnSpinnerListener  {
     final String TAG = "FundamentalsApp";
 
     ArrayList<Book> mBooks;
     View bookListFragmentView;
     public static ArrayList<BestSellerList> bestSellerList;
+    private SharedPreferences settingsPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        settingsPreferences = getPreferences(MODE_PRIVATE);
+        if (settingsPreferences.contains("PREF_NETWORK_LIST")) {
+            Log.d(TAG, "Preference Default has been set");
+        } else {
+            Log.d(TAG, "Preference Default has NOT been set");
+            // set the default
+            SharedPreferences.Editor editor = settingsPreferences.edit();
+            editor.putString("PREF_NETWORK_LIST", "network");
+            editor.commit();
+        }
         // Get the book lists in for the spinner
         if (bestSellerList == null)
         {
             GetBookLists();
         }
         if (savedInstanceState == null) {
-            Log.d(TAG, "Getting Fragment");
+            //Log.d(TAG, "Getting Fragment");
             // Create the fragment
             BookListFragment bookListFragment = BookListFragment.newInstance();
             // get the fragment and commit it so we can access it with the spinner
             getFragmentManager().beginTransaction().replace(R.id.book_list_container, bookListFragment, BookListFragment.TAG).commit();
         }
-        /*
-        else {
+    }
 
-            int position = savedInstanceState.getInt("SpinnerPosition");
-            Log.i(TAG, "The selected index should be: " + savedInstanceState.getInt("SpinnerPosition"));
-            ArrayList<BestSellerList> books = (ArrayList<BestSellerList>) savedInstanceState.getSerializable("Books");
-            // Check to make sure it is not empty
-            if (books != null) {
-                setListInSpinner(books, position);
-            }
-        }
-        */
-    }
-    /*
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
-        bundle.putInt("SpinnerPosition", BookListFragment.mSpinner.getSelectedItemPosition());
-        bundle.putSerializable("Books", bestSellerList);
-    }
-    */
     // Implementation for button listener
-    @Override
+    //@Override
     public void GetBookLists() {
-        Log.d(TAG, "User clicked the button to get data");
+        //Log.d(TAG, "User clicked the button to get data");
         // Create an instance of the connection checker. After the fragment is committed, getActivity gets the context
+        // Check the user's preference
+
+        String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
+        Log.i(TAG, "This user selected:"+ networkPreference);
         ConnectionChecker connectionChecker = new ConnectionChecker(Main.this);
         // check if connected
         boolean isConnected = connectionChecker.canConnectInternet();
@@ -115,8 +112,8 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     public void setListInSpinner(ArrayList<BestSellerList> bookList, int position) {
         ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
         // Set the adapter to the spinner
-        Log.d(TAG, "The Spinner should be at position " + position);
-        Log.i(TAG, "The saved list = "+  bookList);
+        //Log.d(TAG, "The Spinner should be at position " + position);
+        //Log.i(TAG, "The saved list = "+  bookList);
         BookListFragment.mSpinner.setSelection(position);
         BookListFragment.mSpinner.setAdapter(arrayAdapter);
         //BookListFragment.mSpinner.setSelection(position);
@@ -124,6 +121,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
     @Override
     public void GetBooksOnList(AdapterView<?> parent, View view, int position, long id) {
+        // Get the bookl on the list at the selected index
         getBookListBooks(parent, position, bestSellerList);
 
     }
@@ -183,12 +181,12 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     // CACHE BEST SELLER LISTS OR LIST BOOKS IN EXTERNAL STORAGE FOR OFFLINE USE
     private void cacheDataForOfflineUse(String filename, java.util.RandomAccess object) {
         File externalFilesDir = this.getExternalFilesDir(null);
-        Log.d(TAG, "File directory = " + externalFilesDir);
+        //Log.d(TAG, "File directory = " + externalFilesDir);
         File file = new File(externalFilesDir, filename);
         //File file;
         try {
             // file = File.createTempFile(filename, null, getActivity().getCacheDir());
-            Log.d(TAG, "File directory = " + file);
+            //Log.d(TAG, "File directory = " + file);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
             // Write the data to the file
@@ -242,7 +240,6 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             // Return nothing
             storedDataList = null;
         }
-
         return storedDataList;
     }
 
@@ -250,6 +247,8 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
     private void getBookListBooks(AdapterView<?> parent, int position, ArrayList<BestSellerList> arrayList) {
         // Make sure we are still connected to the internet
+        String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
+        Log.i(TAG, "This user selected:"+ networkPreference);
         ConnectionChecker connectionChecker = new ConnectionChecker(this);
         boolean isConnected = connectionChecker.canConnectInternet();
         if (isConnected) {
@@ -264,7 +263,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             // Call the task to get the book details
             GetBooksForSelectedList task = new GetBooksForSelectedList();
             task.execute(bookUrlString, encodedName);
-            Log.d(TAG, "Encoded name = " + encodedName);
+            //Log.d(TAG, "Encoded name = " + encodedName);
         } else {
             // User is not connected, pull data from cache
             Toast.makeText(this, "No internet connection, checking cache.", Toast.LENGTH_SHORT).show();
@@ -296,7 +295,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         }
         @Override
         protected ArrayList<Book> doInBackground(String... params) {
-            Log.d(TAG, "Params 1 = " + params[0] + " and param 2 = " + params [1]);
+            //Log.d(TAG, "Params 1 = " + params[0] + " and param 2 = " + params [1]);
             // Use the helper to get the data from the passed in url string
             String dataString = HTTPHelper.getData(Main.this, params[0]);
             // get the encoded name passed in
@@ -354,7 +353,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         File file = new File(external, filename);
         // see if this file exists or not
         boolean fileExists = new File(external, filename).exists();
-        Log.d(TAG, "This file exists: " + fileExists);
+        //Log.d(TAG, "This file exists: " + fileExists);
         if (fileExists) {
             try {
                 // Create a new input stream with this file
@@ -383,7 +382,6 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         else {
             storedListBooks = null;
         }
-
         return storedListBooks;
     }
 
@@ -395,25 +393,35 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         return true;
     }
 
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        // Load the preference fragment
-        // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
-        int id = item.getItemId();
-        Log.i(TAG, "The menu item id = " + id);
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        // check what was selected
+        switch (item.getItemId())
+        {
+            // (only "Preferences" right now...
+            case R.id.action_settings:
+                // Load the preference fragment
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new SettingsFragment())
+                        // make sure we can get back to the main view
+                        .addToBackStack("settings")
+                        .commit();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
+
 
     @Override
     public void setBookDetails(String title, String author, String description, int rank, String listType) {
         // Get the passed over data
-        Log.i(TAG, "Retrieved title: " + title + " author: " + author + " rank: " + rank + " description: " + description);
+        //Log.i(TAG, "Retrieved title: " + title + " author: " + author + " rank: " + rank + " description: " + description);
         // Get the detail fragment
         DetailFragment detailFragment = (DetailFragment) getFragmentManager().findFragmentByTag(DetailFragment.TAG);
         // check if it was created

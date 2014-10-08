@@ -6,13 +6,11 @@ package com.example.angessmith.fundamentalsapp.Fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -23,12 +21,11 @@ import com.example.angessmith.fundamentalsapp.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import static android.widget.AdapterView.OnItemClickListener;
 
 
-public class BookListFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, OnItemClickListener {
+public class BookListFragment extends Fragment implements AdapterView.OnItemSelectedListener, OnItemClickListener {
 
     // Create the TAG
     public static final String TAG = "BookListFragment.TAG";
@@ -37,7 +34,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     public static final String ARG_POSITION = "BookListFragment.ARG_POSITION";
     private OnListItemClickListener mListListener;
     private OnSpinnerListener mSpinnerListener;
-    private OnButtonListener mButtonListener;
+    //private OnButtonListener mButtonListener;
 
     public static Spinner mSpinner;
     public static ListView mListview;
@@ -69,11 +66,14 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
             mSpinnerListener = (OnSpinnerListener) activity;
         }
 
+        /*
         if (activity instanceof OnButtonListener) {
             mButtonListener = (OnButtonListener) activity;
         }
+        */
     }
 
+    /*
     // SET UP FOR WHEN THE USER CLICKS THE BUTTON TO GET THE LISTS
     @Override
     public void onClick(View v) {
@@ -85,7 +85,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
             e.printStackTrace();
         }
     }
-
+    */
     // SET UP LISTENER FOR LISTVIEW
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -128,19 +128,19 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     public interface OnSpinnerListener {
         public void GetBooksOnList(AdapterView<?> parent, View view, int position, long id);
     }
-
+    /*
     // Define the button interface
     public interface  OnButtonListener {
         public void GetBookLists() throws ExecutionException, InterruptedException;
     }
-
+    */
     // SET THE FRAGMENT IN THE LAYOUT
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle _savedInstanceState) {
         return inflater.inflate(R.layout.book_list_fragment, container, false);
     }
 
-    // SET UP BUTTON TO CHECK FOR INTERNET AND PULL BEST SELLER LISTS FROM WEB OR CACHE FOR SPINNER
+    // SET UP TO CHECK FOR INTERNET AND PULL BEST SELLER LISTS FROM WEB OR CACHE FOR SPINNER
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -156,26 +156,26 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
         Serializable arrayList =  bA.getSerializable(ARG_BOOKLIST);
         if (arrayList == null) {
             // If not, don't do anything
-            Log.i(TAG, "The arraylist is empty");
+            //Log.i(TAG, "The arraylist is empty");
         }
         else {
             // if we have data set it in the arraylist
             setBookListsInList((ArrayList<BestSellerList>) bA.getSerializable(ARG_BOOKLIST), bA.getInt(ARG_POSITION));
-            Log.i(TAG, "The arraylist has " + bA.getSerializable(ARG_BOOKLIST));
+            //Log.i(TAG, "The arraylist has " + bA.getSerializable(ARG_BOOKLIST));
         }
 
 
-        Button button = (Button) view.findViewById(R.id.get_list_button);
-        button.setOnClickListener(this);
+        //Button button = (Button) view.findViewById(R.id.get_list_button);
+        //button.setOnClickListener(this);
 
         mListview = (ListView) view.findViewById(R.id.bookslist);
         mListview.setOnItemClickListener(this);
 
     }
 
-    // set the saved booklist into the spinner
+    // set the saved book list into the spinner
     public void setBookListsInList(ArrayList<BestSellerList> bestSellersList, int position) {
-        Log.i(TAG, "User selected item at position " + position + " in: " + bestSellersList);
+        //Log.i(TAG, "User selected item at position " + position + " in: " + bestSellersList);
         // Update the arguments each time the device is rotated
         getArguments().putSerializable(ARG_BOOKLIST, bestSellersList);
         getArguments().putInt(ARG_POSITION, position);

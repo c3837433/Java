@@ -3,19 +3,30 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".Main">
-    <LinearLayout
-        android:id="@+id/book_list_container"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:layout_weight="0.5">
-    </LinearLayout>
+    tools:context=".Main"
+    android:background="#ff39add1">
     <LinearLayout
         android:id="@+id/book_detail_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="0.5"
+        android:orientation="vertical"
+        android:layout_weight="0.38">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/header_title"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textStyle="bold|italic"
+            android:textSize="20sp"
+            android:textColor="#95ffffff" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/book_list_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.62"
         android:orientation="vertical">
     </LinearLayout>
 
