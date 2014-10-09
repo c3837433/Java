@@ -50,13 +50,13 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
         settingsPreferences = getPreferences(MODE_PRIVATE);
         if (settingsPreferences.contains("PREF_NETWORK_LIST")) {
-            Log.d(TAG, "Preference Default has been set");
+            //Log.d(TAG, "Preference Default has been set");
             // Make sure we have a book list saved in case the user deleted it and set to cache only
             String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
-            Log.i(TAG, "This user selected:"+ networkPreference);
+            //Log.i(TAG, "This user selected:"+ networkPreference);
 
             if (networkPreference.equals("cache_only")) {
-                Log.d(TAG, "Need to get bestSellers list");
+               // Log.d(TAG, "Need to get bestSellers list");
                 File external = this.getExternalFilesDir(null);
                 // Make sure this file exists or not
                 boolean fileExists = new File(external, "bestSellersList.txt").exists();
@@ -72,17 +72,37 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             editor.commit();
         }
         // Get the book lists in for the spinner
-        if (bestSellerList == null)
-        {
-            GetBookLists();
-        }
+
         if (savedInstanceState == null) {
+            //Toast.makeText(this, "saved instance state = null", Toast.LENGTH_SHORT).show();
+            if (bestSellerList == null)
+            {
+                //Toast.makeText(this, "Bestsellers = null", Toast.LENGTH_SHORT).show();
+                GetBookLists();
+            }
             //Log.d(TAG, "Getting Fragment");
             // Create the fragment
             BookListFragment bookListFragment = BookListFragment.newInstance();
             // get the fragment and commit it so we can access it with the spinner
             getFragmentManager().beginTransaction().replace(R.id.book_list_container, bookListFragment, BookListFragment.TAG).commit();
+        } else {
+            // Get the list out of the saved instance state
+            //Toast.makeText(this, "Checking saved instance state for list", Toast.LENGTH_SHORT).show();
+            bestSellerList = (ArrayList<BestSellerList>) savedInstanceState.getSerializable("ARG_BOOKLIST");
+            Toast.makeText(this, "Updating List from Saved State", Toast.LENGTH_SHORT).show();
+            if (bestSellerList == null) {
+                Toast.makeText(this, "Bestsellers = null, getting list", Toast.LENGTH_SHORT).show();
+                GetBookLists();
+            }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // set the current values to the bundle
+        Toast.makeText(Main.this, "saving current list", Toast.LENGTH_SHORT).show();
+        savedInstanceState.putSerializable("ARG_BOOKLIST", bestSellerList);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     // Implementation for button listener
@@ -92,7 +112,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
         // CHECK THE USERS NETWORK PREFERENCE
         String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
-        Log.i(TAG, "This user selected:"+ networkPreference);
+        //Log.i(TAG, "This user selected:"+ networkPreference);
         // CHECK THE CONENCTION
         ConnectionChecker connectionChecker = new ConnectionChecker(Main.this);
         boolean isConnected = connectionChecker.canConnectInternet();
@@ -100,26 +120,26 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
         // FOR "NETWORK" PREFERENCE SETTING
         if (networkPreference.equals("network") && (isConnected)) {
-            Log.d(TAG, "Pulling Best Sellers Lists for user's NETWORK preference");
+            //Log.d(TAG, "Pulling Best Sellers Lists for user's NETWORK preference");
             pullBookListsFromWeb();
         }
         else {
-            Log.d(TAG, "Checking Cache for Best Sellers Lists");
+            //Log.d(TAG, "Checking Cache for Best Sellers Lists");
             ArrayList<BestSellerList> cachedList = (ArrayList<BestSellerList>) pullCachedBestSellerListsForOffline(Main.this, "bestSellersList.txt");
             if (cachedList == null)
             {
-                Log.d(TAG, "No Best Sellers List Available in Cache, pulling from web");
+                //Log.d(TAG, "No Best Sellers List Available in Cache, pulling from web");
                 if (networkPreference.equals("check_offline") && (isConnected)) {
                     pullBookListsFromWeb();
                 }
                 else {
-                    Log.d(TAG, "No Best Sellers List Available in Cache and no internet available");
+                    //Log.d(TAG, "No Best Sellers List Available in Cache and no internet available");
                     Toast.makeText(bookListFragmentView.getContext(), "No cache available, change your preference in settings or connect to the internet.", Toast.LENGTH_LONG).show();
                 }
             }
             else {
-                Log.d(TAG, "Loading Best Sellers List from Cache");
-                Log.d(TAG, "List data:" + cachedList);
+                //Log.d(TAG, "Loading Best Sellers List from Cache");
+                //Log.d(TAG, "List data:" + cachedList);
                 // send the arraylist to the spinner
                 setListInSpinner(cachedList, 0);
             }
@@ -138,13 +158,13 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     }
 
     public void setListInSpinner(ArrayList<BestSellerList> bookList, int position) {
-        Log.d(TAG, "Spinner data:" + bookList);
-        Log.d(TAG, "Spinner position:" + position);
+        //Log.d(TAG, "Spinner data:" + bookList);
+        //Log.d(TAG, "Spinner position:" + position);
         ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
         // Set the adapter to the spinner
         //Log.d(TAG, "The Spinner should be at position " + position);
         //Log.i(TAG, "The saved list = "+  bookList);
-       // BookListFragment.mSpinner.setSelection(position);
+        BookListFragment.mSpinner.setSelection(position);
         BookListFragment.mSpinner.setAdapter(arrayAdapter);
     }
 
@@ -232,7 +252,7 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     // RETRIEVE SPINNER BEST SELLER LISTS FROM CACHE FOR OFFLINE USE
     private Object pullCachedBestSellerListsForOffline(Context context, String filename) {
         List<BestSellerList> storedDataList = null;
-        // Reaccess the external file directory
+        // Reaccessed the external file directory
         File external = context.getExternalFilesDir(null);
         // And find the file with the passed in name
         File file = new File(external, filename);
@@ -290,28 +310,30 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
         // FOR "NETWORK" PREFERENCE SETTING
         if (networkPreference.equals("network") && (isConnected)) {
-            Log.d(TAG, "Pulling Books from Lists per user's NETWORK preference");
+            //Log.d(TAG, "Pulling Books from Lists per user's NETWORK preference");
+            Toast.makeText(this, "Pulling list from web", Toast.LENGTH_SHORT).show();
             pullBooklistBooksFromWeb(parent, position, arrayList);
         }
         else {
-            Log.d(TAG, "Checking Cache for selected Book List");
+            //Log.d(TAG, "Checking Cache for selected Book List");
             //Get this list's encoded name
             String selectedListName = arrayList.get(position).getEncodedName();
             mBooks = (ArrayList<Book>) pullCachedBooksForList(this, selectedListName + ".txt");
             if (mBooks == null)
             {
-                Log.d(TAG, "No Book List Available in Cache, pulling from web");
+                //Log.d(TAG, "No Book List Available in Cache, pulling from web");
                 if (networkPreference.equals("check_offline") && (isConnected)) {
-                    Toast.makeText(this, "New List, pulling from web", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "New List, pulling from web", Toast.LENGTH_SHORT).show();
                     pullBooklistBooksFromWeb(parent, position, arrayList);
                 }
                 else {
-                    Log.d(TAG, "No Book List Available in Cache and no internet available");
+                    //Log.d(TAG, "No Book List Available in Cache and no internet available");
                     Toast.makeText(this, "No cache available, change your preference in settings or connect to the internet.", Toast.LENGTH_LONG).show();
                 }
             }
             else {
-                Log.d(TAG, "Loading Best Sellers List from Cache");
+                //Log.d(TAG, "Loading Best Sellers List from Cache");
+                //Toast.makeText(this, "Loading from Cache", Toast.LENGTH_SHORT).show();
                 // send the arraylist to the spinner
                 // Get the adapter
                 ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, (mBooks));
@@ -321,32 +343,8 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
             }
         }
 
-        /*
-        if (isConnected) {
-            pullBooklistBooksFromWeb(parent, position, arrayList);
-            //Log.d(TAG, "Encoded name = " + encodedName);
-        } else {
-            // User is not connected, pull data from cache
-            Toast.makeText(this, "No internet connection, checking cache.", Toast.LENGTH_SHORT).show();
-            //Get this list's encoded name
-            String selectedListName = arrayList.get(position).getEncodedName();
-            mBooks = (ArrayList<Book>) pullCachedBooksForList(this, selectedListName + ".txt");
-            //ArrayList<Book> cachedBooks = (ArrayList<Book>) pullCachedBooksForList(getActivity(), selectedListName + ".txt");
-            if (mBooks == null)
-            {
-                // Than this information has not been cached yet, alert the user
-                Toast.makeText(this, "This list has not been retrieved yet. Connect to the internet and try again.", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                // Get the adapter
-                ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, (mBooks));
-                // set the books in the adapter
-                BookListFragment.mListview.setAdapter(arrayAdapter);
-                BookListFragment.mBooks = mBooks;
-            }
-        }
-        */
     }
+
 
     private void pullBooklistBooksFromWeb(AdapterView<?> parent, int position, ArrayList<BestSellerList> arrayList) {
         // bet the list object at the selected position
@@ -511,4 +509,5 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         }
 
     }
+
 }

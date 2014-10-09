@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -40,6 +41,7 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     public static ListView mListview;
     public static ArrayList<Book> mBooks;
     ArrayList<BestSellerList> bestSellerList;
+    private int spinnerPosition;
 
     // Create a factory instance of the fragment
     public static BookListFragment newInstance() {
@@ -86,6 +88,26 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
     */
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // see if we have a state saved
+        if (savedInstanceState != null) {
+            // get the values back
+            bestSellerList = (ArrayList<BestSellerList>) savedInstanceState.getSerializable(ARG_BOOKLIST);
+            spinnerPosition = savedInstanceState.getInt(ARG_POSITION);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // set the current values to the bundle
+        savedInstanceState.putSerializable(ARG_BOOKLIST, bestSellerList);
+        savedInstanceState.getInt(ARG_POSITION, spinnerPosition);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     // SET UP LISTENER FOR LISTVIEW
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,11 +126,12 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // save this item in the bundle
-        getArguments().putInt(ARG_POSITION, position);
+        spinnerPosition = position;
+        getArguments().putInt(ARG_POSITION, spinnerPosition);
         // get the list
         bestSellerList = Main.bestSellerList;
         getArguments().putSerializable(ARG_BOOKLIST, bestSellerList);
-        mSpinnerListener.GetBooksOnList(parent, view, position, id);
+        mSpinnerListener.GetBooksOnList(parent, view, spinnerPosition, id);
     }
 
     @Override
