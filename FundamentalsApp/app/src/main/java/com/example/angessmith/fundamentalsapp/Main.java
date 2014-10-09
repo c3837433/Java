@@ -51,6 +51,19 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
         settingsPreferences = getPreferences(MODE_PRIVATE);
         if (settingsPreferences.contains("PREF_NETWORK_LIST")) {
             Log.d(TAG, "Preference Default has been set");
+            // Make sure we have a book list saved in case the user deleted it and set to cache only
+            String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
+            Log.i(TAG, "This user selected:"+ networkPreference);
+
+            if (networkPreference.equals("cache_only")) {
+                Log.d(TAG, "Need to get bestSellers list");
+                File external = this.getExternalFilesDir(null);
+                // Make sure this file exists or not
+                boolean fileExists = new File(external, "bestSellersList.txt").exists();
+                if (!fileExists) {
+                    Log.d(TAG, "NO BOOK LIST IN FILE");
+                }
+            }
         } else {
             Log.d(TAG, "Preference Default has NOT been set");
             // set the default
@@ -76,47 +89,63 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
     //@Override
     public void GetBookLists() {
         //Log.d(TAG, "User clicked the button to get data");
-        // Create an instance of the connection checker. After the fragment is committed, getActivity gets the context
-        // Check the user's preference
 
+        // CHECK THE USERS NETWORK PREFERENCE
         String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
         Log.i(TAG, "This user selected:"+ networkPreference);
+        // CHECK THE CONENCTION
         ConnectionChecker connectionChecker = new ConnectionChecker(Main.this);
-        // check if connected
         boolean isConnected = connectionChecker.canConnectInternet();
-        if (isConnected) {
-            Toast.makeText(Main.this, "Getting Lists from Web", Toast.LENGTH_SHORT).show();
-            // run the async task to get the list of array objects
-            String bookListString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
-            // Get an instance of the ASYNC TASK to get the data
-            GetBookListsTask task = new GetBookListsTask();
-            // execute the task
-            task.execute(bookListString);
+
+
+        // FOR "NETWORK" PREFERENCE SETTING
+        if (networkPreference.equals("network") && (isConnected)) {
+            Log.d(TAG, "Pulling Best Sellers Lists for user's NETWORK preference");
+            pullBookListsFromWeb();
         }
         else {
-            // User is not connected, pull data from cache
-            Toast.makeText(this,"No internet connection, checking cache.",Toast.LENGTH_SHORT).show();
-            // Get the data from the cache
+            Log.d(TAG, "Checking Cache for Best Sellers Lists");
             ArrayList<BestSellerList> cachedList = (ArrayList<BestSellerList>) pullCachedBestSellerListsForOffline(Main.this, "bestSellersList.txt");
             if (cachedList == null)
             {
-                Toast.makeText(bookListFragmentView.getContext(), "No cache available, connect to the internet and try again.", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "No Best Sellers List Available in Cache, pulling from web");
+                if (networkPreference.equals("check_offline") && (isConnected)) {
+                    pullBookListsFromWeb();
+                }
+                else {
+                    Log.d(TAG, "No Best Sellers List Available in Cache and no internet available");
+                    Toast.makeText(bookListFragmentView.getContext(), "No cache available, change your preference in settings or connect to the internet.", Toast.LENGTH_LONG).show();
+                }
             }
             else {
+                Log.d(TAG, "Loading Best Sellers List from Cache");
+                Log.d(TAG, "List data:" + cachedList);
                 // send the arraylist to the spinner
                 setListInSpinner(cachedList, 0);
             }
         }
+
+    }
+
+    private void pullBookListsFromWeb() {
+        Toast.makeText(Main.this, "Getting Lists from Web", Toast.LENGTH_SHORT).show();
+        // run the async task to get the list of array objects
+        String bookListString = "http://api.nytimes.com/svc/books/v2/lists/names.json?api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
+        // Get an instance of the ASYNC TASK to get the data
+        GetBookListsTask task = new GetBookListsTask();
+        // execute the task
+        task.execute(bookListString);
     }
 
     public void setListInSpinner(ArrayList<BestSellerList> bookList, int position) {
+        Log.d(TAG, "Spinner data:" + bookList);
+        Log.d(TAG, "Spinner position:" + position);
         ArrayAdapter<BestSellerList> arrayAdapter = new ArrayAdapter<BestSellerList>(this, android.R.layout.simple_spinner_dropdown_item, (bookList));
         // Set the adapter to the spinner
         //Log.d(TAG, "The Spinner should be at position " + position);
         //Log.i(TAG, "The saved list = "+  bookList);
-        BookListFragment.mSpinner.setSelection(position);
+       // BookListFragment.mSpinner.setSelection(position);
         BookListFragment.mSpinner.setAdapter(arrayAdapter);
-        //BookListFragment.mSpinner.setSelection(position);
     }
 
     @Override
@@ -247,22 +276,54 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
 
     private void getBookListBooks(AdapterView<?> parent, int position, ArrayList<BestSellerList> arrayList) {
         // Make sure we are still connected to the internet
+
+        // CHECK THE USERS NETWORK PREFERENCE
         String networkPreference = settingsPreferences.getString("PREF_NETWORK_LIST","network");
-        Log.i(TAG, "This user selected:"+ networkPreference);
-        ConnectionChecker connectionChecker = new ConnectionChecker(this);
+        //String preference = String.valueOf(SettingsFragment.listPreference.getValue());
+
+        Log.i(TAG, "This user selected: "+ networkPreference);
+        //Log.i(TAG, "Settings Fragment Preference: "+ preference);
+        // CHECK THE CONNECTION
+        ConnectionChecker connectionChecker = new ConnectionChecker(Main.this);
         boolean isConnected = connectionChecker.canConnectInternet();
+
+
+        // FOR "NETWORK" PREFERENCE SETTING
+        if (networkPreference.equals("network") && (isConnected)) {
+            Log.d(TAG, "Pulling Books from Lists per user's NETWORK preference");
+            pullBooklistBooksFromWeb(parent, position, arrayList);
+        }
+        else {
+            Log.d(TAG, "Checking Cache for selected Book List");
+            //Get this list's encoded name
+            String selectedListName = arrayList.get(position).getEncodedName();
+            mBooks = (ArrayList<Book>) pullCachedBooksForList(this, selectedListName + ".txt");
+            if (mBooks == null)
+            {
+                Log.d(TAG, "No Book List Available in Cache, pulling from web");
+                if (networkPreference.equals("check_offline") && (isConnected)) {
+                    Toast.makeText(this, "New List, pulling from web", Toast.LENGTH_SHORT).show();
+                    pullBooklistBooksFromWeb(parent, position, arrayList);
+                }
+                else {
+                    Log.d(TAG, "No Book List Available in Cache and no internet available");
+                    Toast.makeText(this, "No cache available, change your preference in settings or connect to the internet.", Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
+                Log.d(TAG, "Loading Best Sellers List from Cache");
+                // send the arraylist to the spinner
+                // Get the adapter
+                ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, (mBooks));
+                // set the books in the adapter
+                BookListFragment.mListview.setAdapter(arrayAdapter);
+                BookListFragment.mBooks = mBooks;
+            }
+        }
+
+        /*
         if (isConnected) {
-            Toast.makeText(this, "Getting List from Web", Toast.LENGTH_SHORT).show();
-            // bet the list object at the selected position
-            Object bookList = parent.getItemAtPosition(position);
-            Log.i(TAG, "List = " + bookList);
-            // Get the search name for this list
-            String encodedName = (arrayList.get(position).getEncodedName());
-            // Create the dynamic url
-            String bookUrlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + encodedName + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
-            // Call the task to get the book details
-            GetBooksForSelectedList task = new GetBooksForSelectedList();
-            task.execute(bookUrlString, encodedName);
+            pullBooklistBooksFromWeb(parent, position, arrayList);
             //Log.d(TAG, "Encoded name = " + encodedName);
         } else {
             // User is not connected, pull data from cache
@@ -284,6 +345,20 @@ public class Main extends Activity implements BookListFragment.OnListItemClickLi
                 BookListFragment.mBooks = mBooks;
             }
         }
+        */
+    }
+
+    private void pullBooklistBooksFromWeb(AdapterView<?> parent, int position, ArrayList<BestSellerList> arrayList) {
+        // bet the list object at the selected position
+        Object bookList = parent.getItemAtPosition(position);
+        Log.i(TAG, "List = " + bookList);
+        // Get the search name for this list
+        String encodedName = (arrayList.get(position).getEncodedName());
+        // Create the dynamic url
+        String bookUrlString = "http://api.nytimes.com/svc/books/v2/lists.json?list-name=" + encodedName + "&api-key=f728de24bc37bd5a9d96255d947a47fc%3A15%3A69830529";
+        // Call the task to get the book details
+        GetBooksForSelectedList task = new GetBooksForSelectedList();
+        task.execute(bookUrlString, encodedName);
     }
 
     // SECOND TASK TO GET LIST BOOKS FROM WEB AND STORE IN CACHE

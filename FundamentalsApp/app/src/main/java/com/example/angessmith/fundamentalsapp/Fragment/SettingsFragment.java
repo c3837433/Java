@@ -3,7 +3,9 @@ package com.example.angessmith.fundamentalsapp.Fragment;
 // Created by AngeSSmith on 10/7/14.
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -18,6 +20,8 @@ import java.io.File;
 public class SettingsFragment extends PreferenceFragment {
 
     final String TAG = "SettingsFragment";
+    public static ListPreference listPreference;
+    //private SharedPreferences settingsPreferences;
     // Override the on create to load in the preference fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,7 @@ public class SettingsFragment extends PreferenceFragment {
         super.onActivityCreated(_savedInstanceState);
 
         // Get the list preference
-        final ListPreference listPreference = (ListPreference) findPreference("PREF_NETWORK_LIST");
+        listPreference = (ListPreference) findPreference("PREF_NETWORK_LIST");
         // set a listener so if the value changes the preference gets updated
         listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -41,6 +45,11 @@ public class SettingsFragment extends PreferenceFragment {
                 //Log.i(TAG, "new value = " + newValue);
                 // Update the preference with the new value
                 listPreference.setValue((String) newValue);
+                // and update the preference
+                SharedPreferences settingsPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = settingsPreferences.edit();
+                editor.putString("PREF_NETWORK_LIST",(String)newValue);
+                editor.commit();
                 return false;
             }
         });
@@ -52,24 +61,53 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 // Empty the cache
                 Log.i(TAG, "User selected clear the cache");
-                File external = getActivity().getExternalFilesDir(null);
-                if (external.listFiles() != null) {
-                    for (File file : external.listFiles()) {
-                        Log.i(TAG, "Deleting file:" + file);
-                        file.delete();
-                    }
                     // Alert the user that all files have been deleted
                     AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                    dialog.setMessage("Cache Cleared");
-                    dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    dialog.setMessage("Best Seller List is needed for application. Would you like to save it and delete the rest?");
+                    dialog.setPositiveButton("Delete All", new DialogInterface.OnClickListener() {
                         // Listen for the user to click the button
                         public void onClick(DialogInterface dialog, int integer) {
                             // nothing to do
+                            File external = getActivity().getExternalFilesDir(null);
+
+                            if (external.listFiles() != null) {
+                                // Loop through and delete them all
+                                for (File file : external.listFiles()) {
+                                    Log.i(TAG, "Deleting file:" + file);
+                                    file.delete();
+                                }
+                            }
+                        }
+                    });
+                    dialog.setNeutralButton("Save", new DialogInterface.OnClickListener() {
+                        // Listen for the user to click the button
+                        public void onClick(DialogInterface dialog, int integer) {
+                            // Get the directory
+                            File external = getActivity().getExternalFilesDir(null);
+                            if (external.listFiles() != null) {
+                                // Loop through all the files
+                                for (File file : external.listFiles()) {
+                                    Log.i(TAG, "File name: " + file.getName());
+                                    if (file.getName().equals("bestSellersList.txt")) {
+                                        //save the bestsellerslist
+                                        Log.i(TAG, "Saving File: " + file);
+                                    } else {
+                                        // delete the rest
+                                        Log.i(TAG, "Deleting file:" + file);
+                                        file.delete();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    dialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        // Listen for the user to click the button
+                        public void onClick(DialogInterface dialog, int integer) {
+                            // nothing to do user canceled delete
                         }
                     });
                     // Show the user
                     dialog.show();
-                }
 
                 return true;
             }
