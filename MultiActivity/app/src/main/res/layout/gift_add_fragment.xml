@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_gift_title"
+        android:id="@+id/textView"
+        android:layout_weight="0.04"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:padding="10dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_gravity="center_horizontal"
+        android:selectAllOnFocus="true"
+        android:capitalize="sentences"
+        android:hint="@string/gift_name_item_hint"
+        android:padding="10dp"
+        android:inputType="textCapWords" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText2"
+        android:layout_weight="0.04"
+        android:hint="@string/store_hint"
+        android:padding="10dp"
+        android:inputType="textCapWords" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/editText3"
+        android:layout_weight="0.04"
+        android:hint="@string/price_hint"
+        android:padding="10dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/editText4"
+        android:layout_weight="0.04"
+        android:hint="@string/web_hint"
+        android:padding="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_button_hint"
+        android:id="@+id/button"
+        android:layout_gravity="center" />
+
+
+</LinearLayout>
