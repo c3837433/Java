@@ -3,11 +3,13 @@ package com.example.angessmith.multiactivity.Fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.angessmith.multiactivity.R;
 
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 public class GiftListFragment extends Fragment {
     // create fragment tag
     public static final String TAG = "GiftListFragment.TAG";
+    public static final String ARG_GIFTLIST = "GiftListFragment.ARG_GIFTLIST";
 
     // Define properties for the listview
     public static ArrayList<GiftObject> mGifts;
@@ -41,13 +44,44 @@ public class GiftListFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Check if the state was saved
+        if (savedInstanceState != null) {
+            // get the values back
+            mGifts = (ArrayList<GiftObject>) savedInstanceState.getSerializable(ARG_GIFTLIST);
+            //Log.i(TAG, "Gift Data from onCreate: " + mGifts);
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mGifts = new ArrayList<GiftObject>();
-        // Get the listview, and create and set the adapter to it
+        if (savedInstanceState != null) {
+            // Update the listview with the list items
+            SetGiftsInList();
+        } else {
+            mGifts = new ArrayList<GiftObject>();
+            //Log.i(TAG, "Creating new arraylist for gift data in onActivityCreated ");
+            // Get the listview, and create and set the adapter to it
+            SetGiftsInList();
+        }
+    }
+
+    private void SetGiftsInList() {
         mListview =  (ListView) getView().findViewById(R.id.giftlist);
         mArrayAdapter = new ArrayAdapter<GiftObject>(getActivity(), android.R.layout.simple_list_item_1, (mGifts));
         mListview.setAdapter(mArrayAdapter);
+    }
+
+    // SAVE THE ARRAY LIST WHEN NECESSARY
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // set the current values to the bundle
+        savedInstanceState.putSerializable(ARG_GIFTLIST, mGifts);
+        Log.i(TAG, "Saving gift data: " + mGifts);
+        // save the state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
 
