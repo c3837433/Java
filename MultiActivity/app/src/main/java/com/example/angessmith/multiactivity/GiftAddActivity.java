@@ -1,6 +1,7 @@
 package com.example.angessmith.multiactivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,7 +9,7 @@ import android.view.MenuItem;
 import com.example.angessmith.multiactivity.Fragment.GiftAddFragment;
 
 
-public class GiftAddActivity extends Activity {
+public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSaveItemListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,5 +40,17 @@ public class GiftAddActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void SaveItemsToList(String itemName, String itemLocation, String itemPrice, String itemUrl) {
+        // Get the passed over values
+        Intent intent = new Intent();
+        intent.putExtra("itemName", itemName);
+        intent.putExtra("itemLocation", itemLocation);
+        intent.putExtra("itemPrice", itemPrice);
+        intent.putExtra("itemUrl", itemUrl);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

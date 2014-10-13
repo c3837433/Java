@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_gift_title"
-        android:id="@+id/textView"
+        android:id="@+id/item_header"
         android:layout_weight="0.04"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -20,7 +20,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/item_title_textView"
         android:layout_gravity="center_horizontal"
         android:selectAllOnFocus="true"
         android:capitalize="sentences"
@@ -31,7 +31,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
+        android:id="@+id/item_location_textView"
         android:layout_weight="0.04"
         android:hint="@string/store_hint"
         android:padding="10dp"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
-        android:id="@+id/editText3"
+        android:id="@+id/item_price_textView"
         android:layout_weight="0.04"
         android:hint="@string/price_hint"
         android:padding="10dp" />
@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:id="@+id/editText4"
+        android:id="@+id/item_url_textView"
         android:layout_weight="0.04"
         android:hint="@string/web_hint"
         android:padding="10dp" />
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_button_hint"
-        android:id="@+id/button"
+        android:id="@+id/save_gift_button"
         android:layout_gravity="center" />
 
 
