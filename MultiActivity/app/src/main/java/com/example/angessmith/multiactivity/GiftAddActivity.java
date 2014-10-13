@@ -46,10 +46,10 @@ public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSave
     public void SaveItemsToList(String itemName, String itemLocation, String itemPrice, String itemUrl) {
         // Get the passed over values
         Intent intent = new Intent();
-        intent.putExtra("itemName", itemName);
-        intent.putExtra("itemLocation", itemLocation);
-        intent.putExtra("itemPrice", itemPrice);
-        intent.putExtra("itemUrl", itemUrl);
+        intent.putExtra("com.example.angessmith.ITEM_NAME", itemName);
+        intent.putExtra("com.example.angessmith.ITEM_LOCATION", itemLocation);
+        intent.putExtra("com.example.angessmith.ITEM_PRICE", itemPrice);
+        intent.putExtra("com.example.angessmith.ITEM_URL", itemUrl);
         setResult(RESULT_OK, intent);
         finish();
     }

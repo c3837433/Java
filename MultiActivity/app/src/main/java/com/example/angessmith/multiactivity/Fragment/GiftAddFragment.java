@@ -26,6 +26,9 @@ public class GiftAddFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_PRICE = "GiftAddFragment.ARG_PRICE";
     public static final String ARG_URL = "GiftAddFragment.ARG_URL";
 
+    // TODO: save the values in the fields on orientation change
+    // TODO: Add up functionality and save values entered in fields
+
     EditText mTitleTextView;
     EditText mLocTextView;
     EditText mPriceTextView;

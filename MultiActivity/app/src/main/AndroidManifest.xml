@@ -20,6 +20,10 @@
             android:name=".GiftAddActivity"
             android:label="@string/title_activity_gift_add" >
         </activity>
+        <activity
+            android:name=".DetailsViewActivity"
+            android:label="@string/title_activity_details_view" >
+        </activity>
     </application>
 
 </manifest>

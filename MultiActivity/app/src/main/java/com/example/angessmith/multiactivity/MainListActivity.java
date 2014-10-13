@@ -10,13 +10,14 @@ import android.widget.ArrayAdapter;
 
 import com.example.angessmith.multiactivity.Fragment.ButtonFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftAddFragment;
+import com.example.angessmith.multiactivity.Fragment.GiftDetailFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftListFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
 import java.util.ArrayList;
 
 
-public class MainListActivity extends Activity implements ButtonFragment.OnButtonClickListener {
+public class MainListActivity extends Activity implements ButtonFragment.OnButtonClickListener, GiftListFragment.OnGiftItemClickListener {
 
     // Create the strings for the tag and request id
     public static final String TAG = "MainListActivity";
@@ -74,10 +75,10 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
         // Check to see if we have valid data
         if (resultCode == RESULT_OK && requestCode == GIFT_REQUESTCODE) {
             // Get the result data
-            String itemName = data.getStringExtra("itemName");
-            String itemLocation = data.getStringExtra("itemLocation");
-            String itemPrice = data.getStringExtra("itemPrice");
-            String itemUrl = data.getStringExtra("itemUrl");
+            String itemName = data.getStringExtra("com.example.angessmith.ITEM_NAME");
+            String itemLocation = data.getStringExtra("com.example.angessmith.ITEM_LOCATION");
+            String itemPrice = data.getStringExtra("com.example.angessmith.ITEM_PRICE");
+            String itemUrl = data.getStringExtra("com.example.angessmith.ITEM_URL");
 
             Log.i(TAG, "Name: " + itemName + " Location: " + itemLocation + " For: " + itemPrice + " At: " + itemUrl);
 
@@ -90,4 +91,8 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
         }
     }
 
+    @Override
+    public void openGiftInDetailView(GiftObject object) {
+        Log.i(TAG, "Selected object = " + object);
+    }
 }
