@@ -21,9 +21,11 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
 
     // Create the strings for the tag and request id
     public static final String TAG = "MainListActivity";
-    public static final int GIFT_REQUESTCODE = 15148643;
+    public static final int GIFT_REQUEST_ADD_CODE = 15148643;
+    public static final int GIFT_REQUEST_DETAIL_CODE = 34684151;
     public static final String ARG_GIFTLIST = "GiftListFragment.ARG_GIFTLIST";
     public static final String DATA_KEY = "com.example.angessmith.GIFT";
+    public static final String DATA_POSITION = "com.example.angessmith.POSITION";
     public static GiftObject GIFTOBJECT;
 
     @Override
@@ -70,13 +72,13 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
         Intent intent = new Intent(this, GiftAddActivity.class);
         // Create the request code
         // start the intent (will change to for result when ready
-        startActivityForResult(intent, GIFT_REQUESTCODE);
+        startActivityForResult(intent, GIFT_REQUEST_ADD_CODE);
     }
 
     // WHEN THE ACTIVITY RETURNS FROM THE ADD A GIFT VIEW
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check to see if we have valid data
-        if (resultCode == RESULT_OK && requestCode == GIFT_REQUESTCODE) {
+        if (resultCode == RESULT_OK && requestCode == GIFT_REQUEST_ADD_CODE) {
             // see what data came back
             Log.i(TAG, "Data from add item: " + data);
             GiftObject gift = (GiftObject) data.getSerializableExtra(DATA_KEY);
@@ -88,16 +90,21 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
             // update the array adapter
             GiftListFragment.mArrayAdapter.notifyDataSetChanged();
         }
+
+        if (resultCode == RESULT_OK && requestCode == GIFT_REQUEST_DETAIL_CODE){
+            Log.i(TAG, "Data returned from detail view" + data);
+        }
     }
 
     @Override
-    public void openGiftInDetailView(GiftObject object) {
+    public void openGiftInDetailView(GiftObject object, int position) {
         Log.i(TAG, "Selected object = " + object.getLocation());
         Intent intent = new Intent(this, DetailsViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(DetailsViewActivity.DATA_KEY, object);
         intent.putExtras(bundle);
+        intent.putExtra(DetailsViewActivity.DATA_POSITION, position);
         setResult(RESULT_OK, intent);
-        startActivity(intent);
+        startActivityForResult(intent, GIFT_REQUEST_DETAIL_CODE);
     }
 }

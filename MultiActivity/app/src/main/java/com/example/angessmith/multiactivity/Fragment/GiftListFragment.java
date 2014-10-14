@@ -95,12 +95,12 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
         GiftObject giftObject = mGifts.get(position);
         Log.i(TAG, "User Clicked gift: " + giftObject);
         // Attach it to the listener to open in the view
-        mOnGiftItemClickListener.openGiftInDetailView(giftObject);
+        mOnGiftItemClickListener.openGiftInDetailView(giftObject, position);
     }
 
     // Define the list item interface
     public interface OnGiftItemClickListener {
-        public void openGiftInDetailView(GiftObject object);
+        public void openGiftInDetailView(GiftObject object, int position);
     }
 
     // SAVE THE ARRAY LIST WHEN NECESSARY

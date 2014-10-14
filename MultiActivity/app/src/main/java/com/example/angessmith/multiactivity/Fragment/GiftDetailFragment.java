@@ -9,13 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.angessmith.multiactivity.R;
 
  // Created by AngeSSmith on 10/13/14 for Java 2 Term 1410.
 
-public class GiftDetailFragment extends Fragment {
+public class GiftDetailFragment extends Fragment /*implements View.OnClickListener */{
     // Create the tag for this fragment
     public static final String TAG = "GiftDetailFragment.TAG";
     // And the bundle argument keys
@@ -23,9 +24,11 @@ public class GiftDetailFragment extends Fragment {
     public static final String ARG_LOC = "GiftDetailFragment.ARG_LOC ";
     public static final String ARG_PRICE = "GiftDetailFragment.ARG_PRICE";
     public static final String ARG_URL = "GiftDetailFragment.ARG_URL";
+    int position;
 
     // Define the interface listener
     private GiftDetailListener mDetailListener;
+    //private OnDeleteClickListener mDeleteButtonListener;
 
 
 
@@ -63,21 +66,58 @@ public class GiftDetailFragment extends Fragment {
         if (bundle != null) {
             // send the data to place on view
             //setGiftDetails(bundle.getString(ARG_NAME), bundle.getString(ARG_LOC), bundle.getString(ARG_PRICE), bundle.getString(ARG_URL));
+            // set the values in the view
             setGiftDetails();
         }
+        // Set the delete listener to the button
+        Button deleteButton = (Button) getView().findViewById(R.id.delete_button);
+        //deleteButton.setOnClickListener(this);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDetailListener.deleteGift();
+            }
+        });
+
 
     }
 
+    /*
+    @Override
+    public void onClick(View v) {
+        // Set the item position and call the delete detailed gift
+        /*
+        position = mDetailListener.getGiftPosition();
+        Log.i(TAG, "Position = " + position);
+        mDeleteButtonListener.deleteDetailedGift(position);
+        */
+      //  mDeleteButtonListener.deleteDetailedGift();
+   // }
+
+
+    // Create the listeners
     public interface GiftDetailListener {
         public GiftObject getGiftObject();
+        public int getGiftPosition();
+        public void deleteGift();
     }
 
-    // Attach the listener
+    /*
+    public interface OnDeleteClickListener {
+        //public void deleteDetailedGift(int position);
+        public void deleteDetailedGift();
+    }
+    */
+    // Attach the listeners
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // set the listener
-        mDetailListener = (GiftDetailListener) activity;
+        // check which instance the activity is and set them
+        if (activity instanceof GiftDetailListener) {
+            mDetailListener = (GiftDetailListener) activity;
+        } /*else if (activity instanceof OnDeleteClickListener) {
+            mDeleteButtonListener = (OnDeleteClickListener) activity;
+        }*/
     }
 
     public void setGiftDetails() {
