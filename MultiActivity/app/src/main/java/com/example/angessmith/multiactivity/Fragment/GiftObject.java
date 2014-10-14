@@ -36,16 +36,30 @@ public class GiftObject implements Serializable {
         return mName;
     }
 
+    public void setName (String _name) {
+        mName = _name;
+    }
+
     public String getLocation() {
         return mLocation;
+    }
+
+    public void setLocation (String _location) {
+        mLocation = _location;
     }
 
     public String getPrice() {
         return mPrice;
     }
+    public void setPrice(String _price) {
+        mPrice = _price;
+    }
 
     public String getUrl() {
         return mUrl;
+    }
+    public void setUrl (String _url) {
+        mUrl = _url;
     }
 
     // Set the gift name in the list view

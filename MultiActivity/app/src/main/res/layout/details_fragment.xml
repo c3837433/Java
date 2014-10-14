@@ -43,4 +43,11 @@
         android:layout_weight="0.06"
         android:textColorLink="#ff44b3ff"
         android:linksClickable="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Gift"
+        android:id="@+id/delete_button"
+        android:layout_weight="0.06" />
 </LinearLayout>

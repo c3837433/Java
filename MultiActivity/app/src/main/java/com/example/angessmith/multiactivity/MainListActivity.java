@@ -22,6 +22,9 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
     // Create the strings for the tag and request id
     public static final String TAG = "MainListActivity";
     public static final int GIFT_REQUESTCODE = 15148643;
+    public static final String ARG_GIFTLIST = "GiftListFragment.ARG_GIFTLIST";
+    public static final String DATA_KEY = "com.example.angessmith.GIFT";
+    public static GiftObject GIFTOBJECT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +77,13 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check to see if we have valid data
         if (resultCode == RESULT_OK && requestCode == GIFT_REQUESTCODE) {
-            // Get the result data
-            String itemName = data.getStringExtra("com.example.angessmith.ITEM_NAME");
-            String itemLocation = data.getStringExtra("com.example.angessmith.ITEM_LOCATION");
-            String itemPrice = data.getStringExtra("com.example.angessmith.ITEM_PRICE");
-            String itemUrl = data.getStringExtra("com.example.angessmith.ITEM_URL");
-
-            Log.i(TAG, "Name: " + itemName + " Location: " + itemLocation + " For: " + itemPrice + " At: " + itemUrl);
-
-            // Create a new gift object
-            GiftObject gift = GiftObject.newInstance(itemName, itemLocation, itemPrice, itemUrl);
-            // Add the item to the listview
+            // see what data came back
+            Log.i(TAG, "Data from add item: " + data);
+            GiftObject gift = (GiftObject) data.getSerializableExtra(DATA_KEY);
+            //GiftObject gift = (GiftObject) data.getSerializableExtra(ARG_GIFTLIST);
+            Log.i(TAG, "Gift Object Data: " + gift);
+            Log.i(TAG, "Gift Object Data Location: " + gift.getLocation());
+            // Add the object to the array list
             GiftListFragment.mGifts.add(gift);
             // update the array adapter
             GiftListFragment.mArrayAdapter.notifyDataSetChanged();
@@ -93,6 +92,12 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
 
     @Override
     public void openGiftInDetailView(GiftObject object) {
-        Log.i(TAG, "Selected object = " + object);
+        Log.i(TAG, "Selected object = " + object.getLocation());
+        Intent intent = new Intent(this, DetailsViewActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DetailsViewActivity.DATA_KEY, object);
+        intent.putExtras(bundle);
+        setResult(RESULT_OK, intent);
+        startActivity(intent);
     }
 }
