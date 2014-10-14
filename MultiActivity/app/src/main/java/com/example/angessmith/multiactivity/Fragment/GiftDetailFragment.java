@@ -3,6 +3,7 @@ package com.example.angessmith.multiactivity.Fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,6 +73,19 @@ public class GiftDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mDetailListener.deleteGift();
+            }
+        });
+
+        final Button shareButton = (Button) getView().findViewById(R.id.share_button);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // create an intent to share this item
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                String shareString = "I found " + mDetailListener.getGiftObject().getName() + " at " + mDetailListener.getGiftObject().getLocation() + " for $" + mDetailListener.getGiftObject().getPrice() + ". Check it out! " + mDetailListener.getGiftObject().getUrl();
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, "Share gift"));
             }
         });
 
