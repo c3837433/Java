@@ -1,5 +1,5 @@
 package com.example.angessmith.multiactivity.Fragment;
-
+// Created by AngeSSmith on 10/12/14 for Java 2 Term 1410.
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -9,10 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.angessmith.multiactivity.R;
-
-import java.util.concurrent.ExecutionException;
-
-// Created by AngeSSmith on 10/12/14 for Java 2 Term 1410.
 
 public class ButtonFragment  extends Fragment implements View.OnClickListener {
 

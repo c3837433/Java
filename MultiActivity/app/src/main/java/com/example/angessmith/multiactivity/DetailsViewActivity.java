@@ -1,13 +1,11 @@
 package com.example.angessmith.multiactivity;
-
+// Created by AngeSSmith on 10/12/14 for Java 2 Week 3 Term 1410.
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.example.angessmith.multiactivity.Fragment.GiftDetailFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftObject;
@@ -70,43 +68,12 @@ public class DetailsViewActivity extends Activity  implements GiftDetailFragment
     }
 
     @Override
-    public int getGiftPosition() {
-        return mListPosition;
-    }
-
-    @Override
     public void deleteGift() {
         // Finish the intent back to the main list passing the position to be deleted
         Log.i(TAG, "Deleting item at position: " + mListPosition);
         Intent intent = new Intent();
-        //intent.putExtra(MainListActivity.DATA_POSITION, position);
         intent.putExtra(MainListActivity.DATA_POSITION, mListPosition);
         setResult(RESULT_OK, intent);
         finish();
     }
-
-
-    /*
-    @Override
-    public void deleteDetailedGift(int position) {
-        // Finish the intent back to the main list passing the position to be deleted
-        Log.i(TAG, "Deleting item at position: " + position);
-        Intent intent = new Intent();
-        //intent.putExtra(MainListActivity.DATA_POSITION, position);
-        intent.putExtra(MainListActivity.DATA_POSITION, mListPosition);
-        setResult(RESULT_OK, intent);
-        finish();
-
-    }
-
-    @Override
-    public void deleteDetailedGift() {
-        Log.i(TAG, "Deleting item at position: " + mListPosition);
-        Intent intent = new Intent();
-        intent.putExtra(MainListActivity.DATA_POSITION, mListPosition);
-        setResult(RESULT_OK, intent);
-        finish();
-
-    }
-    */
 }

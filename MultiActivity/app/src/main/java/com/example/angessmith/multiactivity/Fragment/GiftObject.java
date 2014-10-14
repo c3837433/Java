@@ -1,6 +1,4 @@
 package com.example.angessmith.multiactivity.Fragment;
-
-
 // Created by AngeSSmith on 10/12/14 for Java 2 Term 1410.
 
 import java.io.Serializable;
@@ -31,40 +29,37 @@ public class GiftObject implements Serializable {
         //mPrice = 0;
     }
 
-    // Define the getters and setters
+    // Define the getters
     public String getName() {
         return mName;
     }
-
-    public void setName (String _name) {
-        mName = _name;
-    }
-
     public String getLocation() {
         return mLocation;
-    }
-
-    public void setLocation (String _location) {
-        mLocation = _location;
     }
 
     public String getPrice() {
         return mPrice;
     }
-    public void setPrice(String _price) {
-        mPrice = _price;
-    }
-
     public String getUrl() {
         return mUrl;
     }
-    public void setUrl (String _url) {
-        mUrl = _url;
-    }
-
     // Set the gift name in the list view
     @Override
     public String toString() {
         return mName;
     }
+    /* Degind the setters
+    public void setName (String _name) {
+        mName = _name;
+    }
+    public void setLocation (String _location) {
+        mLocation = _location;
+    }
+    public void setPrice(String _price) {
+        mPrice = _price;
+    }
+    public void setUrl (String _url) {
+        mUrl = _url;
+    }
+    */
 }

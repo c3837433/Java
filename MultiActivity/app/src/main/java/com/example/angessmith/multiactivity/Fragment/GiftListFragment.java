@@ -1,6 +1,5 @@
 package com.example.angessmith.multiactivity.Fragment;
-
-
+// Created by AngeSSmith on 10/12/14 for Java 2 Week 3 Term 1410.
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,14 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.angessmith.multiactivity.R;
 
 import java.util.ArrayList;
-
-
-// Created by AngeSSmith on 10/12/14 for Java 2 Week 3 Term 1410.
 
 public class GiftListFragment extends Fragment implements AdapterView.OnItemClickListener {
     // create fragment tag

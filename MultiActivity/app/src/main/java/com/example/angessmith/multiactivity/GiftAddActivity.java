@@ -1,5 +1,5 @@
 package com.example.angessmith.multiactivity;
-
+// Created by AngeSSmith on 10/12/14 for Java 2 Week 3 Term 1410.
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
 public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSaveItemListener {
 
-    public static final String TAG = "GiftAddActivity";
-    public static final String ADDGIFTEXTRA = "com.example.angessmith.GIFT_ITEM";
+    //public static final String TAG = "GiftAddActivity";
+    //public static final String ADDGIFTEXTRA = "com.example.angessmith.GIFT_ITEM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSave
     @Override
     public void SaveItemsToList(String itemName, String itemLocation, String itemPrice, String itemUrl) {
         // Get the passed over values
-        GiftObject giftObject = new GiftObject();
+        //GiftObject giftObject = new GiftObject();
         GiftObject gift = GiftObject.newInstance(itemName, itemLocation, itemPrice, itemUrl);
         Intent intent = new Intent(this, MainListActivity.class);
         Bundle bundle = new Bundle();

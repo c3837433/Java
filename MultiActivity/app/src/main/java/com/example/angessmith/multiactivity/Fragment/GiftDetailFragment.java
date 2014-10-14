@@ -1,36 +1,32 @@
 package com.example.angessmith.multiactivity.Fragment;
+// Created by AngeSSmith on 10/13/14 for Java 2 Term 1410.
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.angessmith.multiactivity.R;
 
- // Created by AngeSSmith on 10/13/14 for Java 2 Term 1410.
-
-public class GiftDetailFragment extends Fragment /*implements View.OnClickListener */{
+public class GiftDetailFragment extends Fragment {
     // Create the tag for this fragment
     public static final String TAG = "GiftDetailFragment.TAG";
     // And the bundle argument keys
+    /*
     public static final String ARG_NAME = "GiftDetailFragment.ARG_NAME";
     public static final String ARG_LOC = "GiftDetailFragment.ARG_LOC ";
     public static final String ARG_PRICE = "GiftDetailFragment.ARG_PRICE";
     public static final String ARG_URL = "GiftDetailFragment.ARG_URL";
     int position;
+    */
 
     // Define the interface listener
     private GiftDetailListener mDetailListener;
-    //private OnDeleteClickListener mDeleteButtonListener;
-
-
 
     // Create the instance of the fragment
     public static GiftDetailFragment newInstance() {
@@ -82,32 +78,12 @@ public class GiftDetailFragment extends Fragment /*implements View.OnClickListen
 
     }
 
-    /*
-    @Override
-    public void onClick(View v) {
-        // Set the item position and call the delete detailed gift
-        /*
-        position = mDetailListener.getGiftPosition();
-        Log.i(TAG, "Position = " + position);
-        mDeleteButtonListener.deleteDetailedGift(position);
-        */
-      //  mDeleteButtonListener.deleteDetailedGift();
-   // }
-
-
     // Create the listeners
     public interface GiftDetailListener {
         public GiftObject getGiftObject();
-        public int getGiftPosition();
         public void deleteGift();
     }
 
-    /*
-    public interface OnDeleteClickListener {
-        //public void deleteDetailedGift(int position);
-        public void deleteDetailedGift();
-    }
-    */
     // Attach the listeners
     @Override
     public void onAttach(Activity activity) {
@@ -115,9 +91,7 @@ public class GiftDetailFragment extends Fragment /*implements View.OnClickListen
         // check which instance the activity is and set them
         if (activity instanceof GiftDetailListener) {
             mDetailListener = (GiftDetailListener) activity;
-        } /*else if (activity instanceof OnDeleteClickListener) {
-            mDeleteButtonListener = (OnDeleteClickListener) activity;
-        }*/
+        }
     }
 
     public void setGiftDetails() {
