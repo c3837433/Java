@@ -54,14 +54,18 @@
         android:id="@+id/item_url_textView"
         android:layout_weight="0.04"
         android:hint="@string/web_hint"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:paddingBottom="40dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_button_hint"
         android:id="@+id/save_gift_button"
-        android:layout_gravity="center" />
+        android:layout_weight="0.07"
+        android:background="@color/app_red_color"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="40dp" />
 
 
 </LinearLayout>

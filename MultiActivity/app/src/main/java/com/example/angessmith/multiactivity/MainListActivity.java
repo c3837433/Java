@@ -11,6 +11,10 @@ import com.example.angessmith.multiactivity.Fragment.ButtonFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftListFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+
 
 public class MainListActivity extends Activity implements ButtonFragment.OnButtonClickListener, GiftListFragment.OnGiftItemClickListener {
 
@@ -20,6 +24,7 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
     public static final int GIFT_REQUEST_DETAIL_CODE = 34684151;
     public static final String DATA_KEY = "com.example.angessmith.GIFT";
     public static final String DATA_POSITION = "com.example.angessmith.POSITION";
+    public static final String CACHE_FILE = "giftList.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,6 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
 
             ButtonFragment buttonFragment = ButtonFragment.newInstance();
             getFragmentManager().beginTransaction().replace(R.id.button_container, buttonFragment, ButtonFragment.TAG).commit();
-
         }
     }
 
@@ -86,6 +90,26 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
         GiftListFragment.mGifts.remove(giftPosition);
         // update the listview
         GiftListFragment.mArrayAdapter.notifyDataSetChanged();
+
+        // Update the file with the current objects
+        cacheGiftObjects();
+    }
+
+    private void cacheGiftObjects() {
+        File externalFilesDir = this.getExternalFilesDir(null);
+        File file = new File(externalFilesDir, CACHE_FILE);
+        try {
+            // create a new stream
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
+            // write the gifts and close the stream
+            outputStream.writeObject(GiftListFragment.mGifts);
+            outputStream.close();
+        }
+        catch(Exception exception) {
+            // if it couldn't write the file
+            Log.e(TAG, "Output Exception: ", exception);
+        }
     }
 
     private void addItemToListView(Intent data) {
@@ -98,6 +122,8 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
         GiftListFragment.mGifts.add(gift);
         // update the array adapter
         GiftListFragment.mArrayAdapter.notifyDataSetChanged();
+        // Update the cache
+        cacheGiftObjects();
     }
 
     @Override

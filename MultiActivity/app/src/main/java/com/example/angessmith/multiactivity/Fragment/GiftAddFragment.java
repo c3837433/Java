@@ -16,14 +16,6 @@ public class GiftAddFragment extends Fragment implements View.OnClickListener {
 
     // CREATE TAG
     public static final String TAG = "GiftAddFragment.TAG";
-    // And the bundle argument keys
-    public static final String ARG_GIFT_TITLE = "GiftAddFragment.ARG_GIFT_TITLE";
-    public static final String ARG_LOCATION = "GiftAddFragment.ARG_LOCATION";
-    public static final String ARG_PRICE = "GiftAddFragment.ARG_PRICE";
-    public static final String ARG_URL = "GiftAddFragment.ARG_URL";
-
-    // TODO: save the values in the fields on orientation change
-    // TODO: Add up functionality and save values entered in fields
 
     EditText mTitleTextView;
     EditText mLocTextView;
@@ -35,8 +27,7 @@ public class GiftAddFragment extends Fragment implements View.OnClickListener {
 
     // CREATE FACTORY
     public static GiftAddFragment newInstance() {
-        GiftAddFragment fragment = new GiftAddFragment();
-        return fragment;
+        return new GiftAddFragment();
     }
 
     // SET UP THE FRAGMENT LAYOUT
@@ -88,7 +79,7 @@ public class GiftAddFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(_savedInstanceState);
 
         Button button = (Button) getView().findViewById(R.id.save_gift_button);
-        button.setOnClickListener((View.OnClickListener) this);
+        button.setOnClickListener(this);
     }
 
 }
