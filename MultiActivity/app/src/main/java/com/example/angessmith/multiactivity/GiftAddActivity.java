@@ -12,9 +12,6 @@ import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
 public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSaveItemListener {
 
-    //public static final String TAG = "GiftAddActivity";
-    //public static final String ADDGIFTEXTRA = "com.example.angessmith.GIFT_ITEM";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,32 +45,15 @@ public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSave
 
     @Override
     public void SaveItemsToList(String itemName, String itemLocation, String itemPrice, String itemUrl) {
-        // Get the passed over values
-        //GiftObject giftObject = new GiftObject();
+        // Create a new serializable object
         GiftObject gift = GiftObject.newInstance(itemName, itemLocation, itemPrice, itemUrl);
+        // Create a new intent and pass the object through a bundle
         Intent intent = new Intent(this, MainListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(MainListActivity.DATA_KEY, gift);
         intent.putExtras(bundle);
-        //intent.putExtra(MainListActivity.GIFTOBJECT, gift);
-        /*
-        giftObject.setName(itemName);
-        giftObject.setLocation(itemLocation);
-        giftObject.setPrice(itemPrice);
-        giftObject.setUrl(itemUrl);
-        Intent intent = new Intent(this, MainListActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("com.example.angessmith.GIFT_ITEM", giftObject);
-        intent.putExtras(bundle);
-        */
-        /*
-        Intent intent = new Intent();
-        intent.putExtra("com.example.angessmith.ITEM_NAME", itemName);
-        intent.putExtra("com.example.angessmith.ITEM_LOCATION", itemLocation);
-        intent.putExtra("com.example.angessmith.ITEM_PRICE", itemPrice);
-        intent.putExtra("com.example.angessmith.ITEM_URL", itemUrl);
-        */
         setResult(RESULT_OK, intent);
+        // return to the main list with the new object
         finish();
     }
 }

@@ -17,33 +17,13 @@ import com.example.angessmith.multiactivity.R;
 public class GiftDetailFragment extends Fragment {
     // Create the tag for this fragment
     public static final String TAG = "GiftDetailFragment.TAG";
-    // And the bundle argument keys
-    /*
-    public static final String ARG_NAME = "GiftDetailFragment.ARG_NAME";
-    public static final String ARG_LOC = "GiftDetailFragment.ARG_LOC ";
-    public static final String ARG_PRICE = "GiftDetailFragment.ARG_PRICE";
-    public static final String ARG_URL = "GiftDetailFragment.ARG_URL";
-    int position;
-    */
 
     // Define the interface listener
     private GiftDetailListener mDetailListener;
 
     // Create the instance of the fragment
     public static GiftDetailFragment newInstance() {
-        GiftDetailFragment fragment = new GiftDetailFragment();
-        //GiftDetailFragment fragment = new GiftDetailFragment(String name, String loc, String price, String URL);
-        // Create the bundle
-        /*
-        Bundle bundleArguments = new Bundle();
-        bundleArguments.putString(ARG_NAME, name);
-        bundleArguments.putString(ARG_LOC, loc);
-        bundleArguments.putString(ARG_PRICE, price);
-        bundleArguments.putString(ARG_URL, URL);
-        // save the bundle arguments in the fragment
-        fragment.setArguments(bundleArguments);
-        */
-        return fragment;
+        return new GiftDetailFragment();
     }
 
     // Layout the view
@@ -61,8 +41,6 @@ public class GiftDetailFragment extends Fragment {
         // get and check the bundle for the passed data
         Bundle bundle = getArguments();
         if (bundle != null) {
-            // send the data to place on view
-            //setGiftDetails(bundle.getString(ARG_NAME), bundle.getString(ARG_LOC), bundle.getString(ARG_PRICE), bundle.getString(ARG_URL));
             // set the values in the view
             setGiftDetails();
         }
@@ -88,8 +66,6 @@ public class GiftDetailFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, "Share gift"));
             }
         });
-
-
     }
 
     // Create the listeners
@@ -109,13 +85,6 @@ public class GiftDetailFragment extends Fragment {
     }
 
     public void setGiftDetails() {
-        //setGiftDetails(String name, String loc, String price, String url)
-      /*  // update the gift details for orientation change
-        getArguments().putString(ARG_NAME, name);
-        getArguments().putString(ARG_LOC, loc);
-        getArguments().putString(ARG_PRICE, price);
-        getArguments().putString(ARG_URL, url);
-    */
         // Get the views
         TextView itemNameView = (TextView) getView().findViewById(R.id.name_text);
         TextView itemLocationView = (TextView) getView().findViewById(R.id.store_text);
@@ -132,14 +101,5 @@ public class GiftDetailFragment extends Fragment {
         itemLocationView.setText(mDetailListener.getGiftObject().getLocation());
         itemPriceView.setText(mDetailListener.getGiftObject().getPrice());
         itemUrlView.setText(mDetailListener.getGiftObject().getUrl());
-
-        // set the details
-        /*
-        itemNameView.setText(name);
-        itemLocationView.setText(loc);
-        itemPriceView.setText(price);
-        itemUrlView.setText(url);
-        */
     }
-
 }
