@@ -17,10 +17,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:parentActivityName="com.example.angessmith.multiactivity.MainListActivity"
             android:name=".GiftAddActivity"
             android:label="@string/title_activity_gift_add" >
         </activity>
         <activity
+            android:parentActivityName="com.example.angessmith.multiactivity.MainListActivity"
             android:name=".DetailsViewActivity"
             android:label="@string/title_activity_details_view" >
         </activity>

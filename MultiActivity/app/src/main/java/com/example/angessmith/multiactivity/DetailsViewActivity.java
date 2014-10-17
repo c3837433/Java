@@ -1,5 +1,6 @@
 package com.example.angessmith.multiactivity;
 // Created by AngeSSmith on 10/12/14 for Java 2 Week 3 Term 1410.
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,12 @@ public class DetailsViewActivity extends Activity  implements GiftDetailFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_view);
+
+        // Add up functionality
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             // load the fragment

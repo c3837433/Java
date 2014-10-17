@@ -1,5 +1,6 @@
 package com.example.angessmith.multiactivity;
 // Created by AngeSSmith on 10/12/14 for Java 2 Week 3 Term 1410.
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,12 @@ public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSave
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gift_add);
+
+        // Add up functionality
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             GiftAddFragment fragment = GiftAddFragment.newInstance();
