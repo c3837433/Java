@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.angessmith.multiactivity.Fragment.ButtonFragment;
+import com.example.angessmith.multiactivity.Fragment.AlertDialogFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftListFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
 
-public class MainListActivity extends Activity implements ButtonFragment.OnButtonClickListener, GiftListFragment.OnGiftItemClickListener {
+public class MainListActivity extends Activity implements GiftListFragment.OnGiftItemLongClickListener,GiftListFragment.OnGiftItemClickListener, AlertDialogFragment.DialogListener {
 
     // Create the strings for the tag and request id
     public static final String TAG = "MainListActivity";
@@ -35,9 +35,6 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
             // Replace the main activity containers with the fragments
             GiftListFragment giftListFragment = GiftListFragment.newInstance();
             getFragmentManager().beginTransaction().replace(R.id.gift_list_container, giftListFragment, GiftListFragment.TAG).commit();
-
-            ButtonFragment buttonFragment = ButtonFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.button_container, buttonFragment, ButtonFragment.TAG).commit();
         }
     }
 
@@ -51,19 +48,26 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+           // case R.id.action_settings:
+                // settings
+             //   break;
+            case R.id.action_add_item:
+                openAddStoryView();
+            default:
+                break;
+        }
+        /*
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
         }
+        */
         return super.onOptionsItemSelected(item);
     }
 
     // CREATE THE INTENT TO VIEW THE ADD A GIFT ACTIVITY
-    @Override
-    public void openAddStoryView() {
+    private void openAddStoryView() {
         Log.i(TAG, "Opening add a item activity");
         // Start a new intent so the add activity opens
         Intent intent = new Intent(this, GiftAddActivity.class);
@@ -141,4 +145,13 @@ public class MainListActivity extends Activity implements ButtonFragment.OnButto
         // Start activity
         startActivityForResult(intent, GIFT_REQUEST_DETAIL_CODE);
     }
+
+    // Implement the interface to delete an item when the Alert Dialog confirms delete
+    public void onConfirmDeleteItem () {
+        // Remove the selected item in the list
+        GiftListFragment fragment = (GiftListFragment) getFragmentManager().findFragmentById(R.id.gift_list_container);
+        fragment.onConfirmDeleteItem();
+    }
+
+
 }

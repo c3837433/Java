@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,9 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class GiftListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class GiftListFragment extends Fragment {
     // create fragment tag
     public static final String TAG = "GiftListFragment.TAG";
     public static final String ARG_GIFTLIST = "GiftListFragment.ARG_GIFTLIST";
@@ -32,8 +35,11 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
     public static ArrayList<GiftObject> mGifts;
     public static ListView mListview;
     public static ArrayAdapter<GiftObject> mArrayAdapter;
+    private ActionMode mActionMode;
+    private int mItemClicked;
 
     // Set the interface variable
+    private OnGiftItemLongClickListener mOnGiftItemLongClickListener;
     private OnGiftItemClickListener mOnGiftItemClickListener;
 
     // Create the factory
@@ -44,8 +50,40 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
     // SET UP THE FRAGMENT LAYOUT
     @Override
     public View onCreateView(LayoutInflater _inflater, ViewGroup _container, Bundle _savedInstanceState) {
-        // Return the GiftListFragment
-        return _inflater.inflate(R.layout.gift_list_fragment, _container, false);
+        // Get the view
+        View view = _inflater.inflate(R.layout.gift_list_fragment, _container, false);
+        // get the listview
+        ListView giftList = (ListView) view.findViewById(R.id.giftlist);
+        // Add it to the array
+        giftList.setAdapter(mArrayAdapter);
+        // Set up the long click listener to call the action mode
+        giftList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // see if an action mode already exists
+                if(mActionMode != null){
+                    // if it does, the user can interact with the one previously created
+                    return false;
+                }
+                mItemClicked = position;
+                // If one doesn't exist, get the activity and start the action mode
+                mActionMode = getActivity().startActionMode(mActionModeCallback);
+                return true;
+            }
+        });
+
+        giftList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(TAG, "User Clicked List");
+                // Get the object that was selected
+                GiftObject giftObject = mGifts.get(position);
+                Log.i(TAG, "User Clicked gift: " + giftObject);
+                // Attach it to the listener to open in the view
+                mOnGiftItemClickListener.openGiftInDetailView(giftObject, position);
+            }
+        });
+        return view;
     }
 
     @Override
@@ -55,6 +93,7 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
         if (savedInstanceState != null) {
             // get the values back
             mGifts = (ArrayList<GiftObject>) savedInstanceState.getSerializable(ARG_GIFTLIST);
+            mArrayAdapter = new ArrayAdapter<GiftObject>(getActivity(), android.R.layout.simple_list_item_1, (mGifts));
             //Log.i(TAG, "Gift Data from onCreate: " + mGifts);
         }
     }
@@ -108,7 +147,7 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
 
     private void SetGiftsInList() {
         mListview =  (ListView) getView().findViewById(R.id.giftlist);
-        mListview.setOnItemClickListener(this);
+        //mListview.setOnItemClickListener(this);
         mArrayAdapter = new ArrayAdapter<GiftObject>(getActivity(), android.R.layout.simple_list_item_1, (mGifts));
         mListview.setAdapter(mArrayAdapter);
     }
@@ -116,23 +155,74 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // Attach the activity to the listeners
-        mOnGiftItemClickListener = (OnGiftItemClickListener) activity;
+        // Attach the activity to the correct listeners
+        if (activity instanceof OnGiftItemLongClickListener) {
+            // set the listener
+            mOnGiftItemLongClickListener = (OnGiftItemLongClickListener) activity;
+        }
+        if (activity instanceof OnGiftItemClickListener) {
+            mOnGiftItemClickListener = (OnGiftItemClickListener) activity;
+        }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.i(TAG, "User Clicked List");
-        // Get the object that was selected
-        GiftObject giftObject = mGifts.get(position);
-        Log.i(TAG, "User Clicked gift: " + giftObject);
-        // Attach it to the listener to open in the view
-        mOnGiftItemClickListener.openGiftInDetailView(giftObject, position);
+    public interface OnGiftItemLongClickListener {
+
     }
 
     // Define the list item interface
     public interface OnGiftItemClickListener {
         public void openGiftInDetailView(GiftObject object, int position);
+    }
+
+    // Define the contextual action bar callback for the list on long click
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        // When created, get the menu
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Get the menu, inflate it, return it
+            MenuInflater menuInflater = mode.getMenuInflater();
+            menuInflater.inflate(R.menu.item_delete, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        // When the user clicks on the delete button
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // Make sure they clicked on the delete button
+            switch (item.getItemId()) {
+                case R.id.item_delete:
+                    // Create the dialog fragment
+                    AlertDialogFragment fragment = new AlertDialogFragment();
+                    // Pass the name of the item to the fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putString("item", mGifts.get(mItemClicked).getName());
+                    fragment.setArguments(bundle);
+                    fragment.show(getActivity().getFragmentManager(), AlertDialogFragment.TAG);
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            // Destroy the action mode so it can be used again
+            mActionMode = null;
+        }
+    };
+
+    // Define the interface method when user deletes an item
+    public void onConfirmDeleteItem() {
+        // Remove the selected item in the list
+        mArrayAdapter.remove(mGifts.get(mItemClicked));
+        // update the adapter
+        mArrayAdapter.notifyDataSetChanged();
     }
 
     // SAVE THE ARRAY LIST WHEN NECESSARY
@@ -144,6 +234,5 @@ public class GiftListFragment extends Fragment implements AdapterView.OnItemClic
         // save the state
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
 }
