@@ -71,7 +71,7 @@ public class GiftListFragment extends Fragment {
                 return true;
             }
         });
-
+        // set up the regular click to move to the detail view
         giftList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -165,6 +165,7 @@ public class GiftListFragment extends Fragment {
         }
     }
 
+    //  Do nothing, the action mode call back will handle the call
     public interface OnGiftItemLongClickListener {
 
     }

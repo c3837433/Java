@@ -57,15 +57,5 @@
         android:padding="10dp"
         android:paddingBottom="40dp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_button_hint"
-        android:id="@+id/save_gift_button"
-        android:layout_weight="0.07"
-        android:background="@color/app_red_color"
-        android:textColor="#ffffffff"
-        android:layout_marginTop="30dp" />
-
 
 </LinearLayout>

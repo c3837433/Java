@@ -11,7 +11,7 @@ import com.example.angessmith.multiactivity.Fragment.GiftAddFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
 
-public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSaveItemListener {
+public class GiftAddActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +45,28 @@ public class GiftAddActivity extends Activity implements  GiftAddFragment.OnSave
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_save) {
-            //GiftAddFragment.
+            // Save this object
+            onSaveItemClick();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void SaveItemsToList(String itemName, String itemLocation, String itemPrice, String itemUrl) {
-        // Create a new serializable object
-        GiftObject gift = GiftObject.newInstance(itemName, itemLocation, itemPrice, itemUrl);
-        // Create a new intent and pass the object through a bundle
-        Intent intent = new Intent(this, MainListActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MainListActivity.DATA_KEY, gift);
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
-        // return to the main list with the new object
-        finish();
+    public void onSaveItemClick () {
+        // Have the fragment get the values and create a new object
+        GiftAddFragment fragment = (GiftAddFragment) getFragmentManager().findFragmentById(R.id.gift_add_container);
+        // Create a new object if possible
+        GiftObject gift = (GiftObject) fragment.onSaveItemClick();
+        if (gift != null) {
+            // Create a new intent and pass the object through a bundle
+            Intent intent = new Intent(this, MainListActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MainListActivity.DATA_KEY, gift);
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
+            // return to the main list with the new object
+            finish();
+        }
+
     }
 }

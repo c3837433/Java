@@ -187,7 +187,6 @@ public class BookListFragment extends Fragment implements AdapterView.OnItemSele
             //Log.i(TAG, "The arraylist has " + bA.getSerializable(ARG_BOOKLIST));
         }
 
-
         //Button button = (Button) view.findViewById(R.id.get_list_button);
         //button.setOnClickListener(this);
 

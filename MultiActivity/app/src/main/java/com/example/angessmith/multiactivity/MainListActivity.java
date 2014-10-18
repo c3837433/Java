@@ -15,7 +15,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
+/*
+    MINIMUM
+    DONE Contain at least two screens: list and add.
+    DONE List screen will show a list of data with the ability to add a new entry using an add button in the action bar.
+         Add screen will allow the user to enter data and save that data to the list shown on the list screen using a save button in the action bar.
+    DONE User can long press on an action bar item and utilize a contextual action bar to delete an item from the list.
+    DONE Contextual action bar closes after an action is selected.
 
+MASTERY
+         Overflow section of the action bar is utilized on the add screen to allow the user to reset the contents of the form.
+    DONE When the contextual action bar closes due to a delete action being selected, the altered list is automatically updated.
+ */
 public class MainListActivity extends Activity implements GiftListFragment.OnGiftItemLongClickListener,GiftListFragment.OnGiftItemClickListener, AlertDialogFragment.DialogListener {
 
     // Create the strings for the tag and request id
