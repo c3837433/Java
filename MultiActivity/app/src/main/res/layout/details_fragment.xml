@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:padding="20dp"
     android:weightSum="1"
     android:baselineAligned="false">
 
@@ -95,23 +96,5 @@
             android:textColorLink="#ff44b3ff"
             android:linksClickable="true" />
     </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/delete_gift"
-        android:id="@+id/delete_button"
-        android:layout_weight="0.06"
-        android:textColor="@color/app_red_color"
-        android:layout_marginTop="20dp" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/share_gift"
-        android:id="@+id/share_button"
-        android:layout_weight="0.06"
-        android:background="@color/app_red_color"
-        android:textColor="#ffffffff" />
 
 </LinearLayout>

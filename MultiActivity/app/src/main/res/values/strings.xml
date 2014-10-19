@@ -10,7 +10,7 @@
     <string name="action_delete">Delete</string>
     <string name="add_gift">Add a Gift</string>
     <string name="title_activity_add_gift">Add Gift Activity</string>
-    <string name="title_activity_gift_add">Add a Gift</string>
+    <string name="title_activity_gift_add">Add an Item</string>
     <string name="gift_name_hint">Gift Item Name</string>
     <string name="add_gift_title">Enter Gift Information</string>
     <string name="gift_name_item_hint">Gift Item Name</string>
@@ -26,5 +26,6 @@
     <string name="delete_gift">Delete Gift</string>
     <string name="share_gift">Share Gift</string>
     <string name="delete">Delete</string>
+    <string name="more">More</string>
 
 </resources>

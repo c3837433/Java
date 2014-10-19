@@ -12,7 +12,7 @@ import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
 
 public class GiftAddActivity extends Activity {
-
+    GiftAddFragment mFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +25,8 @@ public class GiftAddActivity extends Activity {
         }
 
         if (savedInstanceState == null) {
-            GiftAddFragment fragment = GiftAddFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.gift_add_container, fragment, GiftAddFragment.TAG).commit();
+            mFragment = GiftAddFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.gift_add_container, mFragment, GiftAddFragment.TAG).commit();
         }
     }
 
@@ -40,23 +40,27 @@ public class GiftAddActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_save) {
-            // Save this object
-            onSaveItemClick();
-            return true;
+        // See which button was called
+        switch (item.getItemId()) {
+            // case R.id.action_settings:
+            // settings
+            //   break;
+            case R.id.action_save:
+                // Save this object
+                onSaveItemClick();
+            case R.id.action_clear:
+                // Clear the fields
+                onClearFields();
+            default:
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     public void onSaveItemClick () {
-        // Have the fragment get the values and create a new object
-        GiftAddFragment fragment = (GiftAddFragment) getFragmentManager().findFragmentById(R.id.gift_add_container);
-        // Create a new object if possible
-        GiftObject gift = (GiftObject) fragment.onSaveItemClick();
+        // Create a new object if possible from the fragment
+        GiftObject gift = (GiftObject) mFragment.onSaveItemClick();
         if (gift != null) {
             // Create a new intent and pass the object through a bundle
             Intent intent = new Intent(this, MainListActivity.class);
@@ -67,6 +71,11 @@ public class GiftAddActivity extends Activity {
             // return to the main list with the new object
             finish();
         }
-
     }
+
+    private void onClearFields () {
+        // Call the fragment to clear the textfields
+        mFragment.clearTextViews();
+    }
+
 }

@@ -6,9 +6,19 @@
         android:icon="@drawable/ic_action_save"
         android:showAsAction="always"
         android:title="@string/action_save"/>
-    <item
-        android:id="@+id/action_clear"
-        android:icon="@drawable/ic_action_remove"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_clear"/>
+
+    <item android:id="@+id/action_overflow"
+        android:icon="@drawable/ic_action_overflow"
+        android:showAsAction="always"
+        android:title="@string/more">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_clear"
+                android:icon="@drawable/ic_action_remove"
+                android:showAsAction="ifRoom"
+                android:title="@string/action_clear"/>
+        </menu>
+    </item>
 </menu>

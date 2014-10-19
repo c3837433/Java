@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.angessmith.multiactivity.R;
@@ -44,6 +43,7 @@ public class GiftDetailFragment extends Fragment {
             // set the values in the view
             setGiftDetails();
         }
+        /*
         // Set the delete listener to the button
         Button deleteButton = (Button) getView().findViewById(R.id.delete_button);
         //deleteButton.setOnClickListener(this);
@@ -66,12 +66,13 @@ public class GiftDetailFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, "Share gift"));
             }
         });
+        */
     }
 
     // Create the listeners
     public interface GiftDetailListener {
         public GiftObject getGiftObject();
-        public void deleteGift();
+       // public void deleteGift();
     }
 
     // Attach the listeners
@@ -101,5 +102,13 @@ public class GiftDetailFragment extends Fragment {
         itemLocationView.setText(mDetailListener.getGiftObject().getLocation());
         itemPriceView.setText(mDetailListener.getGiftObject().getPrice());
         itemUrlView.setText(mDetailListener.getGiftObject().getUrl());
+    }
+
+    public void shareStory () {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        String shareString = "I found " + mDetailListener.getGiftObject().getName() + " at " + mDetailListener.getGiftObject().getLocation() + " for $" + mDetailListener.getGiftObject().getPrice() + ". Check it out! " + mDetailListener.getGiftObject().getUrl();
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent, "Share gift"));
     }
 }

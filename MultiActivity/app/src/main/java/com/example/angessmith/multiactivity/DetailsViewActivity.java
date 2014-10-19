@@ -12,13 +12,14 @@ import com.example.angessmith.multiactivity.Fragment.GiftDetailFragment;
 import com.example.angessmith.multiactivity.Fragment.GiftObject;
 
 
-public class DetailsViewActivity extends Activity  implements GiftDetailFragment.GiftDetailListener /*, GiftDetailFragment.OnDeleteClickListener */{
+public class DetailsViewActivity extends Activity  implements GiftDetailFragment.GiftDetailListener {
 
     public static final String TAG = "DetailsViewActivity";
     public static final String DATA_KEY = "com.example.angessmith.GIFT";
     public static final String DATA_POSITION = "com.example.angessmith.POSITION";
     private GiftObject mGiftObject;
     private int mListPosition;
+    GiftDetailFragment mFragment;
 
 
     @Override
@@ -34,8 +35,8 @@ public class DetailsViewActivity extends Activity  implements GiftDetailFragment
 
         if (savedInstanceState == null) {
             // load the fragment
-            GiftDetailFragment fragment = GiftDetailFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.details_container, fragment, GiftDetailFragment.TAG).commit();
+            mFragment = GiftDetailFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.details_container, mFragment, GiftDetailFragment.TAG).commit();
         }
 
         // Get the intent values for the list object and its position from the main listview
@@ -57,12 +58,16 @@ public class DetailsViewActivity extends Activity  implements GiftDetailFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_delete) {
-            return true;
+        switch (item.getItemId()) {
+            // case R.id.action_settings:
+            // settings
+            //   break;
+            case R.id.action_share:
+                // Tell the fragment to share the story
+                mFragment.shareStory();
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -73,7 +78,7 @@ public class DetailsViewActivity extends Activity  implements GiftDetailFragment
     public GiftObject getGiftObject() {
         return mGiftObject;
     }
-
+    /*
     @Override
     public void deleteGift() {
         // Finish the intent back to the main list passing the position to be deleted
@@ -83,4 +88,5 @@ public class DetailsViewActivity extends Activity  implements GiftDetailFragment
         setResult(RESULT_OK, intent);
         finish();
     }
+    */
 }
