@@ -1,37 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="150dp">
+    android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/story_image"
-        android:layout_width="85dp"
-        android:layout_height="48dp"
-        android:minHeight="40dp"
-        android:minWidth="40dp"
-        android:padding="5dp" />
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="Title"
-            android:id="@+id/story_title"
-            android:layout_gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="Timestamp"
-            android:id="@+id/story_time"
-            android:layout_gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </LinearLayout>
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/story_title"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Timestamp"
+        android:id="@+id/story_time"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Story"
+        android:id="@+id/story_text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

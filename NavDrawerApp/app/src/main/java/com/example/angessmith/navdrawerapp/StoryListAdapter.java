@@ -60,12 +60,14 @@ public class StoryListAdapter extends BaseAdapter {
         mStory = mStoryList.get(position);
 
         // Create the views
-        TextView titleView = (TextView)convertView.findViewById(R.id.story_time);
+        TextView titleView = (TextView)convertView.findViewById(R.id.story_title);
         TextView timeView = (TextView)convertView.findViewById(R.id.story_time);
+        TextView textView = (TextView)convertView.findViewById(R.id.story_text);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.story_image);
         // Set the story in the list cells
         titleView.setText((String)mStory.get(Main.STORY_TITLE));
         timeView.setText((String)mStory.get(Main.STORY_TIME_STAMP));
+        textView.setText((String )mStory.get(Main.STORY_TEXT));
         imageView.setImageResource((Integer)mStory.get(Main.STORY_IMAGE));
         return convertView;
     }
