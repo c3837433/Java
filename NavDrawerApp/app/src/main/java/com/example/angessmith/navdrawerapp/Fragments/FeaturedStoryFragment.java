@@ -7,18 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.angessmith.navdrawerapp.Main;
 import com.example.angessmith.navdrawerapp.NewsStory;
 import com.example.angessmith.navdrawerapp.R;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 
 // Created by AngeSSmith on 10/18/14.
 
@@ -49,8 +43,8 @@ public class FeaturedStoryFragment  extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.featured_fragment, container, false);
-        return rootView;
+        // Get the feature fragment
+        return inflater.inflate(R.layout.featured_fragment, container, false);
     }
 
     // Set the title from the passed in section

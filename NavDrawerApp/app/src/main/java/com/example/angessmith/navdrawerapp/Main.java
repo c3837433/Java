@@ -1,29 +1,22 @@
 package com.example.angessmith.navdrawerapp;
 
+// Created by AngeSSmith on 10/17/14.
+
 import android.app.Activity;
 
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.angessmith.navdrawerapp.Fragments.FeaturedStoryFragment;
 import com.example.angessmith.navdrawerapp.Fragments.ImageCollectionFragment;
+import com.example.angessmith.navdrawerapp.Fragments.SettingsFragment;
 import com.example.angessmith.navdrawerapp.Fragments.StoriesFragment;
 
 import java.util.ArrayList;
@@ -34,10 +27,10 @@ Case Study 3
 "Your client has requested that you build a news app prototype using static data with four main
 features:
 
-    1. a main page that shows a featured story
-    2. a news page which displays a list of recent stories,
-    3. an image gallery for viewing breaking news images
-    4. a settings page to disable data over mobile."
+  DONE  1. a main page that shows a featured story
+  DONE  2. a news page which displays a list of recent stories,
+  DONE  3. an image gallery for viewing breaking news images
+  DONE  4. a settings page to disable data over mobile."
 
 For each navigation app you must, at a minimum, choose the correct navigation type and build the
 app using the generated controls, adapters, and fragments. To demonstrate mastery of the navigation
@@ -51,7 +44,10 @@ the context of the data being shown, change it to one that fits.
 public class Main extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    final String TAG = "NavigationApp";
+    // Define a default section
     int mSection = -1;
+    // And variables for the custom stories
     private ArrayList<NewsStory> mNewsStories;
     ArrayList<HashMap<String, Object>> mStories;
     // Create the static string keys that will be used in the hashmap and custom adapter
@@ -59,6 +55,8 @@ public class Main extends Activity
     static final String STORY_TIME_STAMP = "timestamp";
     static final String STORY_IMAGE = "image";
     static final String STORY_TEXT = "story";
+    // create the preference variable for the settings page
+    private SharedPreferences mSettingPreference;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -74,7 +72,7 @@ public class Main extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // set the nav drawer fragment
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -83,8 +81,19 @@ public class Main extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // see if the preference has been set
+        mSettingPreference = getPreferences(MODE_PRIVATE);
+        if (mSettingPreference.contains("MOBILE_DATA_PREFERENCE")) {
+            String dataPreference = mSettingPreference.getString("MOBILE_DATA_PREFERENCE","true");
+            // see what the user has selected
+            Log.i(TAG, "This user selected:"+ dataPreference);
+            String dataToast = (dataPreference.equals("false")) ? "Pulling data while on Wifi Only" : "User allows Cellular Data";
+            Toast.makeText(this, dataToast, Toast.LENGTH_SHORT).show();
+        }
     }
 
+    // Create the static news stories
     private ArrayList<NewsStory> setUpNewsStories() {
         // If the stories have not been created make them
         if (mNewsStories == null) {
@@ -100,6 +109,7 @@ public class Main extends Activity
         return mNewsStories;
     }
 
+    // Create the hashmap from the arraylist of stories
     private ArrayList<HashMap<String, Object>> SetUpHashMap() {
         if (mStories == null) {
             // Create an arraylist to hold the hashmap
@@ -132,7 +142,7 @@ public class Main extends Activity
             case 0:
                 // Pass in the first story from the list (newest)
                 // See what is in the array
-                Log.d("Main", "Feature Title = " + storyList.get(0).getTitle() + "Feature Time = " + storyList.get(0).getTimeStamp());
+                //Log.d("Main", "Feature Title = " + storyList.get(0).getTitle() + "Feature Time = " + storyList.get(0).getTimeStamp());
                 fragment = FeaturedStoryFragment.newInstance(position + 1, storyList.get(0));
                 break;
             case 1:
@@ -144,7 +154,7 @@ public class Main extends Activity
                 fragment = ImageCollectionFragment.newInstance(position + 1);
                 break;
             case 3:
-                fragment = ImageCollectionFragment.newInstance(position + 1);
+                fragment = SettingsFragment.newInstance(position + 1);
                 break;
             default:
                 break;

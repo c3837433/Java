@@ -11,9 +11,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by AngeSSmith on 10/20/14.
- */
+// Created by AngeSSmith on 10/20/14.
+
+// Listview adapter to hold the custom stories
 public class StoryListAdapter extends BaseAdapter {
 
     //Define the context

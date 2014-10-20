@@ -2,9 +2,9 @@ package com.example.angessmith.navdrawerapp;
 
 import java.io.Serializable;
 
-/**
- * Created by AngeSSmith on 10/19/14.
- */
+
+// Created by AngeSSmith on 10/19/14.
+// Custom object class for the news stories
 public class NewsStory implements Serializable {
 
     // Create the unique id

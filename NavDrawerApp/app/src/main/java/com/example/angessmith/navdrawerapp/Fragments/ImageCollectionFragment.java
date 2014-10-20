@@ -24,12 +24,13 @@ public class ImageCollectionFragment  extends Fragment {
     View mRootView;
 
     public static ImageCollectionFragment newInstance(int section) {
+        // Get the fragment
         ImageCollectionFragment fragment = new ImageCollectionFragment();
+        // Save the section for the title
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, section);
         fragment.setArguments(args);
         return fragment;
-        //return new ImageCollectionFragment();
     }
 
 
@@ -58,13 +59,14 @@ public class ImageCollectionFragment  extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        // set the title
         ((Main) activity).onSectionAttached(
                 getArguments().getInt(ARG_POSITION));
     }
 
     // Create an image adapter
     private class GridViewAdapter extends BaseAdapter {
-
+        // Create a context
         private  Context mContext;
         // Create an array of static images
         final int[] mImages = new int[] {

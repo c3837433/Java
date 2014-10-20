@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ListView;
 
 import com.example.angessmith.navdrawerapp.Main;
@@ -22,11 +21,14 @@ import java.util.HashMap;
 public class StoriesFragment  extends Fragment {
 
     private static final String ARG_POSITION = "StoriesFragment.POSITION";
+    // Create a hashmap for the stories
     private static ArrayList<HashMap<String, Object>> mStoryList;
 
     // Create the instance of the fragment
     public static StoriesFragment newInstance(int section, ArrayList<HashMap<String, Object>> storyList) {
+        // Create the fragment
         StoriesFragment fragment = new StoriesFragment();
+        // save the hashmap list and position
         mStoryList = storyList;
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, section);
@@ -36,8 +38,8 @@ public class StoriesFragment  extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.stories_fragment, container, false);
-        return rootView;
+        // Inflate the storie fragment layout
+        return inflater.inflate(R.layout.stories_fragment, container, false);
     }
 
 
@@ -45,6 +47,7 @@ public class StoriesFragment  extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        // Set the title
         ((Main) activity).onSectionAttached(
                 getArguments().getInt(ARG_POSITION));
     }
