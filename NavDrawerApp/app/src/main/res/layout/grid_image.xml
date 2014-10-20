@@ -3,6 +3,7 @@
     android:id="@+id/grid_image"
     android:layout_width="fill_parent"
     android:layout_height="200dp"
-    android:scaleType="centerInside"
     tools:ignore="ContentDescription"
-    android:background="#ff44b3ff" />
+    android:background="#ff606060"
+    android:adjustViewBounds="true"
+    android:scaleType="fitCenter"/>

@@ -15,17 +15,29 @@ import com.example.angessmith.navdrawerapp.R;
 
 public class FeaturedStoryFragment  extends Fragment {
 
-    public static final String TAG = "FeaturedStoryFragment";
+    private static final String ARG_POSITION = "FeaturedStoryFragment.POSITION";
 
     // Create the instance of the fragment
-    public static FeaturedStoryFragment newInstance() {
-        return new FeaturedStoryFragment();
+    public static FeaturedStoryFragment newInstance(int section) {
+        FeaturedStoryFragment fragment = new FeaturedStoryFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_POSITION, section);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.featured_fragment, container, false);
         return rootView;
+    }
+
+    // Set the title from the passed in section
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((Main) activity).onSectionAttached(
+                getArguments().getInt(ARG_POSITION));
     }
 
 }
