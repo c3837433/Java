@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TabbedNavigation</string>
+    <string name="title_tab1">Current</string>
+    <string name="title_tab2">Hourly</string>
+    <string name="title_tab3">Weekly</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
