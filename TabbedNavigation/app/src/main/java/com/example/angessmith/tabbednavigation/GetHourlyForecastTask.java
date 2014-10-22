@@ -12,9 +12,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by AngeSSmith on 10/22/14.
- */
+// Created by AngeSSmith on 10/22/14.
+
 // Get Hourly forecast task
 public class GetHourlyForecastTask extends AsyncTask<String, Integer, ArrayList<HourlyForecast>> {
     final String TAG = "HOURLY_FORECAST_TASK";
@@ -39,14 +38,14 @@ public class GetHourlyForecastTask extends AsyncTask<String, Integer, ArrayList<
                 JSONObject object = hourlyArray.getJSONObject(i);
                 JSONObject timeObject = object.getJSONObject("FCTTIME");
                 String timeString = timeObject.getString("civil");
-
+                String iconUrl = object.getString("icon_url");
                 JSONObject tempObject = object.getJSONObject("temp");
                 String tempEnglish = tempObject.getString("english");
                 String condition = object.getString("condition");
                 JSONObject feelsObject = object.getJSONObject("feelslike");
                 String feelsLike = feelsObject.getString("english");
                 // Create the Hourly Objects as they are added to the list
-                mHourlyForecastList.add(HourlyForecast.newInstance(tempEnglish, condition, timeString, feelsLike));
+                mHourlyForecastList.add(HourlyForecast.newInstance(tempEnglish, condition, timeString, feelsLike, iconUrl));
             }
             return mHourlyForecastList;
         }

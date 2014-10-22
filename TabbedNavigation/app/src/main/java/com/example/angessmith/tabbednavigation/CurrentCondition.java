@@ -2,9 +2,8 @@ package com.example.angessmith.tabbednavigation;
 
 import java.io.Serializable;
 
-/**
- * Created by AngeSSmith on 10/20/14.
- */
+ // Created by AngeSSmith on 10/20/14.
+
    /*
     weather: "Overcast",
     temperature_string: "65.6 F (18.7 C)",

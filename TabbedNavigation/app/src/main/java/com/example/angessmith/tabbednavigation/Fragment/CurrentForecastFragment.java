@@ -14,7 +14,6 @@ import com.example.angessmith.tabbednavigation.CurrentCondition;
 import com.example.angessmith.tabbednavigation.R;
 import com.loopj.android.image.SmartImageView;
 
-
 // Created by AngeSSmith on 10/20/14.
 // http://api.wunderground.com/api/3d402f1818f340e0/conditions/q/CA/San_Francisco.json
 public class CurrentForecastFragment extends Fragment {
@@ -32,7 +31,7 @@ public class CurrentForecastFragment extends Fragment {
     private static TextView mWindView;
     private static TextView mFeelsView;
     private static TextView mConditionView;
-    //private static SmartImageView mIconView;
+    private static SmartImageView mIconView;
     static  Context mContext;
 
     public static CurrentForecastFragment newInstance(int sectionNumber, Context context) {
@@ -66,7 +65,7 @@ public class CurrentForecastFragment extends Fragment {
         mDewPointView = (TextView) getView().findViewById(R.id.condition_dew);
         mWindView = (TextView) getView().findViewById(R.id.condition_wind);
         mFeelsView = (TextView) getView().findViewById(R.id.condition_feels);
-        //mIconView = (SmartImageView) getView().findViewById(R.id.condition_image);
+        mIconView = (SmartImageView) getView().findViewById(R.id.condition_image);
         // See if we have saved values to use
         Bundle bundleArguments = getArguments();
         // IF they are there
@@ -98,6 +97,7 @@ public class CurrentForecastFragment extends Fragment {
             mDewPointView.setText("Dew Point: " + mCondition.getDewPoint());
             mWindView.setText("Wind: " + mCondition.getWindString());
             mFeelsView.setText("Feels Like: " + mCondition.getFeelsLike());
+            mIconView.setImageUrl(mCondition.getIconUrl());
 
         }
         else {

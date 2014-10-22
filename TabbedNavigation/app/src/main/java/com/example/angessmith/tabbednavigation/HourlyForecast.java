@@ -13,9 +13,10 @@ public class HourlyForecast implements Serializable {
     private String mCondition;
     private String mTimeHour;
     private String mFeelsLike;
+    private String mIconUrl;
 
 
-    public static HourlyForecast newInstance (String temp, String condition, String time, String feelsLike) {
+    public static HourlyForecast newInstance (String temp, String condition, String time, String feelsLike, String iconUrl) {
         // Create the object
         HourlyForecast forecast = new HourlyForecast();
         // and set the variables
@@ -23,11 +24,12 @@ public class HourlyForecast implements Serializable {
         forecast.mCondition = condition;
         forecast.mTimeHour = time;
         forecast.mFeelsLike = feelsLike;
+        forecast.mIconUrl = iconUrl;
         return forecast;
     }
 
     public HourlyForecast() {
-        mCondition = mFeelsLike = mTemperatureString = mFeelsLike = "";
+        mCondition = mFeelsLike = mTemperatureString = mFeelsLike = mIconUrl =  "";
     }
 
     // Create the getters and setters
@@ -47,5 +49,9 @@ public class HourlyForecast implements Serializable {
 
     public String getFeelsLike() {
         return mFeelsLike;
+    }
+
+    public String getIconUrl() {
+        return mIconUrl;
     }
 }

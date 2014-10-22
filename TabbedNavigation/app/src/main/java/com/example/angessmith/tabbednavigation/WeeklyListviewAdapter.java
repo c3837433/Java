@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.loopj.android.image.SmartImageView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -55,13 +57,15 @@ public class WeeklyListviewAdapter  extends BaseAdapter {
         // set the map at the right position
         mWeeklyForecast = mWeeklyList.get(position);
 
-        // get the textviews
+        // get the views
         TextView dayView = (TextView)convertView.findViewById(R.id.weekly_day);
         TextView descriptionView = (TextView)convertView.findViewById(R.id.weekly_description);
+        SmartImageView imageView = (SmartImageView)convertView.findViewById(R.id.weekly_image);
 
         // Set their values
         dayView.setText((String)mWeeklyForecast.get(MainActivity.WEEKLY_DAY));
         descriptionView.setText((String)mWeeklyForecast.get(MainActivity.WEEKLY_DESCRIPTION));
+        imageView.setImageUrl((String) mWeeklyForecast.get(MainActivity.WEEKLY_IMAGE_ICON));
         return convertView;
     }
 }

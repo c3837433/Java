@@ -1,5 +1,7 @@
 package com.example.angessmith.tabbednavigation;
 
+// Created by AngeSSmith on 10/20/14.
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -46,10 +48,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     static final String HOURLY_TIME = "timeHour";
     static final String HOURLY_CONDITION = "condition";
     static final String HOURLY_FEELS_LIKE = "feelsLike";
+    static final String HOURLY_IMAGE_ICON = "hourlyIcon";
     // And the weekly map
     static final String WEEKLY_DAY = "dayWeek";
     static final String WEEKLY_DESCRIPTION = "description";
-    static final String WEEKLY_IMAGE_ICON = "hourlyIcon";
+    static final String WEEKLY_IMAGE_ICON = "weeklyIcon";
 
     static final String ARG_ACTIVITY_CURRENT_CONDITION = "MainActivity.ARG_ACTIVITY_CURRENT_CONDITION";
     static final String ARG_ACTIVITY_HOURLY_LIST = "MainActivity.ACTIVITY_HOURLY_LIST";
@@ -457,10 +460,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                     JSONObject tempObject = object.getJSONObject("temp");
                     String tempEnglish = tempObject.getString("english");
                     String condition = object.getString("condition");
+                    String iconUrl = object.getString("icon_url");
                     JSONObject feelsObject = object.getJSONObject("feelslike");
                     String feelsLike = feelsObject.getString("english");
                     // Create the Hourly Objects as they are added to the list
-                    mHourlyForecastList.add(HourlyForecast.newInstance(tempEnglish, condition, timeString, feelsLike));
+                    mHourlyForecastList.add(HourlyForecast.newInstance(tempEnglish, condition, timeString, feelsLike, iconUrl));
                 }
                return mHourlyForecastList;
             }
@@ -483,6 +487,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 map.put(HOURLY_TEMP, hour.getTemperatureString());
                 map.put(HOURLY_TIME, hour.getTimeHour());
                 map.put(HOURLY_FEELS_LIKE, hour.getFeelsLike());
+                map.put(HOURLY_IMAGE_ICON, hour.getIconUrl());
                 // Add to the list
                 mHourlyMapList.add(map);
                 //Log.i(TAG, "Map info: " + map);

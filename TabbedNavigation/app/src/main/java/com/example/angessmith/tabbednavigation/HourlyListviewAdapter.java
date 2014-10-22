@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.loopj.android.image.SmartImageView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -56,11 +58,13 @@ public class HourlyListviewAdapter extends BaseAdapter {
         TextView conditionView = (TextView)convertView.findViewById(R.id.hourly_condition);
         TextView tempView = (TextView)convertView.findViewById(R.id.hourly_temp);
         TextView feelsView = (TextView)convertView.findViewById(R.id.hourly_feels);
+        SmartImageView iconView = (SmartImageView)convertView.findViewById(R.id.hourly_image);
         // get the values from the
         hourView.setText((String)mHourlyForecast.get(MainActivity.HOURLY_TIME));
         conditionView.setText((String)mHourlyForecast.get(MainActivity.HOURLY_CONDITION));
         tempView.setText("Temperature " + mHourlyForecast.get(MainActivity.HOURLY_TEMP));
         feelsView.setText("Feels Like " + mHourlyForecast.get(MainActivity.HOURLY_FEELS_LIKE));
+        iconView.setImageUrl((String) mHourlyForecast.get(MainActivity.HOURLY_IMAGE_ICON));
 
         return convertView;
     }

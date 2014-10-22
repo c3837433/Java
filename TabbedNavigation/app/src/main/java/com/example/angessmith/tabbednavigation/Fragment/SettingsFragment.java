@@ -16,11 +16,8 @@ import android.util.Log;
 import com.example.angessmith.tabbednavigation.GetCurrentConditionsTask;
 import com.example.angessmith.tabbednavigation.GetHourlyForecastTask;
 import com.example.angessmith.tabbednavigation.GetWeeklyForecastTask;
-import com.example.angessmith.tabbednavigation.HTTPHelper;
-import com.example.angessmith.tabbednavigation.MainActivity;
 import com.example.angessmith.tabbednavigation.R;
 
-import static com.example.angessmith.tabbednavigation.MainActivity.*;
 // Created by AngeSSmith on 10/20/14.
 
 public class SettingsFragment extends PreferenceFragment {
@@ -32,8 +29,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     // Create the settings fragment
     public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
+        return new SettingsFragment();
     }
 
     @Override
@@ -138,10 +134,10 @@ public class SettingsFragment extends PreferenceFragment {
         // Update the preference
         editor.putString("EDIT_CITY_PREFERENCE", mCity);
         editor.putString("EDIT_STATE_PREFERENCE", mState);
+        editor.commit();
         // Reload the data for the current task
         GetCurrentConditionsTask conditionsTask = new GetCurrentConditionsTask();
         conditionsTask.execute(getLocation(1));
-        editor.commit();
         // Reload the Hourly Data
         GetHourlyForecastTask hourlyTask = new GetHourlyForecastTask();
         hourlyTask.execute(getLocation(2));
