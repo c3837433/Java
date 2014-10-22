@@ -2,7 +2,11 @@ package com.example.angessmith.tabbednavigation;
 
  // Created by AngeSSmith on 10/21/14.
 
-public class WeeklyForecast {
+import java.io.Serializable;
+
+public class WeeklyForecast implements Serializable {
+
+    private static final long serialVersionUID = 264352789266376484L;
 
     // Define the properties
     private String mDay;

@@ -1,11 +1,14 @@
 package com.example.angessmith.tabbednavigation.Fragment;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.angessmith.tabbednavigation.CurrentCondition;
 import com.example.angessmith.tabbednavigation.R;
@@ -17,14 +20,7 @@ import com.loopj.android.image.SmartImageView;
 public class CurrentForecastFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String ARG_TEMP = "current_temp";
-    private static final String ARG_PRESSURE = "current_pressure";
-    private static final String ARG_PRECIP = "current_precip";
-    private static final String ARG_HUMIDITY = "current_humid";
-    private static final String ARG_DEW = "current_dew";
-    private static final String ARG_WIND = "current_wind";
-    private static final String ARG_FEELS = "current_feels";
-    private static final String ARG_CONDITION = "current_condition";
+    private static final String ARG_CURRENT_CONDITION = "conditionalForecast";
 
     public static CurrentCondition mCondition;
     // Get the views ready
@@ -37,9 +33,10 @@ public class CurrentForecastFragment extends Fragment {
     private static TextView mFeelsView;
     private static TextView mConditionView;
     //private static SmartImageView mIconView;
+    static  Context mContext;
 
-
-    public static CurrentForecastFragment newInstance(int sectionNumber) {
+    public static CurrentForecastFragment newInstance(int sectionNumber, Context context) {
+        mContext = context;
         CurrentForecastFragment fragment = new CurrentForecastFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -60,7 +57,6 @@ public class CurrentForecastFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle _savedInstanceState) {
         super.onActivityCreated(_savedInstanceState);
-
         // Get the views
         mConditionView = (TextView) getView().findViewById(R.id.condition_weather);
         mTempView = (TextView) getView().findViewById(R.id.condition_temp);
@@ -71,19 +67,41 @@ public class CurrentForecastFragment extends Fragment {
         mWindView = (TextView) getView().findViewById(R.id.condition_wind);
         mFeelsView = (TextView) getView().findViewById(R.id.condition_feels);
         //mIconView = (SmartImageView) getView().findViewById(R.id.condition_image);
+        // See if we have saved values to use
+        Bundle bundleArguments = getArguments();
+        // IF they are there
+        if ((bundleArguments != null)  && (bundleArguments.getSerializable(ARG_CURRENT_CONDITION) != null)) {
+            mCondition = (CurrentCondition) getArguments().getSerializable(ARG_CURRENT_CONDITION);
+            Log.i("CURRENT FORECAST", "Saved intance state found condition, reloading data");
+            SetConditionsToView();
+        }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save the condition
+        getArguments().putSerializable(ARG_CURRENT_CONDITION, (java.io.Serializable) mCondition);
+    }
+
 
     public static void SetConditionsToView() {
-        // update the view with data
-        //Log.i("MainActivity", "The object = " + mCondition);
-        mConditionView.setText("Current Conditions: " + mCondition.getWeather());
-        mTempView.setText(mCondition.getTemperatureString());
-        mPrecipView.setText("Precipitation: "+ mCondition.getPrecipitation());
-        mPressureView.setText("Pressure: " + mCondition.getPressure());
-        mHumidityView.setText("Humidity: " + mCondition.getRelativeHumidity());
-        mDewPointView.setText("Dew Point: " + mCondition.getDewPoint());
-        mWindView.setText("Wind: " + mCondition.getWindString());
-        mFeelsView.setText("Feels Like: " + mCondition.getFeelsLike());
-    }
+        // make sure we have valid data
+        if (mCondition != null) {
+            // update the view with data
+            //Log.i("MainActivity", "The object = " + mCondition);
+            mConditionView.setText("Current Conditions: " + mCondition.getWeather());
+            mTempView.setText(mCondition.getTemperatureString());
+            mPrecipView.setText("Precipitation: " + mCondition.getPrecipitation());
+            mPressureView.setText("Pressure: " + mCondition.getPressure());
+            mHumidityView.setText("Humidity: " + mCondition.getRelativeHumidity());
+            mDewPointView.setText("Dew Point: " + mCondition.getDewPoint());
+            mWindView.setText("Wind: " + mCondition.getWindString());
+            mFeelsView.setText("Feels Like: " + mCondition.getFeelsLike());
 
+        }
+        else {
+            Toast.makeText(mContext,"Unable to retrieve data right now", Toast.LENGTH_LONG ).show();
+        }
+    }
 }

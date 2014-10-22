@@ -13,8 +13,14 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.angessmith.tabbednavigation.GetCurrentConditionsTask;
+import com.example.angessmith.tabbednavigation.GetHourlyForecastTask;
+import com.example.angessmith.tabbednavigation.GetWeeklyForecastTask;
+import com.example.angessmith.tabbednavigation.HTTPHelper;
 import com.example.angessmith.tabbednavigation.MainActivity;
 import com.example.angessmith.tabbednavigation.R;
+
+import static com.example.angessmith.tabbednavigation.MainActivity.*;
 // Created by AngeSSmith on 10/20/14.
 
 public class SettingsFragment extends PreferenceFragment {
@@ -48,7 +54,7 @@ public class SettingsFragment extends PreferenceFragment {
         statePreference =  (EditTextPreference) findPreference("EDIT_STATE_PREFERENCE");
         // Get the current stored values
         mCity = storedPreferences.getString("EDIT_CITY_PREFERENCE", "Chaska");
-        mState = storedPreferences.getString("EDIT_STATE_PREFERENCE", "Chaska");
+        mState = storedPreferences.getString("EDIT_STATE_PREFERENCE", "MN");
         // set the summary on the settings view to the shared preference
         cityPreference.setSummary(mCity);
         statePreference.setSummary(mState);
@@ -60,7 +66,12 @@ public class SettingsFragment extends PreferenceFragment {
                 mCity = newValue.toString();
                 // Set the default
                 preference.setDefaultValue(newValue);
+                // Update the action Bar
+                ActionBar actionBar = getActivity().getActionBar();
+                actionBar.setTitle(mCity + ", " + mState);
                 Log.i("Settings Fragment", "The new city value = " + newValue);
+                // and update the summary
+                cityPreference.setSummary(mCity);
                 /*
                 // Get the preference
                 SharedPreferences settingsPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -81,7 +92,15 @@ public class SettingsFragment extends PreferenceFragment {
         statePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                // Change the property value
+                mState = newValue.toString();
+                // reset the preference value
                 preference.setDefaultValue(newValue);
+                // Update the action Bar
+                ActionBar actionBar = getActivity().getActionBar();
+                actionBar.setTitle(mCity + ", " + mState);
+                // update the summary
+                statePreference.setSummary(mState);
                 // see what the value =
                 Log.i("Settings Fragment", "The new state value = " + newValue);
                 /*
@@ -119,11 +138,34 @@ public class SettingsFragment extends PreferenceFragment {
         // Update the preference
         editor.putString("EDIT_CITY_PREFERENCE", mCity);
         editor.putString("EDIT_STATE_PREFERENCE", mState);
-        // and update the summary
-        cityPreference.setSummary(mCity);
-        statePreference.setSummary(mState);
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(mCity + ", " + mState);
+        // Reload the data for the current task
+        GetCurrentConditionsTask conditionsTask = new GetCurrentConditionsTask();
+        conditionsTask.execute(getLocation(1));
         editor.commit();
+        // Reload the Hourly Data
+        GetHourlyForecastTask hourlyTask = new GetHourlyForecastTask();
+        hourlyTask.execute(getLocation(2));
+        // And the weekly data
+        GetWeeklyForecastTask weeklyTask = new GetWeeklyForecastTask();
+        weeklyTask.execute(getLocation(3));
+    }
+
+    public String getLocation(int tab) {
+        // Make sure the strings have no spaces
+        String city = mCity.replaceAll(" ", "_");
+        String state = mState.replaceAll(" ", "_");
+        String apiType = "";
+        switch (tab) {
+            case 1:
+                apiType = "conditions";
+                break;
+            case 2:
+                apiType = "hourly10day";
+                break;
+            case 3:
+                apiType = "forecast10day";
+                break;
+        }
+        return  "http://api.wunderground.com/api/3d402f1818f340e0/" + apiType +"/q/" + state +"/" + city + ".json";
     }
 }

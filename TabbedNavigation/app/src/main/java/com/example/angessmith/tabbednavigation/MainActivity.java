@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -50,6 +51,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     static final String WEEKLY_DESCRIPTION = "description";
     static final String WEEKLY_IMAGE_ICON = "hourlyIcon";
 
+    static final String ARG_ACTIVITY_CURRENT_CONDITION = "MainActivity.ARG_ACTIVITY_CURRENT_CONDITION";
+    static final String ARG_ACTIVITY_HOURLY_LIST = "MainActivity.ACTIVITY_HOURLY_LIST";
+    static final String ARG_ACTIVITY_HOURLY_MAP = "MainActivity.ACTIVITY_HOURLY_MAP";
+    static final String ARG_ACTIVITY_WEEKLY_LIST = "MainActivity.ACTIVITY_WEEKLY_LIST";
+    static final String ARG_ACTIVITY_WEEKLY_MAP = "MainActivity.ACTIVITY_WEEKLY_MAP";
+
     final String TAG = "MainActivity";
     CurrentCondition mCondition;
                 /**
@@ -60,30 +67,21 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
              * may be best to switch to a
              * {@link android.support.v13.app.FragmentStatePagerAdapter}.
              */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    //SectionsPagerAdapter mSectionsPagerAdapter;
+    FragmentStateAdapter mFragmentPagerAdapter;
     ViewPager mViewPager;
     // Define the shared preferences for the location to search
     private SharedPreferences mSettingPreference;
     private ArrayList<HourlyForecast> mHourlyForecastList;
     private ArrayList<WeeklyForecast> mWeeklyForecastList;
+    private ArrayList<HashMap<String, Object>> mHourlyMapList;
+    private ArrayList<HashMap<String, Object>> mWeeklyMapList;
 
-    /*
-    Back in the onCreate() method of the activity, a few things are happening for our setup.
-        1. The first thing that happens is that the action bar is set to use tabs for navigation.
-        2. Then we create a new adapter for the ViewPager and assign it to that pager.
-        3. Then, a SimpleOnPageChangeListener is attached to the pager so that everytime the user swipes,
-        the listener can catch that and set the appropriate tab to be selected.
-        4. Lastly, at the bottom of onCreate(), a new tab is added for each of the views in the
-        ViewPager to create consistent navigation.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i(TAG, "ON CREATE: Called");
         // Set up the preferences
         setUpPreferences();
 
@@ -94,12 +92,14 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+        //mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+        mFragmentPagerAdapter = new FragmentStateAdapter(getFragmentManager());
 
         // Set up the ViewPager  (from the activity xml)with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         // set the created adapter to it
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        //mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(mFragmentPagerAdapter);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -111,17 +111,52 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
             }
         });
 
+        /*
         // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        */
+        // For each of the sections in the app, add a tab to the action bar.
+        for (int i = 0; i < mFragmentPagerAdapter.getCount(); i++) {
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(mFragmentPagerAdapter.getPageTitle(i))
+                            .setTabListener(this));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        Log.i(TAG, "ON SAVED INSTANCE STATE: Called");
+        savedInstanceState.putSerializable(ARG_ACTIVITY_CURRENT_CONDITION, mCondition);
+        savedInstanceState.putSerializable(ARG_ACTIVITY_HOURLY_LIST, mHourlyForecastList);
+        savedInstanceState.putSerializable(ARG_ACTIVITY_HOURLY_MAP, mHourlyMapList);
+        savedInstanceState.putSerializable(ARG_ACTIVITY_WEEKLY_LIST, mWeeklyForecastList);
+        savedInstanceState.putSerializable(ARG_ACTIVITY_WEEKLY_MAP, mWeeklyMapList);
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i(TAG, "ON RESTORE INSTANCE STATE: Called");
+        // Restore state members from saved instance
+        mCondition = (CurrentCondition) savedInstanceState.getSerializable(ARG_ACTIVITY_CURRENT_CONDITION);
+        mHourlyForecastList = (ArrayList<HourlyForecast>) savedInstanceState.getSerializable(ARG_ACTIVITY_HOURLY_LIST);
+        mHourlyMapList = (ArrayList<HashMap<String, Object>>) savedInstanceState.getSerializable(ARG_ACTIVITY_HOURLY_MAP);
+        mWeeklyForecastList = (ArrayList<WeeklyForecast>) savedInstanceState.getSerializable(ARG_ACTIVITY_WEEKLY_LIST);
+        mWeeklyMapList = (ArrayList<HashMap<String, Object>>) savedInstanceState.getSerializable(ARG_ACTIVITY_WEEKLY_MAP);
+        Log.i(TAG, "ON RESTORE INSTANCE STATE: mCondition: " + mCondition);
+        Log.i(TAG, "ON RESTORE INSTANCE STATE: mHourlyForecastList: " + mHourlyForecastList);
+        Log.i(TAG, "ON RESTORE INSTANCE STATE: mHourlyMapList: " + mHourlyMapList);
+        Log.i(TAG, "ON RESTORE INSTANCE STATE: mWeeklyForecastList: " + mWeeklyForecastList);
+        Log.i(TAG, "ON RESTORE INSTANCE STATE: mWeeklyMapList: " + mWeeklyMapList);
     }
 
     private void setUpPreferences() {
@@ -192,8 +227,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     // Method that gets the correct api url based on user location and api preference
     public String getLocation(int tab) {
         // Make sure the strings have no spaces
-        String city = mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN").replaceAll(" ", "_");
-        String state = mSettingPreference.getString("EDIT_CITY_PREFERENCE","MN").replaceAll(" ", "_");
+        String city = mSettingPreference.getString("EDIT_CITY_PREFERENCE","Chaska").replaceAll(" ", "_");
+        String state = mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN").replaceAll(" ", "_");
         String apiType = "";
         switch (tab) {
             case 1:
@@ -206,8 +241,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 apiType = "forecast10day";
                 break;
         }
-
-        return  "http://api.wunderground.com/api/3d402f1818f340e0/" + apiType +"/q/" + city +"/" + state + ".json";
+        return  "http://api.wunderground.com/api/3d402f1818f340e0/" + apiType +"/q/" + state +"/" + city + ".json";
     }
 
     public void getCurrentConditions () {
@@ -249,6 +283,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         }
     }
 
+    /*
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -263,7 +298,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 // Create a new instance of each fragment
                 case 0:
                     getCurrentConditions();
-                    fragment = CurrentForecastFragment.newInstance(position + 1);
+                    fragment = CurrentForecastFragment.newInstance(position + 1, MainActivity.this);
 
                     break;
                 case 1:
@@ -302,6 +337,62 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
             }
             return null;
         }
+    }
+    */
+
+    // CHANGED PAGER ADAPTER TO FragmentStatePagerAdapter because of memory issues
+    public class FragmentStateAdapter extends FragmentStatePagerAdapter {
+        public FragmentStateAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position) {
+                // Create a new instance of each fragment
+                case 0:
+                    getCurrentConditions();
+                    Log.i(TAG, "GET ITEM: Loading Conditions Fragment");
+                    fragment = CurrentForecastFragment.newInstance(position + 1, MainActivity.this);
+
+                    break;
+                case 1:
+                    getHourlyForecast();
+                    Log.i(TAG, "GET ITEM: Loading Hourly Fragment");
+                    fragment = HourlyForecastFragment.newInstance(position + 1);
+                    break;
+                case 2:
+                    getWeeklyForecast();
+                    Log.i(TAG, "GET ITEM: Loading Weekly Fragment");
+                    fragment = WeeklyForecastFragment.newInstance(position + 1);
+
+                    break;
+                default:
+                    break;
+            }
+            return fragment;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Get the string for the title of each tab
+            switch (position) {
+                case 0:
+                    return getString(R.string.title_tab1);
+                case 1:
+                    return getString(R.string.title_tab2);
+                case 2:
+                    return getString(R.string.title_tab3);
+            }
+            return null;
+        }
+
     }
 
     //http://api.wunderground.com/api/3d402f1818f340e0/conditions/q/CA/San_Francisco.json
@@ -343,7 +434,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     }
 
     // Get Hourly forecast task
-    private class GetHourlyForecast extends AsyncTask<String, Integer, ArrayList<HourlyForecast>> {
+    public class GetHourlyForecast extends AsyncTask<String, Integer, ArrayList<HourlyForecast>> {
         @Override
         protected void onPreExecute() {
         }
@@ -383,7 +474,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         @Override
         protected void onPostExecute(ArrayList<HourlyForecast> forecast) {
             // Create the hashmap of the objects
-            ArrayList<HashMap<String, Object>> hourlyForecastList = new ArrayList<HashMap<String, Object>>();
+            mHourlyMapList = new ArrayList<HashMap<String, Object>>();
             // loop through the hours
             for (HourlyForecast hour : forecast) {   // Create a new map
                 HashMap<String, Object> map = new HashMap<String, Object>();
@@ -393,11 +484,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 map.put(HOURLY_TIME, hour.getTimeHour());
                 map.put(HOURLY_FEELS_LIKE, hour.getFeelsLike());
                 // Add to the list
-                hourlyForecastList.add(map);
+                mHourlyMapList.add(map);
                 //Log.i(TAG, "Map info: " + map);
             }
             // and call to set the items in the custom adapter
-            HourlyForecastFragment.SetCustomListInAdapter(hourlyForecastList);
+            HourlyForecastFragment.SetCustomListInAdapter(mHourlyMapList);
         }
     }
 
@@ -442,7 +533,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         @Override
         protected void onPostExecute(ArrayList<WeeklyForecast> forecast) {
             // Create the hashmap of the objects
-            ArrayList<HashMap<String, Object>> mWeeklyForecastMapList = new ArrayList<HashMap<String, Object>>();
+            mWeeklyMapList = new ArrayList<HashMap<String, Object>>();
             // loop through the hours
             for (WeeklyForecast day : forecast) {   // Create a new map
                 HashMap<String, Object> map = new HashMap<String, Object>();
@@ -451,9 +542,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 map.put(WEEKLY_DESCRIPTION, day.getDescription());
                 map.put(WEEKLY_IMAGE_ICON, day.getIconString());
                 // Add to the fragment list adapter
-                mWeeklyForecastMapList.add(map);
+                mWeeklyMapList.add(map);
             }
-            WeeklyForecastFragment.setDaysInWeekView(mWeeklyForecastMapList);
+            WeeklyForecastFragment.setDaysInWeekView(mWeeklyMapList);
         }
     }
 }

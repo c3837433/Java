@@ -20,6 +20,7 @@ public class HTTPHelper  {
     public static final String TAG = "HTTPHelper";
 
     public static String pullWeatherData (MainActivity context, String param) {
+
         // Create an empty string to hold the data
         String weatherData = "";
         try {
@@ -44,9 +45,11 @@ public class HTTPHelper  {
                 connection.disconnect();
             }
             else {
-                // If the response was not valid, inform the user
-                Toast.makeText(context, "Unable to access server at this time, try again later.", Toast.LENGTH_LONG).show();
-            }
+                if (context != null) {
+                    // If the response was not valid, inform the user
+                    Toast.makeText(context, "Unable to access server at this time, try again later.", Toast.LENGTH_LONG).show();
+                }
+             }
         }
         // Prepare for possible exceptions
         catch (MalformedURLException exception){

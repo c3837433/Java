@@ -3,7 +3,11 @@ package com.example.angessmith.tabbednavigation;
 
  // Created by AngeSSmith on 10/20/14.
 
-public class HourlyForecast {
+import java.io.Serializable;
+
+public class HourlyForecast implements Serializable {
+
+    private static final long serialVersionUID = 346813153740L;
 
     private String mTemperatureString;
     private String mCondition;

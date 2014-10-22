@@ -1,5 +1,7 @@
 package com.example.angessmith.tabbednavigation;
 
+import java.io.Serializable;
+
 /**
  * Created by AngeSSmith on 10/20/14.
  */
@@ -14,7 +16,9 @@ package com.example.angessmith.tabbednavigation;
     precip_1hr_string: "0.00 in ( 0 mm)",
     icon_url: "http://icons.wxug.com/i/c/k/cloudy.gif",
      */
-public class CurrentCondition {
+public class CurrentCondition implements Serializable {
+
+    private static final long serialVersionUID =  484763662987253462L;
 
     // Create the variables
     private String mIconUrl;
