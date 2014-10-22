@@ -13,6 +13,7 @@ import com.example.angessmith.spinnernavapp.Fragment.RosterListFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+// Created by: Angela Smith for Java 2 Term 1410
 
 public class MainActivity extends Activity implements ActionBar.OnNavigationListener {
 
