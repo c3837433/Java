@@ -5,6 +5,6 @@
     <string name="title_tab1">Current</string>
     <string name="title_tab2">Hourly</string>
     <string name="title_tab3">Weekly</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Change Location</string>
 
 </resources>

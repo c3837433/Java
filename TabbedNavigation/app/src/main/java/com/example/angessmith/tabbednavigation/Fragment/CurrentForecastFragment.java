@@ -2,7 +2,6 @@ package com.example.angessmith.tabbednavigation.Fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,15 @@ import com.loopj.android.image.SmartImageView;
 public class CurrentForecastFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String ARG_TEMP = "current_temp";
+    private static final String ARG_PRESSURE = "current_pressure";
+    private static final String ARG_PRECIP = "current_precip";
+    private static final String ARG_HUMIDITY = "current_humid";
+    private static final String ARG_DEW = "current_dew";
+    private static final String ARG_WIND = "current_wind";
+    private static final String ARG_FEELS = "current_feels";
+    private static final String ARG_CONDITION = "current_condition";
+
     public static CurrentCondition mCondition;
     // Get the views ready
     private static TextView mTempView;
@@ -52,6 +60,7 @@ public class CurrentForecastFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle _savedInstanceState) {
         super.onActivityCreated(_savedInstanceState);
+
         // Get the views
         mConditionView = (TextView) getView().findViewById(R.id.condition_weather);
         mTempView = (TextView) getView().findViewById(R.id.condition_temp);
@@ -62,11 +71,11 @@ public class CurrentForecastFragment extends Fragment {
         mWindView = (TextView) getView().findViewById(R.id.condition_wind);
         mFeelsView = (TextView) getView().findViewById(R.id.condition_feels);
         //mIconView = (SmartImageView) getView().findViewById(R.id.condition_image);
-
     }
 
     public static void SetConditionsToView() {
-        Log.i("MainActivity", "The object = " + mCondition);
+        // update the view with data
+        //Log.i("MainActivity", "The object = " + mCondition);
         mConditionView.setText("Current Conditions: " + mCondition.getWeather());
         mTempView.setText(mCondition.getTemperatureString());
         mPrecipView.setText("Precipitation: "+ mCondition.getPrecipitation());

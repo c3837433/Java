@@ -40,17 +40,18 @@ Case Study 2
  */
 public class MainActivity extends Activity implements ActionBar.TabListener {
 
-    // Define the shared preferences for the location to search
-    private SharedPreferences mSettingPreference;
-    final String TAG = "MainActivity";
-    // Define the strings for the map
+    // Define the strings for the hourly map
     static final String HOURLY_TEMP = "temperature";
     static final String HOURLY_TIME = "timeHour";
     static final String HOURLY_CONDITION = "condition";
     static final String HOURLY_FEELS_LIKE = "feelsLike";
+    // And the weekly map
+    static final String WEEKLY_DAY = "dayWeek";
+    static final String WEEKLY_DESCRIPTION = "description";
+    static final String WEEKLY_IMAGE_ICON = "hourlyIcon";
 
+    final String TAG = "MainActivity";
     CurrentCondition mCondition;
-    private ArrayList<HourlyForecast> mHourlyForecastList;
                 /**
              * The {@link android.support.v4.view.PagerAdapter} that will provide
              * fragments for each of the sections. We use a
@@ -60,11 +61,14 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
              * {@link android.support.v13.app.FragmentStatePagerAdapter}.
              */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    // Define the shared preferences for the location to search
+    private SharedPreferences mSettingPreference;
+    private ArrayList<HourlyForecast> mHourlyForecastList;
+    private ArrayList<WeeklyForecast> mWeeklyForecastList;
 
     /*
     Back in the onCreate() method of the activity, a few things are happening for our setup.
@@ -81,27 +85,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         setContentView(R.layout.activity_main);
 
         // Set up the preferences
-        mSettingPreference = getPreferences(MODE_PRIVATE);
-        if (mSettingPreference.contains("EDIT_CITY_PREFERENCE")) {
-            // get the current values for the city/state
-            String cityPreference = mSettingPreference.getString("EDIT_CITY_PREFERENCE","Chaska");
-            String statePreference = mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN");
-            Log.i(TAG, "User search = " + cityPreference + ", " + statePreference);
-            // change the action bar title
-            this.getActionBar().setTitle(cityPreference + ", " + statePreference);
-        } else {
-            // define default
-            Log.i(TAG, "User search has not been set ");
-            // set the default
-            SharedPreferences settingsPreferences = this.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settingsPreferences.edit();
-            // save the city to the preferences
-            editor.putString("LOCATION_CITY_PREFERENCE", "Chaska");
-            editor.putString("EDIT_STATE_PREFERENCE", "MN");
-            editor.commit();
-            // and set the title with the default
-            this.getActionBar().setTitle("Chaska, MN");
-        }
+        setUpPreferences();
+
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
         // set to use tabs
@@ -139,6 +124,30 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         }
     }
 
+    private void setUpPreferences() {
+        mSettingPreference = getPreferences(MODE_PRIVATE);
+        if (mSettingPreference.contains("EDIT_CITY_PREFERENCE")) {
+            // get the current values for the city/state
+            String cityPreference = mSettingPreference.getString("EDIT_CITY_PREFERENCE","Chaska");
+            String statePreference = mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN");
+            Log.i(TAG, "User search = " + cityPreference + ", " + statePreference);
+            // change the action bar title
+            this.getActionBar().setTitle(cityPreference + ", " + statePreference);
+        } else {
+            // define default
+            Log.i(TAG, "User search has not been set ");
+            // set the default
+            SharedPreferences settingsPreferences = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settingsPreferences.edit();
+            // save the city to the preferences
+            editor.putString("EDIT_CITY_PREFERENCE", "Chaska");
+            editor.putString("EDIT_STATE_PREFERENCE", "MN");
+            editor.commit();
+            // and set the title with the default
+            this.getActionBar().setTitle("Chaska, MN");
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -148,12 +157,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Load the preference fragment
         switch (item.getItemId())
         {
-            // (only "Preferences" right now...
             case R.id.action_settings:
                 // Load the preference fragment
                 getFragmentManager().beginTransaction()
@@ -183,28 +189,74 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-        /*
-        This FragmentPagerAdapter class is a type of specialized adapter that's used in conjunction
-        with a ViewPager to show fragments for each view in the ViewPager. This adapter is used to
-        create and return fragments (currently only a placeholder fragment), get the total number
-        of pages to swipe between, and get the title of each page in the ViewPager.
-         */
+    // Method that gets the correct api url based on user location and api preference
+    public String getLocation(int tab) {
+        // Make sure the strings have no spaces
+        String city = mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN").replaceAll(" ", "_");
+        String state = mSettingPreference.getString("EDIT_CITY_PREFERENCE","MN").replaceAll(" ", "_");
+        String apiType = "";
+        switch (tab) {
+            case 1:
+                apiType = "conditions";
+                break;
+            case 2:
+                apiType = "hourly10day";
+                break;
+            case 3:
+                apiType = "forecast10day";
+                break;
+        }
+
+        return  "http://api.wunderground.com/api/3d402f1818f340e0/" + apiType +"/q/" + city +"/" + state + ".json";
+    }
+
+    public void getCurrentConditions () {
+        // check for a connection
+        ConnectionHelper connectionHelper = new ConnectionHelper(this);
+        boolean isReady = connectionHelper.canConnectInternet();
+        if (isReady) {
+            // Get the location
+            //String locationApi = getLocation(1);
+            GetCurrentCondition conditionsTask = new GetCurrentCondition();
+            conditionsTask.execute(getLocation(1));
+        }
+    }
+
+    public void getHourlyForecast() {
+        // check connection again
+        ConnectionHelper connectionHelper = new ConnectionHelper(this);
+        boolean isReady = connectionHelper.canConnectInternet();
+        if (isReady) {
+            // set string to the hourly
+            GetHourlyForecast hourlyTask = new GetHourlyForecast();
+            // get the location api string and execute it
+            hourlyTask.execute(getLocation(2));
+        }
+
+    }
+
+    public void getWeeklyForecast() {
+        // verify connection
+        ConnectionHelper connectionHelper = new ConnectionHelper(this);
+        boolean isReady = connectionHelper.canConnectInternet();
+        if (isReady) {
+            // set string to the 10 day forecast
+            //String locationApi = getLocation(3);
+            //String urlString = "http://api.wunderground.com/api/3d402f1818f340e0/forecast10day/q/" + location + ".json";
+            // Execute the task
+            GetWeeklyForecast weeklyTask = new GetWeeklyForecast();
+            weeklyTask.execute(getLocation(3));
+        }
+    }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            //return PlaceholderFragment.newInstance(position + 1);
+            // Get the right fragment based on tab position
             Fragment fragment = null;
             // See which position was selected
             switch (position) {
@@ -219,6 +271,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                     fragment = HourlyForecastFragment.newInstance(position + 1);
                     break;
                 case 2:
+                    // Make sure we have a valid list
+                    getWeeklyForecast();
                     fragment = WeeklyForecastFragment.newInstance(position + 1);
                     break;
                 default:
@@ -249,29 +303,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
             return null;
         }
     }
-    public void getCurrentConditions () {
-        // check for a connection
-        ConnectionHelper connectionHelper = new ConnectionHelper(this);
-        boolean isReady = connectionHelper.canConnectInternet();
-        if (isReady) {
-            String urlString = "http://api.wunderground.com/api/3d402f1818f340e0/conditions/q/" + mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN")+ "/" + mSettingPreference.getString("EDIT_CITY_PREFERENCE","Chaska")+ ".json";
-            GetCurrentCondition conditionsTask = new GetCurrentCondition();
-            conditionsTask.execute(urlString);
-        }
-    }
 
-    public void getHourlyForecast() {
-        // check connection again
-        ConnectionHelper connectionHelper = new ConnectionHelper(this);
-        boolean isReady = connectionHelper.canConnectInternet();
-        if (isReady) {
-            // set string to the hourly
-            String urlString = "http://api.wunderground.com/api/3d402f1818f340e0/hourly10day/q/" + mSettingPreference.getString("EDIT_STATE_PREFERENCE","MN")+ "/" + mSettingPreference.getString("EDIT_CITY_PREFERENCE","Chaska")+ ".json";
-            GetHourlyForecast hourlyTask = new GetHourlyForecast();
-            hourlyTask.execute(urlString);
-        }
-
-    }
     //http://api.wunderground.com/api/3d402f1818f340e0/conditions/q/CA/San_Francisco.json
     // Task to get current conditions
     private class GetCurrentCondition extends AsyncTask<String, Integer, CurrentCondition> {
@@ -291,7 +323,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 Log.d(TAG, jsonObject.toString());
                 JSONObject currentObject = jsonObject.getJSONObject("current_observation");
                 Log.d(TAG, currentObject.toString());
-                // Get the current values
                 // order: (weather, temp, humidity, wind, pressure, precip, dewpoint, feelsLike,  iconUrl)
                 // Create the new object
                 mCondition = CurrentCondition.newInstance(currentObject.getString("weather"),currentObject.getString("temperature_string"), currentObject.getString("relative_humidity"), currentObject.getString("wind_string"), currentObject.getString("pressure_in"),currentObject.getString("precip_1hr_string"),currentObject.getString("dewpoint_string"),currentObject.getString("feelslike_string"),currentObject.getString("icon_url") );
@@ -363,10 +394,66 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 map.put(HOURLY_FEELS_LIKE, hour.getFeelsLike());
                 // Add to the list
                 hourlyForecastList.add(map);
-                Log.i(TAG, "Map info: " + map);
-                // and call the set the items in the custom adapter
-                HourlyForecastFragment.SetCustomListInAdapter(hourlyForecastList);
+                //Log.i(TAG, "Map info: " + map);
             }
+            // and call to set the items in the custom adapter
+            HourlyForecastFragment.SetCustomListInAdapter(hourlyForecastList);
+        }
+    }
+
+    // Get Weekly forecast task
+    private class GetWeeklyForecast extends AsyncTask<String, Integer, ArrayList<WeeklyForecast>> {
+        @Override
+        protected void onPreExecute() {
+        }
+        @Override
+        protected ArrayList<WeeklyForecast> doInBackground(String... params) {
+            String urlString = params[0];
+            Log.d(TAG, urlString);
+            String returnedData = HTTPHelper.pullWeatherData(MainActivity.this, params[0]);
+            try {
+                // Create an object
+                JSONObject jsonObject = new JSONObject(returnedData);
+                Log.d(TAG, jsonObject.toString());
+                // Get the forecast object
+                JSONObject forecastObject = jsonObject.getJSONObject("forecast");
+                JSONObject txtForecastObject = forecastObject.getJSONObject("txt_forecast");
+                // And the array of days in it
+                JSONArray dayArray = txtForecastObject.getJSONArray("forecastday");
+                // Loop through the days and get the objects
+                mWeeklyForecastList = new ArrayList<WeeklyForecast>();
+                for (int i = 0; i < dayArray.length(); i++) {
+                    JSONObject dayObject = dayArray.getJSONObject(i);
+                    // Get the day, description, and urlString
+                    String dayString = dayObject.getString("title");
+                    String descString = dayObject.getString("fcttext");
+                    String iconUrlString = dayObject.getString("icon_url");
+                    // create a new object
+                    mWeeklyForecastList.add(WeeklyForecast.newInstance(dayString, descString, iconUrlString));
+                }
+                return mWeeklyForecastList;
+            }
+            catch (JSONException e) {
+                Log.e(TAG, "Unable to convert to JSON");
+            }
+            return mWeeklyForecastList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<WeeklyForecast> forecast) {
+            // Create the hashmap of the objects
+            ArrayList<HashMap<String, Object>> mWeeklyForecastMapList = new ArrayList<HashMap<String, Object>>();
+            // loop through the hours
+            for (WeeklyForecast day : forecast) {   // Create a new map
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                // set the keys and values
+                map.put(WEEKLY_DAY, day.getDay());
+                map.put(WEEKLY_DESCRIPTION, day.getDescription());
+                map.put(WEEKLY_IMAGE_ICON, day.getIconString());
+                // Add to the fragment list adapter
+                mWeeklyForecastMapList.add(map);
+            }
+            WeeklyForecastFragment.setDaysInWeekView(mWeeklyForecastMapList);
         }
     }
 }

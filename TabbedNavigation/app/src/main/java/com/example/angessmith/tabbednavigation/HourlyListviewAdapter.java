@@ -48,7 +48,6 @@ public class HourlyListviewAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.hourly_list, parent, false);
         }
-
         // set the map to the position of the list
         mHourlyForecast = new HashMap<String, Object>();
         mHourlyForecast = mHourlyList.get(position);
