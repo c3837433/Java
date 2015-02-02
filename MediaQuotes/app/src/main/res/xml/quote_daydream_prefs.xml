@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:key="QUOTE_TIME_FREQUENCY"
+        android:title="@string/pref_dream_text_title"
+        android:summary="Select which network state you would prefer"
+        android:entries="@array/time_options_array"
+        android:entryValues="@array/time_options_values_array"
+        android:dialogTitle="Frequency"
+        android:defaultValue="ten"/>
+
+</PreferenceScreen>
