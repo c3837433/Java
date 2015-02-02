@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_gift_title"
+        android:id="@+id/item_header"
+        android:layout_weight="0.04"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:padding="10dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_title_textView"
+        android:layout_gravity="center_horizontal"
+        android:selectAllOnFocus="true"
+        android:capitalize="sentences"
+        android:hint="@string/gift_name_item_hint"
+        android:padding="10dp"
+        android:inputType="textCapWords" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_location_textView"
+        android:layout_weight="0.04"
+        android:hint="@string/store_hint"
+        android:padding="10dp"
+        android:inputType="textCapWords" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/item_price_textView"
+        android:layout_weight="0.04"
+        android:hint="@string/price_hint"
+        android:padding="10dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/item_url_textView"
+        android:layout_weight="0.04"
+        android:hint="@string/web_hint"
+        android:padding="10dp"
+        android:paddingBottom="40dp" />
+
+
+</LinearLayout>

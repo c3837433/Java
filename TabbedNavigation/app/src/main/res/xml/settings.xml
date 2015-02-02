@@ -1,0 +1,18 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Location Preference">
+
+        <EditTextPreference
+            android:key="EDIT_CITY_PREFERENCE"
+            android:title="City"
+            android:dialogTitle="Enter the name of the city to search." />
+
+        <EditTextPreference
+            android:key="EDIT_STATE_PREFERENCE"
+            android:title="State"
+            android:dialogTitle="Enter the 2 letter abbreviation of the state to search." />
+    </PreferenceCategory>
+
+</PreferenceScreen>

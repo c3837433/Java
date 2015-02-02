@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gift List</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_add">Add Gift</string>
+    <string name="action_share">Share</string>
+    <string name="action_save">Save Item</string>
+    <string name="action_clear">Clear Form</string>
+    <string name="action_delete">Delete</string>
+    <string name="add_gift">Add a Gift</string>
+    <string name="title_activity_add_gift">Add Gift Activity</string>
+    <string name="title_activity_gift_add">Add an Item</string>
+    <string name="gift_name_hint">Gift Item Name</string>
+    <string name="add_gift_title">Enter Gift Information</string>
+    <string name="gift_name_item_hint">Gift Item Name</string>
+    <string name="store_hint">Store</string>
+    <string name="price_hint">Price</string>
+    <string name="web_hint">Web Link</string>
+    <string name="add_button_hint">Save Gift</string>
+    <string name="title_activity_details_view">Gift Details</string>
+    <string name="item">Item</string>
+    <string name="location">Location</string>
+    <string name="price">Price</string>
+    <string name="link">Link</string>
+    <string name="delete_gift">Delete Gift</string>
+    <string name="share_gift">Share Gift</string>
+    <string name="delete">Delete</string>
+    <string name="more">More</string>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Data Preferences" >
+    <SwitchPreference
+        android:key="MOBILE_DATA_PREFERENCE"
+        android:title="Data Use"
+        android:summaryOff="Use Wifi Only"
+        android:summaryOn="Allow Cellular"
+        android:defaultValue="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

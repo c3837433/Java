@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.angessmith.multiactivity.GiftAddActivity" >
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_action_save"
+        android:showAsAction="always"
+        android:title="@string/action_save"/>
+
+    <item android:id="@+id/action_overflow"
+        android:icon="@drawable/ic_action_overflow"
+        android:showAsAction="always"
+        android:title="@string/more">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_clear"
+                android:icon="@drawable/ic_action_remove"
+                android:showAsAction="ifRoom"
+                android:title="@string/action_clear"/>
+        </menu>
+    </item>
+</menu>

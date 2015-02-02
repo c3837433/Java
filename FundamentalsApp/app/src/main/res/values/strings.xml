@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Angela\'s List of Books</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Preferences</string>
+    <string name="best_seller_button">Get Best Seller Lists</string>
+    <string name="settings_dialog">Preferences</string>
+    <string name="header_title">New York Times Best Sellers</string>
+
+    <string-array name="network_status_array">
+        <item>Use Network</item>
+        <item>Check Cache Before Network</item>
+        <item>Use Cache Only</item>
+    </string-array>
+
+    <string-array name="network_value_array">
+        <item>network</item>
+        <item>check_offline</item>
+        <item>cache_only</item>
+    </string-array>
+
+</resources>
