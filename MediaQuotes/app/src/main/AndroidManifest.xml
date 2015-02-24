@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.angessmith.mediaquotes" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <!-- This service is only used on devices with API v17+ -->
+
+        <activity android:name="com.example.angessmith.mediaquotes.QuoteDaydreamSettingsActivity" /> <!-- This service is only used on devices with API v17+ -->
+        <service
+            android:name="com.example.angessmith.mediaquotes.QuoteDaydream"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Point to additional information for this dream -->
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/quote_daydream_info" />
+        </service>
+    </application>
+
+</manifest>

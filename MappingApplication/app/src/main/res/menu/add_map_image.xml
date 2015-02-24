@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.angessmith.mappingapplication.AddMapImageActivity" >
+    <item android:id="@+id/action_save_image"
+        android:orderInCategory="100"
+        android:title="Save"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="always" />
+</menu>
+

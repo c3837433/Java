@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_image"
+            android:layout_below="@+id/logo_view">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_sm_grey_btn"
+                android:text="Update Picture"
+                android:id="@+id/edit_add_image_button"
+                android:layout_marginTop="90dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/image_container">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/edit_user_profile_picture_view"
+                    android:scaleType="centerCrop"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/edit_user_cover_view"
+                    android:src="@drawable/blue_camera"/>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_below="@+id/add_image">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_user_profile_name"
+                android:hint="Update Name"
+                android:layout_centerHorizontal="true"
+                android:inputType="textCapWords|textPersonName"
+                android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+                android:textColor="@color/app_grey"
+                android:textColorHint="#ffe9e9e9"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

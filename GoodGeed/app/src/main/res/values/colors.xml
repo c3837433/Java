@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="app_blue">#0099cc</color>
+    <color name="app_green">#61ac45</color>
+    <color name="app_grey">#555555</color>
+    <color name="app_light_grey">#6f6f6f</color>
+    <color name="facebook_blue">#3b5998</color>
+    <color name="white">#ffffff</color>
+    <color name="app_cream">#ebebeb</color>
+    <color name="black">#000000</color>
+</resources>

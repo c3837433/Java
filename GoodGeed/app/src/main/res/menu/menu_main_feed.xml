@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.angessmith.goodfeed.MainFeedActivity">
+    <item android:id="@+id/action_share_story"
+        android:icon="@drawable/ic_action_add_post"
+        android:title="@string/share"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_log_out"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="@string/logout"
+        android:showAsAction="never"/>
+</menu>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="30dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Media to Story"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0.06">
+
+        <ImageButton
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@android:drawable/ic_menu_camera"
+            android:background="@null"
+            android:id="@+id/open_camera_button"
+            android:layout_gravity="left|center_vertical"/>
+
+        <ImageButton
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="@null"
+            android:id="@+id/open_gallery_button"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+
+</LinearLayout>

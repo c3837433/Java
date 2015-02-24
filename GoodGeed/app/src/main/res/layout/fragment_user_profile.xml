@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/image_container">
+
+            <com.parse.ParseImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/user_parse_profile_picture"
+                android:scaleType="centerCrop"/>
+
+            <com.facebook.widget.ProfilePictureView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/user_facebook_profile_picture"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/profile_pic_cover"/>
+        </RelativeLayout>
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_below="@+id/image_container">
+            <TextView
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="25dp"
+                android:id="@+id/user_profile_name"
+                android:text="User Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/app_grey"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
